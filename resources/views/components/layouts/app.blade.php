@@ -27,7 +27,7 @@
 </head>
 
 <body>
-   
+
     <div class="page">
         <!-- app-header -->
         <header class="app-header">
@@ -72,8 +72,8 @@
                                 </div>
                             </li>
                         </ul>
-                    </div> 
-                  
+                    </div>
+
                     <!-- Start::header-element -->
                     <div class="header-element messages-dropdown">
                         <!-- Start::header-link|dropdown-toggle --> <a href="javascript:void(0);"
@@ -351,7 +351,7 @@
                                     class="text-primary fs-13">VIEW ALL</a> </div>
                         </div> <!-- End::main-header-dropdown -->
                     </div> <!-- End::header-element -->
-                   
+
                     <!-- Start::header-element -->
                     <div class="header-element header-sidebar">
                         <!-- Start::header-link--> <a href="javascript:void(0);" class="header-link"
@@ -368,8 +368,8 @@
                     <div class="header-element headerProfile-dropdown">
                         <!-- Start::header-link|dropdown-toggle --> <a href="javascript:void(0);"
                             class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false"> <img src="#"
-                                alt="img" width="37" height="37" class="rounded-circle"> </a>
+                            data-bs-auto-close="outside" aria-expanded="false"> <img src="#" alt="img" width="37"
+                                height="37" class="rounded-circle"> </a>
                         <!-- End::header-link|dropdown-toggle -->
                         <ul class="main-header-dropdown dropdown-menu pt-0 header-profile-dropdown dropdown-menu-end main-profile-menu"
                             aria-labelledby="mainHeaderProfile">
@@ -395,18 +395,18 @@
                                         class="bx bx-log-out fs-18 me-2 op-7"></i>Sign Out</a></li>
                         </ul>
                     </div> <!-- End::header-element -->
-                    
+
                 </div> <!-- End::header-content-right -->
             </div> <!-- End::main-header-container -->
         </header> <!-- /app-header -->
-       
-   
+
+
         <!-- Start::app-sidebar -->
         <aside class="app-sidebar sticky" id="sidebar">
             <!-- Start::main-sidebar-header -->
             <div class="main-sidebar-header">
                 <h5>Construction</h5>
-                 </div>
+            </div>
             <!-- End::main-sidebar-header -->
             <!-- Start::main-sidebar -->
             <div class="main-sidebar" id="sidebar-scroll" data-simplebar="init">
@@ -445,69 +445,28 @@
                                                         class="badge bg-success ms-auto menu-badge">1</span> </a> </li>
                                             <!-- End::slide -->
                                             <!-- Start::slide__category -->
-                                            <li class="slide__category"><span class="category-name">General</span></li>
-                                           
+                                            <li class="slide__category"><span class="category-name">User Management</span></li>
+
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="side-menu__item {{request()->segment(1) == 'roles' || request()->segment(1) == 'role' || request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}"> <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="side-menu__icon" viewBox="0 0 24 24">
-                                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                                        <title>User</title>
                                                         <path
-                                                            d="M19 5H5v14h14V5zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
-                                                            opacity=".3"></path>
-                                                        <path
-                                                            d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm2 0h14v14H5V5zm2 5h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z">
-                                                        </path>
-                                                    </svg> <span class="side-menu__label">Charts</span> <i
+                                                            d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                                                    </svg>
+                                                    <span class="side-menu__label">Users</span> <i
                                                         class="fe fe-chevron-right side-menu__angle"></i> </a>
                                                 <ul class="slide-menu child1"
                                                     style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 294px, 0px);"
                                                     data-popper-placement="bottom">
-                                                    <li class="slide side-menu__label1"> <a
-                                                            href="javascript:void(0);">Charts</a> </li>
-                                                    <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                            class="side-menu__item">Apex Charts <i
-                                                                class="fe fe-chevron-right side-menu__angle"></i></a>
-                                                        <ul class="slide-menu child2">
-                                                            <li class="slide"> <a href="apex-line-charts.html"
-                                                                    class="side-menu__item">Line Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-area-charts.html"
-                                                                    class="side-menu__item">Area Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-column-charts.html"
-                                                                    class="side-menu__item">Column Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-bar-charts.html"
-                                                                    class="side-menu__item">Bar Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-mixed-charts.html"
-                                                                    class="side-menu__item">Mixed Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-rangearea-charts.html"
-                                                                    class="side-menu__item">Range Area Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-timeline-charts.html"
-                                                                    class="side-menu__item">Timeline Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-candlestick-charts.html"
-                                                                    class="side-menu__item">CandleStick Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-boxplot-charts.html"
-                                                                    class="side-menu__item">Boxplot Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-bubble-charts.html"
-                                                                    class="side-menu__item">Bubble Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-scatter-charts.html"
-                                                                    class="side-menu__item">Scatter Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-heatmap-charts.html"
-                                                                    class="side-menu__item">Heatmap Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-treemap-charts.html"
-                                                                    class="side-menu__item">Treemap Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-pie-charts.html"
-                                                                    class="side-menu__item">Pie Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-radialbar-charts.html"
-                                                                    class="side-menu__item">Radialbar Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-radar-charts.html"
-                                                                    class="side-menu__item">Radar Charts</a> </li>
-                                                            <li class="slide"> <a href="apex-polararea-charts.html"
-                                                                    class="side-menu__item">Polararea Charts</a> </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li class="slide"> <a href="chartjs-charts.html"
-                                                            class="side-menu__item">Chartjs Charts</a> </li>
+                                                   
+                                                    <li class="slide"> <a href="{{route('module.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}">Module</a> </li>
+                                                    <li class="slide"> <a href="{{route('role.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">Roles</a> </li>
+                                                   
                                                     <li class="slide"> <a href="echarts.html"
-                                                            class="side-menu__item">Echart Charts</a> </li>
+                                                            class="side-menu__item">Accounts</a> </li>
                                                 </ul>
                                             </li> <!-- End::slide -->
                                             <!-- Start::slide__category -->
@@ -1040,7 +999,7 @@
             <div class="container-fluid">
                 <!-- Page Header -->
                 <x-breadcrumb />
-                 <!-- Page Header Close -->
+                <!-- Page Header Close -->
                 <!-- Start::row-1 -->
                 <div class="row">
                     {{$slot}}
@@ -1048,7 +1007,7 @@
                 <!--End::row-1 -->
             </div>
         </div> <!-- End::app-content -->
-      
+
     </div>
 
     <script src="{{asset('assets/libs/@popperjs/core/umd/popper.min.js')}}"></script>
