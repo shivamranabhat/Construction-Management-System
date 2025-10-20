@@ -7,6 +7,9 @@ use App\Livewire\Role\Edit as RoleEdit;
 use App\Livewire\Module\Index as ModuleIndex;
 use App\Livewire\Module\Create as ModuleCreate;
 use App\Livewire\Module\Edit as ModuleEdit;
+use App\Livewire\Account\Index as AccountIndex;
+use App\Livewire\Account\Create as AccountCreate;
+use App\Livewire\Account\Edit as AccountEdit;
 
 Route::name('role.')->group(function () {
     Route::get('/roles', RoleIndex::class)->name('index');            
@@ -18,5 +21,11 @@ Route::name('module.')->group(function () {
     Route::get('/modules', ModuleIndex::class)->name('index');            
     Route::get('/module/create', ModuleCreate::class)->name('create');   
     Route::get('/module/{slug}', ModuleEdit::class)->name('edit');    
+});
+
+Route::name('account.')->group(function () {
+    Route::get('/accounts', AccountIndex::class)->name('index');            
+    Route::get('/account/create', AccountCreate::class)->name('create');   
+    Route::get('/account/{slug}', AccountEdit::class)->name('edit');    
 });
 

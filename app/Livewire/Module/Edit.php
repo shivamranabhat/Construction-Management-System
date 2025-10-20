@@ -40,7 +40,7 @@ class Edit extends Component
             ]);
         }
         session()->flash('success', 'Module updated successfully!');
-        $this->redirectRoute('module.index', navigate: true);
+        $this->reset('name');
     }
 
     public function render()

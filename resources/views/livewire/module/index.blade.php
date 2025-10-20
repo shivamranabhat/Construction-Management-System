@@ -27,7 +27,7 @@
                             <input type="search" class="form-control form-control-sm" placeholder="Search..."
                                 wire:model.live="search">
                         </label>
-                        <a wire:navigate href="{{ route('module.create') }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('module.create') }}" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-circle"></i>
                         </a>
                     </div>
@@ -47,12 +47,12 @@
                     <tbody>
                         @forelse($modules as $index=>$module)
                         <tr>
-                            <td>{{ $index+1 }}</td>
+                            <td>{{ $modules->firstItem()+$index }}</td>
                             <td>{{ $module->name }}</td>
                             <td>{{ $module->created_at }}</td>
                             <td x-data="{ openModal: false }">
                                 <div class="hstack gap-2">
-                                    <a wire:navigate href="{{ route('module.edit', $module->slug) }}"
+                                    <a href="{{ route('module.edit', $module->slug) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>

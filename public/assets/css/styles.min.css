@@ -91,3 +91,6 @@ p.small.text-muted{
         padding:1rem 0.1rem !important;
         border-bottom:1px solid #e5e5e5 !important;
     }
+    input[type="checkbox"]{
+        border: 1px solid blue !important;
+    }

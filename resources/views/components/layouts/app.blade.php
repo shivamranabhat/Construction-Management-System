@@ -445,11 +445,13 @@
                                                         class="badge bg-success ms-auto menu-badge">1</span> </a> </li>
                                             <!-- End::slide -->
                                             <!-- Start::slide__category -->
-                                            <li class="slide__category"><span class="category-name">User Management</span></li>
+                                            <li class="slide__category"><span class="category-name">User
+                                                    Management</span></li>
 
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item {{request()->segment(1) == 'roles' || request()->segment(1) == 'role' || request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}"> <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="side-menu__icon" viewBox="0 0 24 24">
+                                                    class="side-menu__item {{request()->segment(1) == 'roles' || request()->segment(1) == 'role' || request()->segment(1) == 'modules' || request()->segment(1) == 'module' || request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                        viewBox="0 0 24 24">
                                                         <title>User</title>
                                                         <path
                                                             d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
@@ -459,14 +461,16 @@
                                                 <ul class="slide-menu child1"
                                                     style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 294px, 0px);"
                                                     data-popper-placement="bottom">
-                                                   
+
                                                     <li class="slide"> <a href="{{route('module.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}">Module</a> </li>
+                                                            class="side-menu__item {{ request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}">Module</a>
+                                                    </li>
                                                     <li class="slide"> <a href="{{route('role.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">Roles</a> </li>
-                                                   
-                                                    <li class="slide"> <a href="echarts.html"
-                                                            class="side-menu__item">Accounts</a> </li>
+                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">Roles</a>
+                                                    </li>
+
+                                                    <li class="slide"> <a href="{{route('account.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">Accounts</a> </li>
                                                 </ul>
                                             </li> <!-- End::slide -->
                                             <!-- Start::slide__category -->

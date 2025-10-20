@@ -20,7 +20,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'image',
         'password',
+        'slug',
     ];
 
     /**
@@ -48,7 +50,7 @@ class User extends Authenticatable
     
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_user');
+        return $this->belongsToMany(Role::class, 'role_users');
     }
 
     public function hasPermission($module, $action)
