@@ -444,7 +444,7 @@
                                                     </svg> <span class="side-menu__label">Index</span> <span
                                                         class="badge bg-success ms-auto menu-badge">1</span> </a> </li>
                                             <!-- End::slide -->
-                                            <!-- Start::slide__category -->
+                                            <!-- Start::slide__user -->
                                             <li class="slide__category"><span class="category-name">User
                                                     Management</span></li>
 
@@ -470,7 +470,35 @@
                                                     </li>
 
                                                     <li class="slide"> <a href="{{route('account.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">Accounts</a> </li>
+                                                            class="side-menu__item {{ request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">Accounts</a>
+                                                    </li>
+                                                </ul>
+                                            </li> <!-- End::slide -->
+                                            <!-- Start::slide__project -->
+                                            <li class="slide__category"><span class="category-name">Project
+                                                    Management</span></li>
+
+                                            <li class="slide has-sub"> <a href="javascript:void(0);"
+                                                    class="side-menu__item {{request()->segment(1) == 'projects' || request()->segment(1) == 'project' || request()->segment(1) == 'boqs' || request()->segment(1) == 'boq' ? 'active' : ''}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" 
+                                                        fill="currentColor" class="bi bi-kanban" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                                        <path
+                                                            d="M6.5 3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm-4 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm8 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z" />
+                                                    </svg>
+                                                    <span class="side-menu__label">Projects</span> <i
+                                                        class="fe fe-chevron-right side-menu__angle"></i> </a>
+                                                <ul class="slide-menu child1"
+                                                    style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 294px, 0px);"
+                                                    data-popper-placement="bottom">
+
+                                                    <li class="slide"> <a href="{{route('project.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'projects' || request()->segment(1) == 'project' ? 'active' : ''}}">List</a>
+                                                    </li>
+                                                    <li class="slide"> <a href="{{route('role.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">BOQ</a>
+                                                    </li>
                                                 </ul>
                                             </li> <!-- End::slide -->
                                             <!-- Start::slide__category -->

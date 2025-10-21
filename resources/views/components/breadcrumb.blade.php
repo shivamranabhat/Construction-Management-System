@@ -4,7 +4,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="javascript:void(0);" style="text-transform: capitalize">{{request()->segment(1)}}</a></li>
-                <li class="breadcrumb-item active" aria-current="page" style="text-transform: capitalize">{{request()->segment(2)=='' ? 'Index' : request()->segment(2)}}</li>
+                <li class="breadcrumb-item active" aria-current="page" style="text-transform: capitalize">{{request()->segment(2)=='' ? 'Index' : str_replace('-',' ', request()->segment(2))}}</li>
             </ol>
         </nav>
     </div>

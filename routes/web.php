@@ -10,6 +10,9 @@ use App\Livewire\Module\Edit as ModuleEdit;
 use App\Livewire\Account\Index as AccountIndex;
 use App\Livewire\Account\Create as AccountCreate;
 use App\Livewire\Account\Edit as AccountEdit;
+use App\Livewire\Project\Index as ProjectIndex;
+use App\Livewire\Project\Create as ProjectCreate;
+use App\Livewire\Project\Edit as ProjectEdit;
 
 Route::name('role.')->group(function () {
     Route::get('/roles', RoleIndex::class)->name('index');            
@@ -27,5 +30,11 @@ Route::name('account.')->group(function () {
     Route::get('/accounts', AccountIndex::class)->name('index');            
     Route::get('/account/create', AccountCreate::class)->name('create');   
     Route::get('/account/{slug}', AccountEdit::class)->name('edit');    
+});
+
+Route::name('project.')->group(function () {
+    Route::get('/projects', ProjectIndex::class)->name('index');            
+    Route::get('/project/create', ProjectCreate::class)->name('create');   
+    Route::get('/project/{slug}', ProjectEdit::class)->name('edit');    
 });
 
