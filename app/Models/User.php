@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'image',
         'password',
+        'company_id',
         'slug',
     ];
 
@@ -48,6 +49,11 @@ class User extends Authenticatable
         ];
     }
     
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_users');
@@ -63,4 +69,5 @@ class User extends Authenticatable
             })
             ->exists();
     }
+
 }

@@ -25,7 +25,9 @@ class Edit extends Component
 
     public function mount($slug)
     {
-        $this->user = User::where('slug', $slug)->firstOrFail();
+        $this->user = User::where('slug', $slug)->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', 'Super Admin');
+                })->firstOrFail();
         $this->slug = $slug;
         $this->name = $this->user->name;
         $this->email = $this->user->email;
@@ -44,10 +46,11 @@ class Edit extends Component
         ]);
 
         $role = Role::find($this->selectedRole);
+        $slug = Str::slug('acc'.'-'.$this->name.'-'.now());
         $data = [
             'name' => $this->name,
             'email' => $this->email,
-            'slug' => Str::slug($this->name.'-'.$role->name),
+            'slug' => $slug,
         ];
 
         if ($this->password) {

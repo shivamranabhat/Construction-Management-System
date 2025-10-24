@@ -376,23 +376,22 @@
                             <li>
                                 <div class="main-header-profile bg-primary menu-header-content text-fixed-white">
                                     <div class="my-auto">
-                                        <h6 class="mb-0 lh-1 text-fixed-white">Petey Cruiser</h6><span
-                                            class="fs-11 op-7 lh-1">Premium Member</span>
+                                        <h6 class="mb-0 lh-1 text-fixed-white">{{auth()->user() ? auth()->user()->name :
+                                            ''}}</h6><span class="fs-11 op-7 lh-1">
+                                            @if(auth()->user() && auth()->user()->roles->first())
+                                            {{ auth()->user()->roles->first()->name}}
+                                            @elseif(auth()->user()->type == 'company') Company
+                                            @else User @endif
+                                        </span>
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item d-flex" href="profile.html"><i
-                                        class="bx bx-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
-                            <li><a class="dropdown-item d-flex" href="editprofile.html"><i
-                                        class="bx bx-cog fs-18 me-2 op-7"></i>Edit Profile </a></li>
-                            <li><a class="dropdown-item d-flex border-block-end" href="mail.html"><i
-                                        class="bx bxs-inbox fs-18 me-2 op-7"></i>Inbox</a></li>
-                            <li><a class="dropdown-item d-flex" href="chat.html"><i
-                                        class="bx bx-envelope fs-18 me-2 op-7"></i>Messages</a></li>
-                            <li><a class="dropdown-item d-flex border-block-end" href="editprofile.html"><i
-                                        class="bx bx-slider-alt fs-18 me-2 op-7"></i>Account Settings</a></li>
-                            <li><a class="dropdown-item d-flex" href="signin.html"><i
-                                        class="bx bx-log-out fs-18 me-2 op-7"></i>Sign Out</a></li>
+                            <li><a class="dropdown-item d-flex align-items-center" href="profile.html"><i
+                                        class="bi bi-person fs-18 me-2 op-7"></i>Profile</a></li>
+
+                            <li><a class="dropdown-item d-flex align-items-center border-block-end" href="mail.html"><i
+                                        class="bi bi-chat-left fs-18 me-2 op-7"></i>Logs</a></li>
+                            <livewire:auth.signout />
                         </ul>
                     </div> <!-- End::header-element -->
 
@@ -443,6 +442,16 @@
                                                         </path>
                                                     </svg> <span class="side-menu__label">Index</span> <span
                                                         class="badge bg-success ms-auto menu-badge">1</span> </a> </li>
+                                            @can('super_admin')
+                                            <li class="slide"> <a href="{{route('company.index')}}"
+                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="bi bi-building side-menu__icon" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z" />
+                                                        <path
+                                                            d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z" />
+                                                    </svg> <span class="side-menu__label">Company</span> </a> </li>
+                                            @endcan
                                             <!-- End::slide -->
                                             <!-- Start::slide__user -->
                                             <li class="slide__category"><span class="category-name">User
@@ -480,7 +489,7 @@
 
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
                                                     class="side-menu__item {{request()->segment(1) == 'projects' || request()->segment(1) == 'project' || request()->segment(1) == 'boqs' || request()->segment(1) == 'boq' ? 'active' : ''}}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" 
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
                                                         fill="currentColor" class="bi bi-kanban" viewBox="0 0 16 16">
                                                         <path
                                                             d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />

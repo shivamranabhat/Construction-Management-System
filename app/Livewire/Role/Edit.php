@@ -34,7 +34,7 @@ class Edit extends Component
         $this->role->update([
             'name' => $this->name,
             'description' => $this->description,
-            'slug' => Str::slug($this->name), // update slug dynamically
+            'slug' => Str::slug('rol'.'-'.$this->name.'-'.now()), // update slug dynamically
         ]);
 
         // Sync permissions

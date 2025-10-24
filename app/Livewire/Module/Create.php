@@ -14,15 +14,16 @@ class Create extends Component
     public function store()
     {
         $this->validate([
-            'name' => 'required|unique:modules,name',
+            'name' => 'required|string|unique:modules,name',
         ],[
             'name.required' => 'Please enter module name.',
             'name.unique' => 'This module name is already exists.',
         ]);
 
-        $slug = Str::slug($this->name);
+        $slug = Str::slug('mod'.'-'.$this->name.'-'.now());
         $module = Module::create([
             'name' => $this->name,
+            'company_id' => auth()->user()->company_id,
             'slug' => $slug,
         ]);
 

@@ -1,0 +1,1 @@
+<li><a class="dropdown-item d-flex align-items-center" role="button" wire:click='signout'><i class="bi bi-box-arrow-right fs-18 me-2 op-7"></i>Sign Out</a></li>

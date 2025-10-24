@@ -28,7 +28,7 @@ class Edit extends Component
             'name.required' => 'Please enter module name.', 
             'name.unique' => 'This module name is already exists.'
         ]);
-        $slug = Str::slug($this->name);
+        $slug = Str::slug('mod'.'-'.$this->name.'-'.now());
         $this->module->update([
             'name' => $this->name,
             'slug' => $slug,

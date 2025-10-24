@@ -1,7 +1,7 @@
 <div class="col-xl-12">
     <div class="card custom-card">
         <div class="card-header justify-content-between">
-            <div class="card-title">Module</div>
+            <div class="card-title">Companies</div>
         </div>
 
         <div class="card-body">
@@ -27,7 +27,7 @@
                             <input type="search" class="form-control form-control-sm" placeholder="Search..."
                                 wire:model.live="search">
                         </label>
-                        <a href="{{ route('module.create') }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('company.create') }}" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-circle"></i>
                         </a>
                     </div>
@@ -39,20 +39,22 @@
                     <thead class="table-primary">
                         <tr>
                             <th>S.N.</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Created At</th>
-                            <th scope="col">Action</th>
+                            <th>Company Name</th>
+                            <th>Admin Email</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($modules as $index=>$module)
+                        @forelse($companies as $index => $company)
                         <tr>
-                            <td>{{ $modules->firstItem()+$index }}</td>
-                            <td>{{ $module->name }}</td>
-                            <td>{{ $module->created_at }}</td>
+                            <td>{{ $companies->firstItem() + $index }}</td>
+                            <td>{{ $company->name }}</td>
+                            <td>{{ $company->users->first()->email ?? '-' }}</td>
+                            <td>{{ $company->created_at->format('d M Y') }}</td>
                             <td x-data="{ openModal: false }">
                                 <div class="hstack gap-2">
-                                    <a href="{{ route('module.edit', $module->slug) }}"
+                                    <a href="{{ route('company.edit', $company->slug) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>
@@ -71,12 +73,12 @@
                                             <button class="close-btn" @click="openModal = false">&times;</button>
                                         </div>
                                         <div class="modal-body">
-                                            Are you sure you want to delete <strong>{{ $module->name }}</strong>?
+                                            Are you sure you want to delete?
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-cancel" @click="openModal = false">Cancel</button>
-                                            <button class="btn btn-delete"
-                                                wire:click="delete('{{ $module->slug }}')" @click="openModal = false">Delete</button>
+                                            <button class="btn btn-delete" wire:click="delete('{{ $company->slug }}')"
+                                                @click="openModal = false">Delete</button>
                                         </div>
                                     </div>
                                 </div>
@@ -84,25 +86,17 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No modules found.</td>
+                            <td colspan="5" class="text-center text-muted">No companies found.</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            <div class="row mt-4">
-                <div class="col-sm-12 col-md-5">
-                    <div class="dataTables_info">
-                        Showing {{ $modules->firstItem() }} to {{ $modules->lastItem() }}
-                        of {{ $modules->total() }} entries
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-7">
-                    <div class="dataTables_paginate paging_simple_numbers d-flex justify-content-end">
-                        {{ $modules->links() }}
-                    </div>
-                </div>
+            <div class="d-flex justify-content-between mt-3">
+                <div>Showing {{ $companies->firstItem() }} to {{ $companies->lastItem() }} of {{ $companies->total() }}
+                    entries</div>
+                <div>{{ $companies->links() }}</div>
             </div>
         </div>
     </div>

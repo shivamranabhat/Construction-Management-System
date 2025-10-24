@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->decimal('budget', 15, 2);
             $table->string('status')->default('ongoing');
+            $table->unsignedBigInteger('company_id');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->string('slug');
             $table->timestamps();
         });

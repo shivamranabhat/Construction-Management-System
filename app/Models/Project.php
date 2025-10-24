@@ -14,6 +14,12 @@ class Project extends Model
         'end_date',
         'budget',
         'status',
+        'company_id',
         'slug',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

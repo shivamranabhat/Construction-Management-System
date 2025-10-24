@@ -30,7 +30,8 @@ class Create extends Component
             'end_date' => $this->end_date,
             'budget' => $this->budget,
             'status' => $this->status,
-            'slug' => Str::slug($this->name.'-'.$this->code),
+            'company_id' => auth()->user()->company_id,
+            'slug' => Str::slug('proj'.'-'.$this->name.'-'.now()),
         ]);
 
         session()->flash('success', 'Project created successfully!');

@@ -39,7 +39,7 @@ class Edit extends Component
             'end_date' => $this->end_date,
             'budget' => $this->budget,
             'status' => $this->status,
-            'slug' => Str::slug($this->name.'-'.$this->code),
+            'slug' => $slug = Str::slug('proj'.'-'.$this->name.'-'.now()),
         ]);
 
         session()->flash('success', 'Project updated successfully!');

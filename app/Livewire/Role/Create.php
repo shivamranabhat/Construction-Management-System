@@ -26,11 +26,12 @@ class Create extends Component
             'name.unique' => 'This role name already exists.',
         ]);
 
-        $slug = strtolower(str_replace(' ', '-', $this->name));
+        $slug = Str::slug('rol'.'-'.$this->name.'-'.now());;
         // Create the role
         $role = Role::create([
             'name' => $this->name,
             'description' => $this->description,
+            'company_id' => auth()->user()->company_id,
             'slug' => $slug,
         ]);
 

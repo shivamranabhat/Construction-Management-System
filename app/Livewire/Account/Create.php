@@ -30,12 +30,12 @@ class Create extends Component
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|string|min:6',
-            'selectedRole' => 'required|exists:roles,id',
+            'selectedRole' => 'nullable|exists:roles,id',
             'image' => 'nullable|image|max:2048', // max 2MB
         ]);
 
         $imagePath = $this->image ? $this->image->store('users', 'public') : null;
-        $slug = Str::slug($this->name. '-' . $this->selectedRole);
+        $slug = Str::slug('acc'.'-'.$this->name.'-'.now());
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
@@ -44,7 +44,9 @@ class Create extends Component
             'slug' => $slug,
         ]);
 
+        if($this->selectedRole) {
         $user->roles()->sync([$this->selectedRole]);
+        }
 
         session()->flash('success', 'User created successfully!');
         $this->reset(['name', 'email', 'password', 'password_confirmation', 'image', 'selectedRole','existingImage','image']);

@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Auth\Login as AuthLogin;
+use App\Livewire\Company\Index as CompanyIndex;
+use App\Livewire\Company\Create as CompanyCreate;
+use App\Livewire\Company\Edit as CompanyEdit;
 use App\Livewire\Role\Index as RoleIndex;
 use App\Livewire\Role\Create as RoleCreate;
 use App\Livewire\Role\Edit as RoleEdit;
@@ -13,6 +17,12 @@ use App\Livewire\Account\Edit as AccountEdit;
 use App\Livewire\Project\Index as ProjectIndex;
 use App\Livewire\Project\Create as ProjectCreate;
 use App\Livewire\Project\Edit as ProjectEdit;
+
+Route::name('company.')->group(function () {
+    Route::get('/companies', CompanyIndex::class)->name('index');            
+    Route::get('/company/create', CompanyCreate::class)->name('create');   
+    Route::get('/company/{slug}', CompanyEdit::class)->name('edit');    
+});
 
 Route::name('role.')->group(function () {
     Route::get('/roles', RoleIndex::class)->name('index');            
@@ -38,3 +48,5 @@ Route::name('project.')->group(function () {
     Route::get('/project/{slug}', ProjectEdit::class)->name('edit');    
 });
 
+
+Route::get('/signin', AuthLogin::class)->name('signin');
