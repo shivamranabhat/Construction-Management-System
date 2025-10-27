@@ -352,23 +352,12 @@
                         </div> <!-- End::main-header-dropdown -->
                     </div> <!-- End::header-element -->
 
-                    <!-- Start::header-element -->
-                    <div class="header-element header-sidebar">
-                        <!-- Start::header-link--> <a href="javascript:void(0);" class="header-link"
-                            data-bs-toggle="offcanvas" data-bs-target="#header-sidebar"> <svg
-                                xmlns="http://www.w3.org/2000/svg" class="header-link-icon" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <line x1="3" y1="12" x2="21" y2="12"></line>
-                                <line x1="3" y1="6" x2="21" y2="6"></line>
-                                <line x1="3" y1="18" x2="21" y2="18"></line>
-                            </svg> </a> <!-- End::header-link-->
-                    </div> <!-- End::header-element -->
+                    
                     <!-- Start::header-element -->
                     <div class="header-element headerProfile-dropdown">
                         <!-- Start::header-link|dropdown-toggle --> <a href="javascript:void(0);"
                             class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false"> <img src="#" alt="img" width="37"
+                            data-bs-auto-close="outside" aria-expanded="false"> <img src="{{asset('assets/images/profile.png')}}" alt="img" width="37"
                                 height="37" class="rounded-circle"> </a>
                         <!-- End::header-link|dropdown-toggle -->
                         <ul class="main-header-dropdown dropdown-menu pt-0 header-profile-dropdown dropdown-menu-end main-profile-menu"
@@ -506,7 +495,7 @@
                                                             class="side-menu__item {{ request()->segment(1) == 'projects' || request()->segment(1) == 'project' ? 'active' : ''}}">List</a>
                                                     </li>
                                                     <li class="slide"> <a href="{{route('boq.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'boq' ? 'active' : ''}}">BOQ</a>
+                                                            class="side-menu__item {{ request()->segment(1) == 'boq' || request()->segment(1) == 'boqs' ? 'active' : ''}}">BOQ</a>
                                                     </li>
                                                 </ul>
                                             </li> <!-- End::slide -->

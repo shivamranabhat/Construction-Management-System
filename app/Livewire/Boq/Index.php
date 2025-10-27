@@ -16,9 +16,10 @@ class Index extends Component
 
     public function delete($slug)
     {
-        $boq = Boq::where('slug', $slug)
-            ->where('company_id', auth()->user()->company_id)
-            ->delete();
+        $boq = Boq::where('slug', $slug)->get();
+        foreach ($boq as $item) {
+            $item->delete();
+        }
         session()->flash('success', 'BOQ deleted successfully!');
     }
 

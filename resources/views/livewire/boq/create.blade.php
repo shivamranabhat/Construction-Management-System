@@ -29,7 +29,7 @@
 
                     <div class="row g-2 mb-2">
                         <div class="col-12 col-md-1">
-                            <input type="text" wire:model.live="mainBoqs.{{ $index }}.serial_number" class="form-control" placeholder="Serial">
+                            <input type="text" wire:model.live="mainBoqs.{{ $index }}.serial_number" class="form-control" placeholder="Serial No">
                         </div>
                         <div class="col-12 col-md-4">
                             <input type="text" wire:model.live="mainBoqs.{{ $index }}.name" class="form-control" placeholder="BOQ Name">
@@ -54,7 +54,7 @@
                     @if(!$main['subToggled'])
                         @foreach($main['boqs'] as $bIndex => $boq)
                             <div class="row g-2 mb-2 ps-3">
-                                <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.serial_number" class="form-control" placeholder="Serial Number"></div>
+                                <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.serial_number" class="form-control" placeholder="Serial No"></div>
                                 <div class="col-12 col-md-6"><textarea wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.item_description" rows="1" class="form-control" placeholder="Description"></textarea></div>
                                 <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit" class="form-control" placeholder="Unit"></div>
                                 <div class="col-12 col-md-1"><input type="number" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.quantity" class="form-control" placeholder="Qty"></div>
@@ -100,7 +100,7 @@
             @endforeach
 
             @if(!empty($mainBoqs))
-                <button class="btn btn-primary" wire:click="save" type="button">Save All</button>
+                <button class="btn btn-primary" wire:click="save" type="button">Save <x-spinner /></button>
             @endif
         </div>
     </div>
