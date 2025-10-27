@@ -1,7 +1,7 @@
 <div class="col-xl-12">
     <div class="card custom-card">
         <div class="card-header justify-content-between">
-            <div class="card-title">Create BOQ</div>
+            <div class="card-title">Create</div>
             <a href="{{ route('boq.index') }}" class="btn btn-primary btn-sm">
                 <i class="bi bi-arrow-left"></i>
             </a>
@@ -28,21 +28,21 @@
                     <h6>Main BOQ {{ $index + 1 }}</h6>
 
                     <div class="row g-2 mb-2">
-                        <div class="col-md-2">
+                        <div class="col-12 col-md-1">
                             <input type="text" wire:model.live="mainBoqs.{{ $index }}.serial_number" class="form-control" placeholder="Serial">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <input type="text" wire:model.live="mainBoqs.{{ $index }}.name" class="form-control" placeholder="BOQ Name">
                         </div>
                         @if(!$main['subToggled'])
-                            <div class="col-md-2">
+                            <div class="col-12 col-md-1">
                                 <input type="number" wire:model.live="mainBoqs.{{ $index }}.boqCount" class="form-control" placeholder="No. of Items">
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-secondary" wire:click="generateMainBoqs({{ $index }})" type="button">Generate Items</button>
+                            <div class="col-12 col-md-2">
+                                <button class="btn btn-secondary" wire:click="generateMainBoqs({{ $index }})" type="button">Generate Sub BOQs</button>
                             </div>
                         @endif
-                        <div class="col-md-2 d-flex align-items-center">
+                        <div class="col-12 col-md-2 d-flex align-items-center">
                             <label class="form-label me-2 mb-0">Sub BOQ?</label>
                             <div x-data="{ toggled: @entangle('mainBoqs.'.$index.'.subToggled') }" class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" role="switch" x-model="toggled">
@@ -54,12 +54,12 @@
                     @if(!$main['subToggled'])
                         @foreach($main['boqs'] as $bIndex => $boq)
                             <div class="row g-2 mb-2 ps-3">
-                                <div class="col-md-2"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.serial_number" class="form-control" placeholder="Serial"></div>
-                                <div class="col-md-3"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.item_description" class="form-control" placeholder="Description"></div>
-                                <div class="col-md-2"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit" class="form-control" placeholder="Unit"></div>
-                                <div class="col-md-2"><input type="number" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.quantity" class="form-control" placeholder="Qty"></div>
-                                <div class="col-md-2"><input type="number" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit_rate" class="form-control" placeholder="Rate"></div>
-                                <div class="col-md-1"><input type="number" class="form-control" value="{{ (float)($boq['quantity'] ?? 0) * (float)($boq['unit_rate'] ?? 0) }}" readonly></div>
+                                <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.serial_number" class="form-control" placeholder="Serial Number"></div>
+                                <div class="col-12 col-md-6"><textarea wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.item_description" rows="1" class="form-control" placeholder="Description"></textarea></div>
+                                <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit" class="form-control" placeholder="Unit"></div>
+                                <div class="col-12 col-md-1"><input type="number" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.quantity" class="form-control" placeholder="Qty"></div>
+                                <div class="col-12 col-md-1"><input type="number" wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit_rate" class="form-control" placeholder="Rate"></div>
+                                <div class="col-12 col-md-1"><input type="number" class="form-control" value="{{ (float)($boq['quantity'] ?? '') * (float)($boq['unit_rate'] ?? '') }}" placeholder="Total" readonly></div>
                             </div>
                         @endforeach
                     @endif
@@ -76,20 +76,20 @@
                                 <div class="border rounded p-3 mb-3">
                                     <h6>Sub BOQ {{ $subIndex + 1 }}</h6>
                                     <div class="row g-2 mb-2">
-                                        <div class="col-md-2"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.serial_number" class="form-control" placeholder="Serial"></div>
-                                        <div class="col-md-4"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.name" class="form-control" placeholder="Sub BOQ Name"></div>
-                                        <div class="col-md-2"><input type="number" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqCount" class="form-control" placeholder="No. of Items"></div>
-                                        <div class="col-md-2"><button class="btn btn-secondary" wire:click="generateSubSubBoqs({{ $index }}, {{ $subIndex }})" type="button">Generate Items</button></div>
+                                        <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.serial_number" class="form-control" placeholder="Serial No"></div>
+                                        <div class="col-12 col-md-8"><textarea type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.name" class="form-control" placeholder="Sub BOQ Name" rows="1"></textarea></div>
+                                        <div class="col-12 col-md-1"><input type="number" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqCount" class="form-control" placeholder="No. of Items"></div>
+                                        <div class="col-12 col-md-2"><button class="btn btn-secondary" wire:click="generateSubSubBoqs({{ $index }}, {{ $subIndex }})" type="button">Generate Sub BOQs</button></div>
                                     </div>
 
                                     @foreach($sub['boqs'] as $bIndex => $boq)
                                         <div class="row g-2 mb-2 ps-3">
-                                            <div class="col-md-2"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.serial_number" class="form-control" placeholder="Serial"></div>
-                                            <div class="col-md-3"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.item_description" class="form-control" placeholder="Description"></div>
-                                            <div class="col-md-2"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit" class="form-control" placeholder="Unit"></div>
-                                            <div class="col-md-2"><input type="number" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.quantity" class="form-control" placeholder="Qty"></div>
-                                            <div class="col-md-2"><input type="number" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit_rate" class="form-control" placeholder="Rate"></div>
-                                            <div class="col-md-1"><input type="number" class="form-control" value="{{ (float)($boq['quantity'] ?? 0) * (float)($boq['unit_rate'] ?? 0) }}" readonly></div>
+                                            <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.serial_number" class="form-control" placeholder="Serial No"></div>
+                                            <div class="col-12 col-md-7"><textarea type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.item_description" class="form-control" rows="1" placeholder="Description"></textarea></div>
+                                            <div class="col-12 col-md-1"><input type="text" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit" class="form-control" placeholder="Unit"></div>
+                                            <div class="col-12 col-md-1"><input type="number" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.quantity" class="form-control" placeholder="Qty"></div>
+                                            <div class="col-12 col-md-1"><input type="number" wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit_rate" class="form-control" placeholder="Rate"></div>
+                                            <div class="col-12 col-md-1"><input type="number" class="form-control" value="{{ (float)($boq['quantity'] ?? 0) * (float)($boq['unit_rate'] ?? 0) }}" readonly></div>
                                         </div>
                                     @endforeach
                                 </div>

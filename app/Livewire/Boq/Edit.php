@@ -13,6 +13,8 @@ class Edit extends Component
     public $project_id;
     public $mainBoqs = [];
     public $boqSlug;
+    public $deleteType = ''; // 'main', 'sub', 'subsub', 'mainitem'
+    public $deleteIndices = []; // Stores indices for the item to delete
 
     public function mount($slug)
     {
@@ -20,14 +22,13 @@ class Edit extends Component
         $mainBoq = Boq::where('slug', $slug)->whereNull('parent_id')->firstOrFail();
         $this->project_id = $mainBoq->project_id;
 
-        // Load the specific main BOQ and its sub-items
         $this->loadBoqs();
     }
 
     protected function loadBoqs()
     {
         $this->mainBoqs = [];
-        // Fetch only the main BOQ with the matching slug
+
         $main = Boq::where('slug', $this->boqSlug)->whereNull('parent_id')->first();
 
         if ($main) {
@@ -42,46 +43,41 @@ class Edit extends Component
                 'subBoqs' => [],
             ];
 
-            // Check if main BOQ has sub-BOQs
-            $subBoqs = Boq::where('parent_id', $main->id)->where('item_description', null)->get();
+            $subBoqs = Boq::where('parent_id', $main->id)->whereNull('item_description')->get();
             if ($subBoqs->isNotEmpty()) {
                 $mainBoqData['subToggled'] = true;
                 $mainBoqData['subCount'] = $subBoqs->count();
+
                 foreach ($subBoqs as $sub) {
                     $subBoqItems = Boq::where('parent_id', $sub->id)->whereNotNull('item_description')->get();
-                    $subBoqData = [
+                    $mainBoqData['subBoqs'][] = [
                         'id' => $sub->id,
                         'serial_number' => $sub->serial_number,
                         'name' => $sub->name,
                         'boqCount' => $subBoqItems->count(),
-                        'boqs' => $subBoqItems->map(function ($item) {
-                            return [
-                                'id' => $item->id,
-                                'serial_number' => $item->serial_number,
-                                'item_description' => $item->item_description,
-                                'unit' => $item->unit,
-                                'quantity' => $item->quantity,
-                                'unit_rate' => $item->unit_rate,
-                                'amount' => $item->amount,
-                            ];
-                        })->toArray(),
+                        'boqs' => $subBoqItems->map(fn($item) => [
+                            'id' => $item->id,
+                            'serial_number' => $item->serial_number,
+                            'item_description' => $item->item_description,
+                            'unit' => $item->unit,
+                            'quantity' => $item->quantity,
+                            'unit_rate' => $item->unit_rate,
+                            'amount' => $item->amount,
+                        ])->toArray(),
                     ];
-                    $mainBoqData['subBoqs'][] = $subBoqData;
                 }
             } else {
                 $boqItems = Boq::where('parent_id', $main->id)->whereNotNull('item_description')->get();
                 $mainBoqData['boqCount'] = $boqItems->count();
-                $mainBoqData['boqs'] = $boqItems->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'serial_number' => $item->serial_number,
-                        'item_description' => $item->item_description,
-                        'unit' => $item->unit,
-                        'quantity' => $item->quantity,
-                        'unit_rate' => $item->unit_rate,
-                        'amount' => $item->amount,
-                    ];
-                })->toArray();
+                $mainBoqData['boqs'] = $boqItems->map(fn($item) => [
+                    'id' => $item->id,
+                    'serial_number' => $item->serial_number,
+                    'item_description' => $item->item_description,
+                    'unit' => $item->unit,
+                    'quantity' => $item->quantity,
+                    'unit_rate' => $item->unit_rate,
+                    'amount' => $item->amount,
+                ])->toArray();
             }
 
             $this->mainBoqs[] = $mainBoqData;
@@ -101,61 +97,171 @@ class Edit extends Component
         ];
     }
 
+    /**
+     * ✅ Non-destructive generation for main BOQs
+     */
     public function generateMainBoqs($index)
     {
         $this->validate([
             "mainBoqs.$index.boqCount" => 'required|integer|min:1',
         ]);
 
-        $this->mainBoqs[$index]['boqs'] = [];
-        for ($i = 0; $i < $this->mainBoqs[$index]['boqCount']; $i++) {
-            $this->mainBoqs[$index]['boqs'][] = [
-                'serial_number' => '',
-                'item_description' => '',
-                'unit' => '',
-                'quantity' => '',
-                'unit_rate' => '',
-                'amount' => '',
-            ];
+        $currentCount = count($this->mainBoqs[$index]['boqs']);
+        $newCount = (int) $this->mainBoqs[$index]['boqCount'];
+
+        if ($newCount > $currentCount) {
+            for ($i = $currentCount; $i < $newCount; $i++) {
+                $this->mainBoqs[$index]['boqs'][] = [
+                    'serial_number' => '',
+                    'item_description' => '',
+                    'unit' => '',
+                    'quantity' => '',
+                    'unit_rate' => '',
+                    'amount' => '',
+                ];
+            }
+        } elseif ($newCount < $currentCount) {
+            $this->mainBoqs[$index]['boqs'] = array_slice($this->mainBoqs[$index]['boqs'], 0, $newCount);
         }
     }
 
+    /**
+     * ✅ Non-destructive generation for sub BOQs
+     */
     public function generateSubBoqs($index)
     {
         $this->validate([
             "mainBoqs.$index.subCount" => 'required|integer|min:1',
         ]);
 
-        $this->mainBoqs[$index]['subBoqs'] = [];
-        for ($i = 0; $i < $this->mainBoqs[$index]['subCount']; $i++) {
-            $this->mainBoqs[$index]['subBoqs'][] = [
-                'serial_number' => '',
-                'name' => '',
-                'boqCount' => 0,
-                'boqs' => [],
-            ];
+        $currentCount = count($this->mainBoqs[$index]['subBoqs']);
+        $newCount = (int) $this->mainBoqs[$index]['subCount'];
+
+        if ($newCount > $currentCount) {
+            for ($i = $currentCount; $i < $newCount; $i++) {
+                $this->mainBoqs[$index]['subBoqs'][] = [
+                    'serial_number' => '',
+                    'name' => '',
+                    'boqCount' => 0,
+                    'boqs' => [],
+                ];
+            }
+        } elseif ($newCount < $currentCount) {
+            $this->mainBoqs[$index]['subBoqs'] = array_slice($this->mainBoqs[$index]['subBoqs'], 0, $newCount);
         }
     }
 
+    /**
+     * ✅ Non-destructive generation for sub-sub BOQs
+     */
     public function generateSubSubBoqs($mainIndex, $subIndex)
     {
         $this->validate([
             "mainBoqs.$mainIndex.subBoqs.$subIndex.boqCount" => 'required|integer|min:1',
         ]);
 
-        $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'] = [];
-        for ($i = 0; $i < $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqCount']; $i++) {
-            $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'][] = [
-                'serial_number' => '',
-                'item_description' => '',
-                'unit' => '',
-                'quantity' => '',
-                'unit_rate' => '',
-                'amount' => '',
-            ];
+        $currentCount = count($this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs']);
+        $newCount = (int) $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqCount'];
+
+        if ($newCount > $currentCount) {
+            for ($i = $currentCount; $i < $newCount; $i++) {
+                $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'][] = [
+                    'serial_number' => '',
+                    'item_description' => '',
+                    'unit' => '',
+                    'quantity' => '',
+                    'unit_rate' => '',
+                    'amount' => '',
+                ];
+            }
+        } elseif ($newCount < $currentCount) {
+            $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'] =
+                array_slice($this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'], 0, $newCount);
         }
     }
 
+    /**
+     * Open delete confirmation modal
+     */
+    public function confirmDelete($type, $indices)
+    {
+        $this->deleteType = $type;
+        $this->deleteIndices = $indices;
+        $this->showDeleteModal = true;
+    }
+
+    /**
+     * Delete a Main BOQ
+     */
+    public function deleteMainBoq()
+    {
+        if ($this->deleteType === 'main' && isset($this->mainBoqs[$this->deleteIndices['mainIndex']])) {
+            unset($this->mainBoqs[$this->deleteIndices['mainIndex']]);
+            $this->mainBoqs = array_values($this->mainBoqs);
+        }
+        $this->showDeleteModal = false;
+        $this->deleteType = '';
+        $this->deleteIndices = [];
+    }
+
+    /**
+     * Delete a Sub BOQ
+     */
+    public function deleteSubBoq()
+    {
+        if ($this->deleteType === 'sub' && isset($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']])) {
+            unset($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]);
+            $this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'] = array_values($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs']);
+            $this->mainBoqs[$this->deleteIndices['mainIndex']]['subCount'] = count($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs']);
+        }
+        $this->showDeleteModal = false;
+        $this->deleteType = '';
+        $this->deleteIndices = [];
+    }
+
+    /**
+     * Delete a Sub-Sub BOQ item
+     */
+    public function deleteSubSubBoq()
+    {
+        if ($this->deleteType === 'subsub' && isset($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]['boqs'][$this->deleteIndices['boqIndex']])) {
+            unset($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]['boqs'][$this->deleteIndices['boqIndex']]);
+            $this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]['boqs'] = array_values($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]['boqs']);
+            $this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]['boqCount'] = count($this->mainBoqs[$this->deleteIndices['mainIndex']]['subBoqs'][$this->deleteIndices['subIndex']]['boqs']);
+        }
+        $this->showDeleteModal = false;
+        $this->deleteType = '';
+        $this->deleteIndices = [];
+    }
+
+    /**
+     * Delete a Main BOQ item
+     */
+    public function deleteMainBoqItem()
+    {
+        if ($this->deleteType === 'mainitem' && isset($this->mainBoqs[$this->deleteIndices['mainIndex']]['boqs'][$this->deleteIndices['boqIndex']])) {
+            unset($this->mainBoqs[$this->deleteIndices['mainIndex']]['boqs'][$this->deleteIndices['boqIndex']]);
+            $this->mainBoqs[$this->deleteIndices['mainIndex']]['boqs'] = array_values($this->mainBoqs[$this->deleteIndices['mainIndex']]['boqs']);
+            $this->mainBoqs[$this->deleteIndices['mainIndex']]['boqCount'] = count($this->mainBoqs[$this->deleteIndices['mainIndex']]['boqs']);
+        }
+        $this->showDeleteModal = false;
+        $this->deleteType = '';
+        $this->deleteIndices = [];
+    }
+
+    /**
+     * Close the delete modal
+     */
+    public function closeModal()
+    {
+        $this->showDeleteModal = false;
+        $this->deleteType = '';
+        $this->deleteIndices = [];
+    }
+
+    /**
+     *  Save BOQs
+     */
     public function save()
     {
         try {
@@ -194,7 +300,6 @@ class Edit extends Component
             $this->validate($rules);
 
             DB::transaction(function () {
-                // Delete existing BOQs with the same slug
                 Boq::where('slug', $this->boqSlug)->delete();
 
                 foreach ($this->mainBoqs as $main) {
@@ -227,9 +332,9 @@ class Edit extends Component
                                     'serial_number' => $item['serial_number'],
                                     'item_description' => $item['item_description'],
                                     'unit' => $item['unit'],
-                                    'quantity' => (float)$item['quantity'],
-                                    'unit_rate' => (float)$item['unit_rate'],
-                                    'amount' => (float)$item['quantity'] * (float)$item['unit_rate'],
+                                    'quantity' => (float) $item['quantity'],
+                                    'unit_rate' => (float) $item['unit_rate'],
+                                    'amount' => (float) $item['quantity'] * (float) $item['unit_rate'],
                                     'company_id' => auth()->user()->company_id,
                                     'slug' => $mainBoq->slug,
                                 ]);
@@ -244,9 +349,9 @@ class Edit extends Component
                                 'serial_number' => $boq['serial_number'],
                                 'item_description' => $boq['item_description'],
                                 'unit' => $boq['unit'],
-                                'quantity' => (float)$boq['quantity'],
-                                'unit_rate' => (float)$boq['unit_rate'],
-                                'amount' => (float)$boq['quantity'] * (float)$boq['unit_rate'],
+                                'quantity' => (float) $boq['quantity'],
+                                'unit_rate' => (float) $boq['unit_rate'],
+                                'amount' => (float) $boq['quantity'] * (float) $boq['unit_rate'],
                                 'company_id' => auth()->user()->company_id,
                                 'slug' => $mainBoq->slug,
                             ]);
