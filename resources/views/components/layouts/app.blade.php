@@ -505,8 +505,8 @@
                                                     <li class="slide"> <a href="{{route('project.index')}}"
                                                             class="side-menu__item {{ request()->segment(1) == 'projects' || request()->segment(1) == 'project' ? 'active' : ''}}">List</a>
                                                     </li>
-                                                    <li class="slide"> <a href="{{route('role.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">BOQ</a>
+                                                    <li class="slide"> <a href="{{route('boq.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'boq' ? 'active' : ''}}">BOQ</a>
                                                     </li>
                                                 </ul>
                                             </li> <!-- End::slide -->

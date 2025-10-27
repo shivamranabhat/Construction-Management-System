@@ -31,4 +31,8 @@ class Company extends Model
         return $this->hasMany(Role::class);
     }
 
+    public function boqs()
+    {
+        return $this->hasMany(Boq::class);
+    }
 }

@@ -7,6 +7,10 @@ use App\Models\Scopes\CompanyScope;
 
 class Module extends Model
 {
+    protected static function booted()
+    {
+        static::addGlobalScope(new CompanyScope);
+    }
     protected $fillable = [
         'name',
         'company_id',

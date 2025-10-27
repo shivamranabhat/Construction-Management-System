@@ -11,9 +11,9 @@
             <input class="form-control" wire:model='password' placeholder="Enter your password" type="password">
             @error('password') <span class="text-danger">{{ $message }}</span> @enderror
         </div> <button type='submit' class="btn btn-primary btn-block w-100">Sign In <x-spinner /></button>
-        <div class="row mt-3">
-            <div class="col-12"> <button class="btn btn-block w-100 btn-facebook"><i class="fab fa-facebook-f me-2"></i>
-                    Signup with
+        <div class="row mt-3 px-3">
+            <div class="col-12 btn d-flex justify-content-center align-items-end" style="border:1px solid rgb(145, 145, 145)"> <img src="{{asset('assets/images/google.png')}}" width='20' alt="Google"> <i class="fab fa-facebook-f me-2"></i>
+                    Signin with
                     Google</button> </div>
         </div>
     </form>

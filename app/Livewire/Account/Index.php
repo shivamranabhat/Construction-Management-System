@@ -34,7 +34,6 @@ class Index extends Component
                             });
                     })
                     ->where('id', '!=', auth()->id())
-                    ->where('company_id',auth()->user()->company_id)
                     ->latest()
                     ->paginate($this->perPage);
         return view('livewire.account.index', compact('users'));

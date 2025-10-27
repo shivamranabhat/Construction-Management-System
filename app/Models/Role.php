@@ -7,6 +7,10 @@ use App\Models\Scopes\CompanyScope;
 
 class Role extends Model
 {
+    protected static function booted()
+    {
+        static::addGlobalScope(new CompanyScope);
+    }
     protected $fillable = [
         'name',
         'description',

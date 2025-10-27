@@ -17,6 +17,9 @@ use App\Livewire\Account\Edit as AccountEdit;
 use App\Livewire\Project\Index as ProjectIndex;
 use App\Livewire\Project\Create as ProjectCreate;
 use App\Livewire\Project\Edit as ProjectEdit;
+use App\Livewire\Boq\Index as BoqIndex;
+use App\Livewire\Boq\Create as BoqCreate;
+use App\Livewire\Boq\Edit as BoqEdit;
 
 Route::name('company.')->group(function () {
     Route::get('/companies', CompanyIndex::class)->name('index');            
@@ -42,11 +45,16 @@ Route::name('account.')->group(function () {
     Route::get('/account/{slug}', AccountEdit::class)->name('edit');    
 });
 
+Route::name('boq.')->group(function () {
+    Route::get('/boqs', BoqIndex::class)->name('index');            
+    Route::get('/boq/create', BoqCreate::class)->name('create');   
+    Route::get('/boq/{slug}', BoqEdit::class)->name('edit');    
+});
+
 Route::name('project.')->group(function () {
     Route::get('/projects', ProjectIndex::class)->name('index');            
     Route::get('/project/create', ProjectCreate::class)->name('create');   
     Route::get('/project/{slug}', ProjectEdit::class)->name('edit');    
 });
-
 
 Route::get('/signin', AuthLogin::class)->name('signin');

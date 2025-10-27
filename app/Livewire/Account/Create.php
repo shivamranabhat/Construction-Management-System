@@ -41,6 +41,8 @@ class Create extends Component
             'email' => $this->email,
             'password' => Hash::make($this->password),
             'image' => $imagePath,
+            'company_id' => auth()->user()->company_id,
+            'type'=>'user',
             'slug' => $slug,
         ]);
 
