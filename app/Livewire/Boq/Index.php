@@ -13,6 +13,9 @@ class Index extends Component
 
     public $perPage = 10;
     public $search = '';
+    public $activeProjectId;
+    
+    
 
     public function delete($slug)
     {

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Scopes\CompanyScope;
 
-class Project extends Model
+class Vendor extends Model
 {
     protected static function booted()
     {
@@ -13,12 +13,10 @@ class Project extends Model
     }
     protected $fillable = [
         'name',
-        'code',
-        'client',
-        'start_date',
-        'end_date',
-        'budget',
-        'status',
+        'email',
+        'phone',
+        'address',
+        'PAN',
         'company_id',
         'slug',
     ];
@@ -27,10 +25,4 @@ class Project extends Model
     {
         return $this->belongsTo(Company::class);
     }
-
-    public function boqs()
-    {
-        return $this->hasMany(Boq::class);
-    }
-    
 }

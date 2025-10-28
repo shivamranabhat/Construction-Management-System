@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <div x-data="{ openModal: false, activeBoqSlug: null }">
+    <div x-data="{ openModal: false, activeBoqSlug: null }" wire:poll.keep-alive>
         @forelse($projects as $index => $project)
         <div class="col-xl-4 col-md-6">
             <div class="card mb-4">
@@ -34,12 +34,13 @@
                         <span class="fs-12 text-muted">
                             Start Date: {{ \Carbon\Carbon::parse($project->start_date)->format('d M Y') }}
                         </span>
-                        <div class="dropdown d-flex">
+                        <div class="dropdown d-flex" wire:ignore>
                             <div class="drop-down-profile" data-bs-toggle="dropdown" role="button">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </div>
                             <div class="dropdown-menu fs-13">
-                                <a class="dropdown-item" href="{{ route('project.edit', $project->slug) }}">Edit Project</a>
+                                <a class="dropdown-item" href="{{ route('project.edit', $project->slug) }}">Preview</a>
+                                <a class="dropdown-item" href="{{ route('project.edit', $project->slug) }}">Download</a>
                             </div>
                         </div>
                     </div>
@@ -68,7 +69,7 @@
                                             <div class="drop-down-profile" data-bs-toggle="dropdown" role="button">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </div>
-                                            <div class="dropdown-menu fs-13">
+                                            <div class="dropdown-menu fs-13" wire:ignore>
                                                 <a class="dropdown-item" href="{{ route('boq.edit', $boq->slug) }}">Edit BOQ</a>
                                                 <a class="dropdown-item"
                                                    @click="openModal = true; activeBoqSlug = '{{ $boq->slug }}'"

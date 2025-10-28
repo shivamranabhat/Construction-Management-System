@@ -10,37 +10,37 @@
         <div class="card-body">
             <form wire:submit.prevent="update">
                 <div class="row gy-3">
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label">Project Name</label>
                         <input type="text" class="form-control" wire:model="name" placeholder="Enter project name">
                         @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label">Project Code</label>
                         <input type="text" class="form-control" wire:model="code" placeholder="Enter project code">
                         @error('code') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label">Client Name</label>
                         <input type="text" class="form-control" wire:model="client" placeholder="Enter client name">
                         @error('client') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label">Budget</label>
                         <input type="number" class="form-control" wire:model="budget" placeholder="Enter budget amount">
                         @error('budget') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label">Start Date</label>
                         <input type="date" class="form-control" wire:model="start_date">
                         @error('start_date') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label">End Date</label>
                         <input type="date" class="form-control" wire:model="end_date">
                         @error('end_date') <span class="text-danger">{{ $message }}</span> @enderror

@@ -1,7 +1,7 @@
 <div class="col-xl-12">
     <div class="card custom-card">
         <div class="card-header justify-content-between">
-            <div class="card-title">Module</div>
+            <div class="card-title">Vendor</div>
         </div>
 
         <div class="card-body">
@@ -27,7 +27,7 @@
                             <input type="search" class="form-control form-control-sm" placeholder="Search..."
                                 wire:model.live="search">
                         </label>
-                        <a href="{{ route('module.create') }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('vendor.create') }}" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-circle"></i>
                         </a>
                     </div>
@@ -45,20 +45,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($modules as $index=>$module)
+                        @forelse($vendors as $index=>$vendor)
                         <tr>
-                            <td>{{ $modules->firstItem()+$index }}</td>
-                            <td>{{ $module->name }}</td>
-                            <td>{{ $module->created_at }}</td>
+                            <td>{{ $vendors->firstItem()+$index }}</td>
+                            <td>{{ $vendor->name }}</td>
+                            <td>{{ $vendor->created_at }}</td>
                             <td x-data="{ openModal: false }">
                                 <div class="hstack gap-2">
-                                    <a href="{{ route('module.edit', $module->slug) }}"
+                                    <a href="{{ route('vendor.edit', $vendor->slug) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>
-                                    {{-- <button type="button" class="btn btn-icon btn-danger-transparent rounded-pill">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button> --}}
+                                    
                                     <button type="button" @click="openModal = true"
                                         class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
@@ -76,7 +74,7 @@
                                         <div class="modal-footer">
                                             <button class="btn btn-cancel" @click="openModal = false">Cancel</button>
                                             <button class="btn btn-delete"
-                                                wire:click="delete('{{ $module->slug }}')" @click="openModal = false">Delete</button>
+                                                wire:click="delete('{{ $vendor->slug }}')" @click="openModal = false">Delete</button>
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +82,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No modules found.</td>
+                            <td colspan="4" class="text-center text-muted">No vendor found.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -94,13 +92,13 @@
             <div class="row mt-4">
                 <div class="col-sm-12 col-md-5">
                     <div class="dataTables_info">
-                        Showing {{ $modules->firstItem() }} to {{ $modules->lastItem() }}
-                        of {{ $modules->total() }} entries
+                        Showing {{ $vendors->firstItem() }} to {{ $vendors->lastItem() }}
+                        of {{ $vendors->total() }} entries
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-7">
                     <div class="dataTables_paginate paging_simple_numbers d-flex justify-content-end">
-                        {{ $modules->links() }}
+                        {{ $vendors->links() }}
                     </div>
                 </div>
             </div>

@@ -352,13 +352,14 @@
                         </div> <!-- End::main-header-dropdown -->
                     </div> <!-- End::header-element -->
 
-                    
+
                     <!-- Start::header-element -->
                     <div class="header-element headerProfile-dropdown">
                         <!-- Start::header-link|dropdown-toggle --> <a href="javascript:void(0);"
                             class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false"> <img src="{{asset('assets/images/profile.png')}}" alt="img" width="37"
-                                height="37" class="rounded-circle"> </a>
+                            data-bs-auto-close="outside" aria-expanded="false"> <img
+                                src="{{asset('assets/images/profile.png')}}" alt="img" width="37" height="37"
+                                class="rounded-circle"> </a>
                         <!-- End::header-link|dropdown-toggle -->
                         <ul class="main-header-dropdown dropdown-menu pt-0 header-profile-dropdown dropdown-menu-end main-profile-menu"
                             aria-labelledby="mainHeaderProfile">
@@ -392,8 +393,9 @@
         <!-- Start::app-sidebar -->
         <aside class="app-sidebar sticky" id="sidebar">
             <!-- Start::main-sidebar-header -->
-            <div class="main-sidebar-header">
+            <div class="main-sidebar-header d-flex align-items-center justify-content-between">
                 <h5>Construction</h5>
+                <livewire:specific-project-switcher />
             </div>
             <!-- End::main-sidebar-header -->
             <!-- Start::main-sidebar -->
@@ -500,56 +502,19 @@
                                                 </ul>
                                             </li> <!-- End::slide -->
                                             <!-- Start::slide__category -->
-                                            <li class="slide__category"><span class="category-name">Web Apps</span></li>
+                                            <li class="slide__category"><span class="category-name">Stock
+                                                    Management</span></li>
                                             <!-- End::slide__category -->
                                             <!-- Start::slide -->
-                                            <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="side-menu__icon" viewBox="0 0 24 24">
-                                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <li class="slide"> <a href="{{route('vendor.index')}}"
+                                                    class="side-menu__item {{request()->segment(1) == 'vendors' || request()->segment(1) == 'vendor' ? 'active' : ''}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                        fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
                                                         <path
-                                                            d="M4 12c0 4.08 3.06 7.44 7 7.93V4.07C7.05 4.56 4 7.92 4 12z"
-                                                            opacity=".3"></path>
-                                                        <path
-                                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z">
-                                                        </path>
-                                                    </svg> <span class="side-menu__label">Apps</span> <i
-                                                        class="fe fe-chevron-right side-menu__angle"></i> </a>
-                                                <ul class="slide-menu child1"
-                                                    style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 388px, 0px);"
-                                                    data-popper-placement="bottom">
-                                                    <li class="slide side-menu__label1"> <a
-                                                            href="javascript:void(0);">Apps</a> </li>
-                                                    <li class="slide"> <a href="cards.html"
-                                                            class="side-menu__item">Cards</a> </li>
-                                                    <li class="slide"> <a href="draggable-cards.html"
-                                                            class="side-menu__item">Draggable Cards</a> </li>
-                                                    <li class="slide"> <a href="full-calendar.html"
-                                                            class="side-menu__item">Calendar</a> </li>
-                                                    <li class="slide"> <a href="contacts.html"
-                                                            class="side-menu__item">Contacts</a> </li>
-                                                    <li class="slide"> <a href="notifications.html"
-                                                            class="side-menu__item">Notifications</a> </li>
-                                                    <li class="slide"> <a href="widgets.html"
-                                                            class="side-menu__item">Widgets</a> </li>
-                                                    <li class="slide"> <a href="widget-notification.html"
-                                                            class="side-menu__item">Widget-notification</a> </li>
-                                                    <li class="slide"> <a href="treeview.html"
-                                                            class="side-menu__item">Treeview</a> </li>
-                                                    <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                            class="side-menu__item">File Manager <i
-                                                                class="fe fe-chevron-right side-menu__angle"></i></a>
-                                                        <ul class="slide-menu child2">
-                                                            <li class="slide"> <a href="file-manager.html"
-                                                                    class="side-menu__item">File-Manager</a> </li>
-                                                            <li class="slide"> <a href="file-manager-list.html"
-                                                                    class="side-menu__item">File-Manager-List</a> </li>
-                                                            <li class="slide"> <a href="file-manager-details.html"
-                                                                    class="side-menu__item">File-Manager-details</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
+                                                            d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" />
+                                                    </svg>
+                                                    <span class="side-menu__label">Vendor</span> </a>
+                                              
                                             </li> <!-- End::slide -->
                                             <!-- Start::slide -->
                                             <li class="slide has-sub"> <a href="javascript:void(0);"

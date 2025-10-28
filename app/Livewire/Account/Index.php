@@ -22,20 +22,41 @@ class Index extends Component
 
     public function render()
     {
-        $users = User::with('roles')
-                    ->whereDoesntHave('roles', function ($query) {
-                        $query->where('name', 'Super Admin');
-                    })
-                    ->where(function ($query) {
-                        $query->where('name', 'like', "%{$this->search}%")
-                            ->orWhere('email', 'like', "%{$this->search}%")
-                            ->orWhereHas('roles', function ($roleQuery) {
-                                $roleQuery->where('name', 'like', "%{$this->search}%");
-                            });
-                    })
-                    ->where('id', '!=', auth()->id())
-                    ->latest()
-                    ->paginate($this->perPage);
+        if(auth()->user()->role == 'Super Admin')
+        {
+
+            $users = User::with('roles')
+                        ->whereDoesntHave('roles', function ($query) {
+                            $query->where('name', 'Super Admin');
+                        })
+                        ->where(function ($query) {
+                            $query->where('name', 'like', "%{$this->search}%")
+                                ->orWhere('email', 'like', "%{$this->search}%")
+                                ->orWhereHas('roles', function ($roleQuery) {
+                                    $roleQuery->where('name', 'like', "%{$this->search}%");
+                                });
+                        })
+                        ->where('id', '!=', auth()->id())
+                        ->latest()
+                        ->paginate($this->perPage);
+        }
+        else{
+                 $users = User::with('roles')
+                        ->whereDoesntHave('roles', function ($query) {
+                            $query->where('name', 'Super Admin');
+                        })
+                        ->where(function ($query) {
+                            $query->where('name', 'like', "%{$this->search}%")
+                                ->orWhere('email', 'like', "%{$this->search}%")
+                                ->orWhereHas('roles', function ($roleQuery) {
+                                    $roleQuery->where('name', 'like', "%{$this->search}%");
+                                });
+                        })
+                        ->where('id', '!=', auth()->id())
+                        ->where('company_id',auth()->user()->company_id)
+                        ->latest()
+                        ->paginate($this->perPage);
+        }
         return view('livewire.account.index', compact('users'));
     }
 }

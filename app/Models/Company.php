@@ -35,4 +35,9 @@ class Company extends Model
     {
         return $this->hasMany(Boq::class);
     }
+
+    public function vendors()
+    {
+        return $this->hasMany(Vendor::class);
+    }
 }

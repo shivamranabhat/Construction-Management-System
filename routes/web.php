@@ -22,6 +22,9 @@ use App\Livewire\Project\Edit as ProjectEdit;
 use App\Livewire\Boq\Index as BoqIndex;
 use App\Livewire\Boq\Create as BoqCreate;
 use App\Livewire\Boq\Edit as BoqEdit;
+use App\Livewire\Vendor\Index as VendorIndex;
+use App\Livewire\Vendor\Create as VendorCreate;
+use App\Livewire\Vendor\Edit as VendorEdit;
 
 Route::get('/signin', AuthLogin::class)->name('signin');
 Route::middleware([Authenticate::class])->group(function () {
@@ -60,6 +63,11 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/projects', ProjectIndex::class)->name('index');            
         Route::get('/project/create', ProjectCreate::class)->name('create');   
         Route::get('/project/{slug}', ProjectEdit::class)->name('edit');    
+    });
+    Route::name('vendor.')->group(function () {
+        Route::get('/vendors', VendorIndex::class)->name('index');            
+        Route::get('/vendor/create', VendorCreate::class)->name('create');   
+        Route::get('/vendor/{slug}', VendorEdit::class)->name('edit');    
     });
 });
 

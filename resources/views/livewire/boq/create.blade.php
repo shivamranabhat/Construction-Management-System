@@ -100,7 +100,7 @@
             @endforeach
 
             @if(!empty($mainBoqs))
-                <button class="btn btn-primary" wire:click="save" type="button">Save <x-spinner /></button>
+                <button class="btn btn-primary" wire:click="save" type="button">Save </button>
             @endif
         </div>
     </div>
