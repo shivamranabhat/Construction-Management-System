@@ -39,8 +39,8 @@ class Edit extends Component
                 'slug' => \Str::slug("{$action}-{$this->name}"),
             ]);
         }
-        session()->flash('success', 'Module updated successfully!');
-        $this->reset('name');
+       
+        return redirect()->route('module.index')->with('success', 'Module updated successfully!');
     }
 
     public function render()

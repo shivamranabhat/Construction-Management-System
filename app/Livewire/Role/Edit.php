@@ -40,7 +40,7 @@ class Edit extends Component
         // Sync permissions
         $this->role->permissions()->sync($this->selectedPermissions);
 
-        session()->flash('success', 'Role updated successfully!');
+        return redirect()->route('role.index')->with('success', 'Role updated successfully!');
     }
 
     public function render()

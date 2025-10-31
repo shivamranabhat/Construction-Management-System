@@ -659,8 +659,7 @@ class Edit extends Component
                 }
             });
 
-            session()->flash('success', 'BOQs updated successfully!');
-            return redirect()->route('boq.index');
+            return redirect()->route('boq.index')->with('success', 'BOQs updated successfully!');
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to update BOQs. Error: ' . $e->getMessage());
         }

@@ -41,9 +41,7 @@ class Index extends Component
             ->latest()
             ->paginate($this->perPage);
 
-        return view('livewire.module.index', [
-            'modules' => $modules
-        ]);
+        return view('livewire.module.index', compact('modules'));
     }
 
 }

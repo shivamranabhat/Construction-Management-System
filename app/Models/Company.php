@@ -8,6 +8,7 @@ class Company extends Model
 {
     protected $fillable = [
         'name',
+        'currency',
         'slug',
     ];
 
@@ -39,5 +40,24 @@ class Company extends Model
     public function vendors()
     {
         return $this->hasMany(Vendor::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function taxes()
+    {
+        return $this->hasMany(Tax::class);
     }
 }

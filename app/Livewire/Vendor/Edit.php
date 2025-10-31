@@ -38,8 +38,7 @@ class Edit extends Component
             'slug' => Str::slug($this->name) . '-' . now(),
         ]);
 
-        session()->flash('success', 'Vendor updated successfully!');
-        return redirect()->route('vendor.index');
+        return redirect()->route('vendors.index')->with('success', 'Vendor updated successfully!');
     }
 
     public function render()

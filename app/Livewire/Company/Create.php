@@ -47,9 +47,7 @@ class Create extends Component
             'company_id' => $company->id,
             'slug' => Str::slug('com'.'-'.$this->name.'-'.now()),
         ]);
-
-        session()->flash('success', 'Company and its admin account created successfully.');
-        return redirect()->route('company.index');
+        return redirect()->route('company.index')->with('success', 'Company created successfully!');
     }
 
     public function render()

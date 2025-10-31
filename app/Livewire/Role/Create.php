@@ -40,11 +40,7 @@ class Create extends Component
             $role->permissions()->attach($this->selectedPermissions);
         }
 
-        // Flash success message
-        session()->flash('success', 'Role created successfully!');
-
-        // Reset fields
-        $this->reset(['name', 'description', 'selectedPermissions']);
+        return redirect()->route('role.index')->with('success', 'Role created successfully!');
         $this->dispatch('reset-select-all');
     }
 

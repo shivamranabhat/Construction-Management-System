@@ -32,5 +32,14 @@ class Project extends Model
     {
         return $this->hasMany(Boq::class);
     }
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
     
 }

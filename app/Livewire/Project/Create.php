@@ -34,8 +34,7 @@ class Create extends Component
             'slug' => Str::slug('proj'.'-'.$this->name.'-'.now()),
         ]);
 
-        session()->flash('success', 'Project created successfully!');
-        $this->reset();
+        return redirect()->route('projects.index')->with('success', 'Project created successfully!');
     }
 
     public function render()

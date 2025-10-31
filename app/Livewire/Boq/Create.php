@@ -183,8 +183,7 @@ class Create extends Component
                 }
             });
 
-            session()->flash('success', 'BOQs added successfully!');
-            return redirect()->route('boq.index');
+            return redirect()->route('boq.index')->with('success', 'BOQs created successfully!');
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to save BOQs. Error: ' . $e->getMessage());
         }

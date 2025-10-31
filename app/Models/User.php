@@ -70,4 +70,9 @@ class User extends Authenticatable
             ->exists();
     }
 
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class, 'entered_by');
+    }
+
 }

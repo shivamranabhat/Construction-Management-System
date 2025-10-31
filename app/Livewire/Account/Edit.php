@@ -70,7 +70,7 @@ class Edit extends Component
         $this->reset(['password', 'password_confirmation', 'image']);
         $this->existingImage = $this->user->image;
 
-        return redirect()->route('account.index')->with('success', 'User updated successfully!');
+        return redirect()->route('account.index')->with('success', 'Account updated successfully!');
     }
 
     public function render()

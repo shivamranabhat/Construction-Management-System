@@ -514,126 +514,67 @@
                                                             d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" />
                                                     </svg>
                                                     <span class="side-menu__label">Vendor</span> </a>
-                                              
+
                                             </li> <!-- End::slide -->
+                                            <li class="slide"> <a href="{{route('vendor.index')}}"
+                                                    class="side-menu__item {{request()->segment(1) == 'bills' || request()->segment(1) == 'bill' ? 'active' : ''}}">
+                                                    <svg viewBox="0 0 24 24" fill="none" class="side-menu__icon"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path d="M10.5 11L17 11" stroke="#1C274C" stroke-width="1.5"
+                                                                stroke-linecap="round"></path>
+                                                            <path d="M7 11H7.5" stroke="#1C274C" stroke-width="1.5"
+                                                                stroke-linecap="round"></path>
+                                                            <path d="M7 7.5H7.5" stroke="#1C274C" stroke-width="1.5"
+                                                                stroke-linecap="round"></path>
+                                                            <path d="M7 14.5H7.5" stroke="#1C274C" stroke-width="1.5"
+                                                                stroke-linecap="round"></path>
+                                                            <path d="M17 14.5H16M10.5 14.5H13.5" stroke="#1C274C"
+                                                                stroke-width="1.5" stroke-linecap="round"></path>
+                                                            <path d="M17 7.5H14M10.5 7.5H11.5" stroke="#1C274C"
+                                                                stroke-width="1.5" stroke-linecap="round"></path>
+                                                            <path
+                                                                d="M21 7V6.37006C21 5.17705 21 4.58055 20.842 4.09946C20.5425 3.18719 19.8468 2.47096 18.9606 2.16261C18.4933 2 17.9139 2 16.755 2H7.24502C6.08614 2 5.50671 2 5.03939 2.16261C4.15322 2.47096 3.45748 3.18719 3.15795 4.09946C3 4.58055 3 5.17705 3 6.37006V15M21 11V20.3742C21 21.2324 20.015 21.6878 19.3919 21.1176C19.0258 20.7826 18.4742 20.7826 18.1081 21.1176L17.625 21.5597C16.9834 22.1468 16.0166 22.1468 15.375 21.5597C14.7334 20.9726 13.7666 20.9726 13.125 21.5597C12.4834 22.1468 11.5166 22.1468 10.875 21.5597C10.2334 20.9726 9.26659 20.9726 8.625 21.5597C7.98341 22.1468 7.01659 22.1468 6.375 21.5597L5.8919 21.1176C5.52583 20.7826 4.97417 20.7826 4.6081 21.1176C3.985 21.6878 3 21.2324 3 20.3742V19"
+                                                                stroke="currentColor" stroke-width="1.5"
+                                                                stroke-linecap="round"></path>
+                                                        </g>
+                                                    </svg>
+                                                    <span class="side-menu__label">Bills</span> </a>
+
+                                            </li> <!-- End::slide -->
+
                                             <!-- Start::slide -->
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="side-menu__icon" viewBox="0 0 24 24">
-                                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
-                                                        <path d="M6.26 9L12 13.47 17.74 9 12 4.53z" opacity=".3"></path>
-                                                        <path
-                                                            d="M19.37 12.8l-7.38 5.74-7.37-5.73L3 14.07l9 7 9-7zM12 2L3 9l1.63 1.27L12 16l7.36-5.73L21 9l-9-7zm0 11.47L6.26 9 12 4.53 17.74 9 12 13.47z">
-                                                        </path>
-                                                    </svg> <span class="side-menu__label">Elements</span> <i
-                                                        class="fe fe-chevron-right side-menu__angle"></i> </a>
-                                                <ul class="slide-menu child1 mega-menu"
-                                                    style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 430px, 0px);"
-                                                    data-popper-placement="bottom">
-                                                    <li class="slide side-menu__label1"> <a
-                                                            href="javascript:void(0);">Elements</a> </li>
-                                                    <li class="slide"> <a href="alerts.html"
-                                                            class="side-menu__item">Alerts</a> </li>
-                                                    <li class="slide"> <a href="avatars.html"
-                                                            class="side-menu__item">Avatar</a> </li>
-                                                    <li class="slide"> <a href="breadcrumb.html"
-                                                            class="side-menu__item">Breadcrumb</a> </li>
-                                                    <li class="slide"> <a href="buttons.html"
-                                                            class="side-menu__item">Buttons</a> </li>
-                                                    <li class="slide"> <a href="buttongroup.html"
-                                                            class="side-menu__item">Button Group</a> </li>
-                                                    <li class="slide"> <a href="badge.html"
-                                                            class="side-menu__item">Badge</a> </li>
-                                                    <li class="slide"> <a href="dropdowns.html"
-                                                            class="side-menu__item">Dropdown</a> </li>
-                                                    <li class="slide"> <a href="listgroup.html"
-                                                            class="side-menu__item">List Group</a> </li>
-                                                    <li class="slide"> <a href="links_interactions.html"
-                                                            class="side-menu__item">Links &amp; Interactions</a> </li>
-                                                    <li class="slide"> <a href="navbar.html"
-                                                            class="side-menu__item">Navbar</a> </li>
-                                                    <li class="slide"> <a href="images-figures.html"
-                                                            class="side-menu__item">Images &amp; Figures</a> </li>
-                                                    <li class="slide"> <a href="pagination.html"
-                                                            class="side-menu__item">Pagination</a> </li>
-                                                    <li class="slide"> <a href="popovers.html"
-                                                            class="side-menu__item">Popovers</a> </li>
-                                                    <li class="slide"> <a href="progress.html"
-                                                            class="side-menu__item">Progress</a> </li>
-                                                    <li class="slide"> <a href="spinners.html"
-                                                            class="side-menu__item">Spinners</a> </li>
-                                                    <li class="slide"> <a href="typography.html"
-                                                            class="side-menu__item">Typography</a> </li>
-                                                    <li class="slide"> <a href="tooltips.html"
-                                                            class="side-menu__item">Tooltips</a> </li>
-                                                    <li class="slide"> <a href="toasts.html"
-                                                            class="side-menu__item">Toasts</a> </li>
-                                                    <li class="slide"> <a href="tags.html"
-                                                            class="side-menu__item">Tags</a> </li>
-                                                    <li class="slide"> <a href="navs-tabs.html"
-                                                            class="side-menu__item">Tabs</a> </li>
-                                                    <li class="slide"> <a href="scrollspy.html"
-                                                            class="side-menu__item">Scrollspy</a> </li>
-                                                    <li class="slide"> <a href="object-fit.html"
-                                                            class="side-menu__item">Object Fit</a> </li>
-                                                </ul>
-                                            </li> <!-- End::slide -->
-                                            <!-- Start::slide -->
-                                            <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="side-menu__icon" viewBox="0 0 24 24">
-                                                        <path d="M0 0h24v24H0z" fill="none"></path>
-                                                        <path
-                                                            d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8c.28 0 .5-.22.5-.5 0-.16-.08-.28-.14-.35-.41-.46-.63-1.05-.63-1.65 0-1.38 1.12-2.5 2.5-2.5H16c2.21 0 4-1.79 4-4 0-3.86-3.59-7-8-7zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 10 6.5 10s1.5.67 1.5 1.5S7.33 13 6.5 13zm3-4C8.67 9 8 8.33 8 7.5S8.67 6 9.5 6s1.5.67 1.5 1.5S10.33 9 9.5 9zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 6 14.5 6s1.5.67 1.5 1.5S15.33 9 14.5 9zm4.5 2.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5z"
-                                                            opacity=".3"></path>
-                                                        <path
-                                                            d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.21-.64-1.67-.08-.09-.13-.21-.13-.33 0-.28.22-.5.5-.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9zm4 13h-1.77c-1.38 0-2.5 1.12-2.5 2.5 0 .61.22 1.19.63 1.65.06.07.14.19.14.35 0 .28-.22.5-.5.5-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.14 8 7c0 2.21-1.79 4-4 4z">
-                                                        </path>
-                                                        <circle cx="6.5" cy="11.5" r="1.5"></circle>
-                                                        <circle cx="9.5" cy="7.5" r="1.5"></circle>
-                                                        <circle cx="14.5" cy="7.5" r="1.5"></circle>
-                                                        <circle cx="17.5" cy="11.5" r="1.5"></circle>
-                                                    </svg> <span class="side-menu__label">Advanced Ui</span> <i
+                                                    class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' || request()->segment(1) == 'categories' || request()->segment(1) == 'category' ? 'active' : ''}}">
+                                                    <svg viewBox="0 0 24 24" class="side-menu__icon" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M3.13861 8.5856C3.10395 8.79352 3.07799 8.98444 3.05852 9.15412C2.89911 9.20305 2.72733 9.2683 2.55279 9.35557C2.18416 9.53989 1.78511 9.83206 1.48045 10.2891C1.17162 10.7523 1 11.325 1 12C1 12.675 1.17162 13.2477 1.48045 13.7109C1.78511 14.1679 2.18416 14.4601 2.55279 14.6444C2.72733 14.7317 2.89911 14.7969 3.05852 14.8459C3.07798 15.0156 3.10395 15.2065 3.13861 15.4144C3.27452 16.2299 3.54822 17.3325 4.10557 18.4472C4.66489 19.5658 5.51956 20.7149 6.8203 21.5821C8.1273 22.4534 9.82502 23 12 23C14.175 23 15.8727 22.4534 17.1797 21.5821C18.4804 20.7149 19.3351 19.5658 19.8944 18.4472C20.4518 17.3325 20.7255 16.2299 20.8614 15.4144C20.896 15.2065 20.922 15.0156 20.9415 14.8459C21.1009 14.7969 21.2727 14.7317 21.4472 14.6444C21.8158 14.4601 22.2149 14.1679 22.5196 13.7109C22.8284 13.2477 23 12.675 23 12C23 11.325 22.8284 10.7523 22.5196 10.2891C22.2149 9.83206 21.8158 9.53989 21.4472 9.35557C21.2727 9.2683 21.1009 9.20305 20.9415 9.15412C20.922 8.98444 20.896 8.79352 20.8614 8.5856C20.7255 7.77011 20.4518 6.6675 19.8944 5.55278C19.3351 4.43416 18.4804 3.28511 17.1797 2.41795C15.8727 1.54662 14.175 1 12 1C9.82502 1 8.1273 1.54662 6.8203 2.41795C5.51957 3.28511 4.66489 4.43416 4.10558 5.55279C3.54822 6.6675 3.27452 7.77011 3.13861 8.5856ZM18.9025 15H5.09753C5.20639 15.692 5.43305 16.63 5.89443 17.5528C6.33511 18.4342 6.98044 19.2851 7.9297 19.9179C8.8727 20.5466 10.175 21 12 21C13.825 21 15.1273 20.5466 16.0703 19.9179C17.0196 19.2851 17.6649 18.4342 18.1056 17.5528C18.5669 16.63 18.7936 15.692 18.9025 15ZM18.9025 9H18C17.4477 9 17 9.44771 17 10C17 10.5523 17.4477 11 18 11H20C20.3084 11.012 20.6759 11.1291 20.8554 11.3984C20.9216 11.4977 21 11.675 21 12C21 12.325 20.9216 12.5023 20.8554 12.6016C20.6759 12.8709 20.3084 12.988 20 13H4C3.69155 12.988 3.32414 12.8709 3.14455 12.6016C3.07838 12.5023 3 12.325 3 12C3 11.675 3.07838 11.4977 3.14455 11.3984C3.32414 11.1291 3.69155 11.012 4 11H6C6.55228 11 7 10.5523 7 10C7 9.44771 6.55228 9 6 9H5.09753C5.20639 8.30804 5.43306 7.36996 5.89443 6.44721C6.33512 5.56584 6.98044 4.71489 7.92971 4.08205C8.24443 3.87224 8.59917 3.68195 9 3.52152V6C9 6.55228 9.44771 7 10 7C10.5523 7 11 6.55228 11 6V3.04872C11.3146 3.01691 11.6476 3 12 3C12.3524 3 12.6854 3.01691 13 3.04872V6C13 6.55228 13.4477 7 14 7C14.5523 7 15 6.55228 15 6V3.52152C15.4008 3.68195 15.7556 3.87224 16.0703 4.08205C17.0196 4.71489 17.6649 5.56584 18.1056 6.44721C18.5669 7.36996 18.7936 8.30804 18.9025 9Z"
+                                                                fill="currentColor"></path>
+                                                        </g>
+                                                    </svg>
+                                                    <span class="side-menu__label">Items</span> <i
                                                         class="fe fe-chevron-right side-menu__angle"></i> </a>
                                                 <ul class="slide-menu child1"
                                                     style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 472px, 0px);"
                                                     data-popper-placement="bottom">
-                                                    <li class="slide side-menu__label1"> <a
-                                                            href="javascript:void(0);">Advanced Ui</a> </li>
-                                                    <li class="slide"> <a href="accordions-collpase.html"
-                                                            class="side-menu__item">Accordions</a> </li>
-                                                    <li class="slide"> <a href="carousel.html"
-                                                            class="side-menu__item">Carousel</a> </li>
-                                                    <li class="slide"> <a href="modals-closes.html"
-                                                            class="side-menu__item">Modals</a> </li>
-                                                    <li class="slide"> <a href="timeline.html"
-                                                            class="side-menu__item">Timeline</a> </li>
-                                                    <li class="slide"> <a href="sweet-alerts.html"
-                                                            class="side-menu__item">Sweet Alerts</a> </li>
-                                                    <li class="slide"> <a href="ratings.html"
-                                                            class="side-menu__item">Ratings</a> </li>
-                                                    <li class="slide"> <a href="search.html"
-                                                            class="side-menu__item">Search</a> </li>
-                                                    <li class="slide"> <a href="userlist.html"
-                                                            class="side-menu__item">Userlist</a> </li>
-                                                    <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                            class="side-menu__item">Blog Pages <i
-                                                                class="fe fe-chevron-right side-menu__angle"></i></a>
-                                                        <ul class="slide-menu child2">
-                                                            <li class="slide"> <a href="blog.html"
-                                                                    class="side-menu__item">Blog</a> </li>
-                                                            <li class="slide"> <a href="blog-details.html"
-                                                                    class="side-menu__item">Blog Details</a> </li>
-                                                            <li class="slide"> <a href="blog-post.html"
-                                                                    class="side-menu__item">Blog Post</a> </li>
-                                                        </ul>
+
+                                                    <li class="slide"> <a href="{{route('category.index')}}"
+                                                            class="side-menu__item {{request()->segment(1) == 'categories' || request()->segment(1) == 'category' ? 'active' : ''}}">Category</a>
                                                     </li>
-                                                    <li class="slide"> <a href="offcanvas.html"
-                                                            class="side-menu__item">Offcanvas</a> </li>
-                                                    <li class="slide"> <a href="placeholders.html"
-                                                            class="side-menu__item">Placeholders</a> </li>
-                                                    <li class="slide"> <a href="swiperjs.html"
-                                                            class="side-menu__item">Swiper JS</a> </li>
+                                                    <li class="slide"> <a href="{{route('item.index')}}"
+                                                            class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' ? 'active' : ''}}">Items</a>
+                                                    </li>
+                                                    <li class="slide"> <a href="userlist.html"
+                                                            class="side-menu__item">Purchase</a> </li>
+
                                                 </ul>
                                             </li> <!-- End::slide -->
                                             <!-- Start::slide__category -->

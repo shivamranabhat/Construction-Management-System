@@ -25,4 +25,9 @@ class Vendor extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
 }

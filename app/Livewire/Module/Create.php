@@ -37,9 +37,7 @@ class Create extends Component
             ]);
         }
 
-        session()->flash('message', 'Module saved successfully!');
-        $this->name = '';
-        // $this->redirectRoute('module.index', navigate: true);
+        return redirect()->route('module.index')->with('success', 'Module created successfully!');
     }
 
     public function render()

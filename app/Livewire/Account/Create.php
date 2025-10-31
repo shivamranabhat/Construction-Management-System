@@ -50,8 +50,7 @@ class Create extends Component
         $user->roles()->sync([$this->selectedRole]);
         }
 
-        session()->flash('success', 'User created successfully!');
-        $this->reset(['name', 'email', 'password', 'password_confirmation', 'image', 'selectedRole','existingImage','image']);
+        return redirect()->route('accounts.index')->with('success', 'Account created successfully!');
     }
 
     public function render()

@@ -25,6 +25,15 @@ use App\Livewire\Boq\Edit as BoqEdit;
 use App\Livewire\Vendor\Index as VendorIndex;
 use App\Livewire\Vendor\Create as VendorCreate;
 use App\Livewire\Vendor\Edit as VendorEdit;
+use App\Livewire\Category\Index as CategoryIndex;
+use App\Livewire\Category\Create as CategoryCreate;
+use App\Livewire\Category\Edit as CategoryEdit;
+use App\Livewire\Item\Index as ItemIndex;
+use App\Livewire\Item\Create as ItemCreate;
+use App\Livewire\Item\Edit as ItemEdit;
+use App\Livewire\Bill\Index as BillIndex;
+use App\Livewire\Bill\Create as BillCreate;
+use App\Livewire\Bill\Edit as BillEdit;
 
 Route::get('/signin', AuthLogin::class)->name('signin');
 Route::middleware([Authenticate::class])->group(function () {
@@ -68,6 +77,21 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/vendors', VendorIndex::class)->name('index');            
         Route::get('/vendor/create', VendorCreate::class)->name('create');   
         Route::get('/vendor/{slug}', VendorEdit::class)->name('edit');    
+    });
+    Route::name('category.')->group(function () {
+        Route::get('/categories', CategoryIndex::class)->name('index');            
+        Route::get('/category/create', CategoryCreate::class)->name('create');   
+        Route::get('/category/{slug}', CategoryEdit::class)->name('edit');    
+    });
+    Route::name('item.')->group(function () {
+        Route::get('/items', ItemIndex::class)->name('index');            
+        Route::get('/item/create', ItemCreate::class)->name('create');   
+        Route::get('/item/{slug}', ItemEdit::class)->name('edit');    
+    });
+    Route::name('bill.')->group(function () {
+        Route::get('/bills', BillIndex::class)->name('index');            
+        Route::get('/bill/create', BillCreate::class)->name('create');   
+        Route::get('/bill/{slug}', BillEdit::class)->name('edit');    
     });
 });
 

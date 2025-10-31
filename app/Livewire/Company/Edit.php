@@ -61,9 +61,8 @@ class Edit extends Component
                 'password' => $this->password ? Hash::make($this->password) : $admin->password,
             ]);
         }
-
-        session()->flash('success', 'Company and admin updated successfully.');
-        return redirect()->route('company.index');
+        
+        return redirect()->route('company.index')->with('success', 'Company updated successfully!');
     }
 
     public function render()

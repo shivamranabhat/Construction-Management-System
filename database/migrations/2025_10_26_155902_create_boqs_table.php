@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('unit_rate', 10, 2)->nullable();
             $table->decimal('amount', 15, 2)->nullable();
             $table->unsignedBigInteger('parent_id')->nullable(); // for subcategory
+            $table->text('remarks')->nullable();
             $table->foreign('parent_id')->references('id')->on('boqs')->onDelete('cascade');
             $table->unsignedBigInteger('company_id')->nullable(); 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
