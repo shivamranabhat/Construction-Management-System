@@ -60,4 +60,21 @@ class Company extends Model
     {
         return $this->hasMany(Tax::class);
     }
+
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
+    
+    public function rolePermissions()
+    {
+        return $this->hasMany(RolePermission::class);
+    }
+
+    public function roleUsers()
+    {
+        return $this->hasMany(RoleUser::class);
+    }
+    
+
 }

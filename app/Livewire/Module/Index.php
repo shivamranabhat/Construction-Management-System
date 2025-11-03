@@ -6,11 +6,14 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Module;
 use App\Models\Permission;
+use App\Traits\PermissionAwareDelete;
 
 class Index extends Component
 {
     use WithPagination;
 
+    use PermissionAwareDelete;
+    
     public $search = '';
     public $perPage = 10; 
 
@@ -25,11 +28,10 @@ class Index extends Component
     {
         $this->resetPage(); // reset to first page when changing perPage
     }
+
     public function delete($slug)
     {
-        $module = Module::whereSlug($slug)->delete();
-        Permission::where('module_id', $module->id)->delete();
-        session()->flash('success', 'Module deleted successfully!');
+        $this->deleteWithPermission(Module::class, $slug, 'delete_module');
     }
 
     public function render()
@@ -38,6 +40,7 @@ class Index extends Component
             ->where('name', 'like', '%' . $this->search . '%')
             ->orWhere('slug', 'like', '%' . $this->search . '%')
             ->select('id', 'name','created_at', 'slug')
+            ->orderBy('name')
             ->latest()
             ->paginate($this->perPage);
 

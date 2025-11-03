@@ -11,9 +11,11 @@ class Permission extends Model
     {
         static::addGlobalScope(new CompanyScope);
     }
+    
     protected $fillable = [
         'name',
         'module_id',
+        'company_id',
         'slug',
     ];
 
@@ -24,6 +26,11 @@ class Permission extends Model
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_permission', 'permission_id', 'role_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
 

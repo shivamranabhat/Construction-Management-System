@@ -26,6 +26,7 @@ class Create extends Component
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
             'image' => 'nullable|image|max:2048',
+            
         ]);
 
         // Create company

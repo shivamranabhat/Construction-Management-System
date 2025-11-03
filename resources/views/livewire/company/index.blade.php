@@ -51,7 +51,7 @@
                             <td>{{ $companies->firstItem() + $index }}</td>
                             <td>{{ $company->name }}</td>
                             <td>{{ $company->users->first()->email ?? '-' }}</td>
-                            <td>{{ $company->created_at->format('d M Y') }}</td>
+                            <td>{{ $company->created_at }}</td>
                             <td x-data="{ openModal: false }">
                                 <div class="hstack gap-2">
                                     <a href="{{ route('company.edit', $company->slug) }}"

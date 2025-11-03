@@ -27,12 +27,13 @@ class Create extends Component
             'slug' => $slug,
         ]);
 
-        $actions = ['Create','Preview','Update','Delete'];
+        $actions = ['Create','Preview','Update','Delete','Approve','Decline'];
 
         foreach ($actions as $action) {
             Permission::create([
                 'name' => $action,
                 'module_id' => $module->id,
+                'company_id' => auth()->user()->company_id,
                 'slug' => Str::slug("{$action}-{$this->name}"),
             ]);
         }

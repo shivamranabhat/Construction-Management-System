@@ -25,6 +25,8 @@ class Boq extends Model
         'amount',
         'parent_id',
         'company_id',
+        'summary',
+        'tax_id',
         'slug',
     ];
 
@@ -47,4 +49,10 @@ class Boq extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
+
 }

@@ -13,33 +13,26 @@ class Index extends Component
 
     public $perPage = 10;
     public $search = '';
-    public $activeProjectId;
-    
-    
 
-    public function delete($slug)
+    public function delete($project_id)
     {
-        $boq = Boq::where('slug', $slug)->get();
-        foreach ($boq as $item) {
-            $item->delete();
-        }
+        Boq::where('project_id', $project_id)->delete();
         session()->flash('success', 'BOQ deleted successfully!');
+        $this->resetPage();
     }
 
     public function render()
     {
         $projects = Project::query()
-            ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('code', 'like', '%' . $this->search . '%')
-                    ->orWhere('client', 'like', '%' . $this->search . '%');
+            ->when($this->search, function ($q) {
+                $q->where('name', 'like', "%{$this->search}%")
+                  ->orWhere('code', 'like', "%{$this->search}%")
+                  ->orWhere('client', 'like', "%{$this->search}%");
             })
-            ->has('boqs') // Only include projects with BOQs
-            ->with(['boqs' => function ($query) {
-                $query->whereNull('parent_id')
-                    ->where('company_id', auth()->user()->company_id)
-                    ->with('children');
-            }])
+            ->has('boqs') // Only projects with BOQ
+            ->with(['boqs' => fn($q) => $q->whereNull('parent_id')
+                ->select('id', 'project_id', 'slug')
+            ])
             ->paginate($this->perPage);
 
         return view('livewire.boq.index', compact('projects'));

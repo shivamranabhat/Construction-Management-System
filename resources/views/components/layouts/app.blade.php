@@ -370,7 +370,7 @@
                                             ''}}</h6><span class="fs-11 op-7 lh-1">
                                             @if(auth()->user() && auth()->user()->roles->first())
                                             {{ auth()->user()->roles->first()->name}}
-                                            @elseif(auth()->user()->type == 'company') Company
+                                            @elseif(auth()->user()->type == 'Company') Company
                                             @else User @endif
                                         </span>
                                     </div>
@@ -435,7 +435,7 @@
                                                         class="badge bg-success ms-auto menu-badge">1</span> </a> </li>
                                             @can('super_admin')
                                             <li class="slide"> <a href="{{route('company.index')}}"
-                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="side-menu__item {{request()->segment(1) == 'company' ? 'active' : ''}}"> <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="bi bi-building side-menu__icon" viewBox="0 0 16 16">
                                                         <path
                                                             d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z" />

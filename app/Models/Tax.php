@@ -3,9 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\CompanyScope;
 
 class Tax extends Model
 {
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new CompanyScope);
+    }
+
     protected $fillable = [
         'name',
         'rate',
@@ -21,6 +28,11 @@ class Tax extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function boqs()
+    {
+        return $this->hasMany(Boq::class);
     }
 
 }

@@ -50,7 +50,7 @@ class Create extends Component
         $user->roles()->sync([$this->selectedRole]);
         }
 
-        return redirect()->route('accounts.index')->with('success', 'Account created successfully!');
+        return redirect()->route('account.index')->with('success', 'Account created successfully!');
     }
 
     public function render()

@@ -22,6 +22,7 @@ use App\Livewire\Project\Edit as ProjectEdit;
 use App\Livewire\Boq\Index as BoqIndex;
 use App\Livewire\Boq\Create as BoqCreate;
 use App\Livewire\Boq\Edit as BoqEdit;
+use App\Livewire\Boq\Preview as BoqPreview;
 use App\Livewire\Vendor\Index as VendorIndex;
 use App\Livewire\Vendor\Create as VendorCreate;
 use App\Livewire\Vendor\Edit as VendorEdit;
@@ -34,6 +35,7 @@ use App\Livewire\Item\Edit as ItemEdit;
 use App\Livewire\Bill\Index as BillIndex;
 use App\Livewire\Bill\Create as BillCreate;
 use App\Livewire\Bill\Edit as BillEdit;
+
 
 Route::get('/signin', AuthLogin::class)->name('signin');
 Route::middleware([Authenticate::class])->group(function () {
@@ -65,7 +67,8 @@ Route::middleware([Authenticate::class])->group(function () {
     Route::name('boq.')->group(function () {
         Route::get('/boqs', BoqIndex::class)->name('index');            
         Route::get('/boq/create', BoqCreate::class)->name('create');   
-        Route::get('/boq/{slug}', BoqEdit::class)->name('edit');    
+        Route::get('/boq/{slug}', BoqEdit::class)->name('edit');  
+        Route::get('/boq/preview/{slug}', BoqPreview::class)->name('preview');  
     });
     
     Route::name('project.')->group(function () {
@@ -90,7 +93,7 @@ Route::middleware([Authenticate::class])->group(function () {
     });
     Route::name('bill.')->group(function () {
         Route::get('/bills', BillIndex::class)->name('index');            
-        Route::get('/bill/create', BillCreate::class)->name('create');   
+        Route::get('/bill/create', BillCreate::class)->name('create');      
         Route::get('/bill/{slug}', BillEdit::class)->name('edit');    
     });
 });
