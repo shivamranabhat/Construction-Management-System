@@ -15,17 +15,18 @@ class Index extends Component
 
     protected $queryString = ['search', 'status_filter'];
 
+    public $perPage = 10;
+
+
     public function render()
     {
-        $companyId = auth()->user()->company_id ?? 1;
 
-        $purchases = Purchase::with(['vendor', 'project', 'enteredBy', 'updater'])
-            ->where('company_id', $companyId)
+        $purchases = Purchase::with(['vendor', 'project', 'enteredBy'])
             ->when($this->search, fn($q) => $q->where('purchase_number', 'like', "%{$this->search}%")
                 ->orWhereHas('vendor', fn($q) => $q->where('name', 'like', "%{$this->search}%")))
             ->when($this->status_filter, fn($q) => $q->where('status', $this->status_filter))
             ->latest()
-            ->paginate(12);
+            ->paginate($this->perPage);
 
         return view('livewire.purchase.index', compact('purchases'));
     }

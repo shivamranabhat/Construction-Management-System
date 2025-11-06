@@ -42,11 +42,11 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="mb-1 fw-bold text-success">
-                                        <a href="{{ route('purchases.edit', $purchase) }}" class="text-decoration-none">
+                                        <a href="{{ route('purchase.edit', $purchase) }}" class="text-decoration-none">
                                             #{{ $purchase->purchase_number }}
                                         </a>
                                     </h5>
-                                    <small class="text-muted">{{ $purchase->purchase_date->format('d M Y') }}</small>
+                                    <small class="text-muted">{{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</small>
                                 </div>
                                 <span class="badge rounded-pill px-3 py-2
                                     @if($purchase->status === 'received') bg-success
@@ -72,7 +72,7 @@
                                     <p class="text-muted mb-1 small">Total Amount</p>
                                     <h4 class="mb-0 fw-bold">${{ number_format($purchase->total_price, 2) }}</h4>
                                 </div>
-                                <a href="{{ route('purchases.edit', $purchase) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                <a href="{{ route('purchase.edit', $purchase) }}" class="btn btn-outline-primary btn-sm rounded-pill">
                                     Edit
                                 </a>
                             </div>
