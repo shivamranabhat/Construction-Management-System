@@ -2,7 +2,7 @@
     <div class="card custom-card">
         <div class="card-header justify-content-between">
             <div class="card-title"> Create </div>
-            <a href="{{route('module.index')}}" class="btn btn-primary btn-sm">
+            <a href="{{route('tax.index')}}" class="btn btn-primary btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -11,11 +11,20 @@
             </a>
         </div>
         <form class="card-body" wire:submit='save'>
-            <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Name</label> <input type="text"
-                    class="form-control" wire:model="name" placeholder="Category Name">
-                @error('name')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
+            <div class="row g-3">
+
+                <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Name</label> <input type="text"
+                        class="form-control" wire:model="name" placeholder="Name">
+                    @error('name')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Rate</label> <input type="text"
+                        class="form-control" wire:model="rate" placeholder="Rate">
+                    @error('name')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
             </div>
 
             <div class="button mt-4">

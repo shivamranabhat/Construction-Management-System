@@ -76,5 +76,9 @@ class Company extends Model
         return $this->hasMany(RoleUser::class);
     }
     
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
 
 }

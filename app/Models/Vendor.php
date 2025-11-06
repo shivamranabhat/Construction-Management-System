@@ -30,4 +30,9 @@ class Vendor extends Model
         return $this->hasMany(StockMovement::class);
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
+
 }

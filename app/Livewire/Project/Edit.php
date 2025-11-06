@@ -42,7 +42,7 @@ class Edit extends Component
             'slug' => $slug = Str::slug('proj'.'-'.$this->name.'-'.now()),
         ]);
 
-        return redirect()->route('projects.index')->with('success', 'Project updated successfully!');
+        return redirect()->route('project.index')->with('success', 'Project updated successfully!');
     }
 
     public function render()

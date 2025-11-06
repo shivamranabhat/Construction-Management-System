@@ -75,4 +75,9 @@ class User extends Authenticatable
         return $this->hasMany(StockMovement::class, 'entered_by');
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'entered_by');
+    }
+
 }

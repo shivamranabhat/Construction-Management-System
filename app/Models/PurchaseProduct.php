@@ -4,23 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BillProduct extends Model
+class PurchaseProduct extends Model
 {
-    
-
     protected $fillable = [
-        'bill_id',
-        'tax_id',
+        'purchase_id',
         'item_id',
+        'tax_id',
         'quantity',
         'unit_price',
         'total_price',
         'slug',
     ];
 
-    public function bill()
+    public function purchase()
     {
-        return $this->belongsTo(Bill::class);
+        return $this->belongsTo(Purchase::class);
     }
 
     public function item()
@@ -32,4 +30,6 @@ class BillProduct extends Model
     {
         return $this->belongsTo(Tax::class);
     }
+
+    
 }

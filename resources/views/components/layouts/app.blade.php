@@ -435,7 +435,8 @@
                                                         class="badge bg-success ms-auto menu-badge">1</span> </a> </li>
                                             @can('super_admin')
                                             <li class="slide"> <a href="{{route('company.index')}}"
-                                                    class="side-menu__item {{request()->segment(1) == 'company' ? 'active' : ''}}"> <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="side-menu__item {{request()->segment(1) == 'company' ? 'active' : ''}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="bi bi-building side-menu__icon" viewBox="0 0 16 16">
                                                         <path
                                                             d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z" />
@@ -501,6 +502,29 @@
                                                     </li>
                                                 </ul>
                                             </li> <!-- End::slide -->
+                                            <li class="slide"> <a href="{{route('tax.index')}}"
+                                                    class="side-menu__item {{request()->segment(1) == 'taxes' || request()->segment(1) == 'tax' ? 'active' : ''}}">
+                                                    
+                                                    <svg viewBox="0 0 1024 1024" class="icon side-menu__icon" version="1.1"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path
+                                                                d="M438.87 301.71h-82.29v-82.28h-54.86v82.28h-82.28v54.86h82.28v82.29h54.86v-82.29h82.29zM585.15 301.71h219.43v54.86H585.15zM270.95 791.82l58.19-58.18 58.19 58.18 38.79-38.78-58.19-58.18 58.19-58.18-38.79-38.79-58.19 58.18-58.19-58.18-38.78 38.79 58.18 58.18-58.18 58.18z"
+                                                                fill="#0F1F3C"></path>
+                                                            <path
+                                                                d="M109.72 109.71v804.57h475.43v-73.14h-36.57V548.57h292.57v36.57h73.14V109.71H109.72z m73.15 73.15h292.57v292.57H182.87V182.86z m292.57 658.28H182.87V548.57h292.57v292.57z m365.71-365.71H548.58V182.86h292.57v292.57z"
+                                                                fill="#0F1F3C"></path>
+                                                            <path
+                                                                d="M624.85 664.52v165.41l143.25 82.71 143.25-82.71V664.52L768.1 581.81l-143.25 82.71z m204.21 15.83l-60.97 35.19-60.96-35.19 60.97-35.2 60.96 35.2z m-149.35 47.51l60.96 35.19v70.4l-60.96-35.19v-70.4z m115.82 105.6v-70.41l60.97-35.19v70.4l-60.97 35.2z"
+                                                                fill="currentColor"></path>
+                                                        </g>
+                                                    </svg>
+                                                    <span class="side-menu__label">Tax</span> </a>
+
+                                            </li>
                                             <!-- Start::slide__category -->
                                             <li class="slide__category"><span class="category-name">Stock
                                                     Management</span></li>
@@ -516,7 +540,7 @@
                                                     <span class="side-menu__label">Vendor</span> </a>
 
                                             </li> <!-- End::slide -->
-                                            <li class="slide"> <a href="{{route('vendor.index')}}"
+                                            <li class="slide"> <a href="{{route('bill.index')}}"
                                                     class="side-menu__item {{request()->segment(1) == 'bills' || request()->segment(1) == 'bill' ? 'active' : ''}}">
                                                     <svg viewBox="0 0 24 24" fill="none" class="side-menu__icon"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -572,7 +596,7 @@
                                                     <li class="slide"> <a href="{{route('item.index')}}"
                                                             class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' ? 'active' : ''}}">Items</a>
                                                     </li>
-                                                    <li class="slide"> <a href="userlist.html"
+                                                    <li class="slide"> <a href="{{route('purchase.index')}}"
                                                             class="side-menu__item">Purchase</a> </li>
 
                                                 </ul>
@@ -946,6 +970,7 @@
 
     </div>
 
+    @stack('dropdowns')
     <script src="{{asset('assets/libs/@popperjs/core/umd/popper.min.js')}}"></script>
 
     <script src="{{asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>

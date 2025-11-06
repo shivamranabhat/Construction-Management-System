@@ -30,7 +30,7 @@ class Create extends Component
             'slug' => Str::slug($this->name) . '-' . now(),
         ]);
 
-        return redirect()->route('vendors.index')->with('success', 'Vendor created successfully!');
+        return redirect()->route('vendor.index')->with('success', 'Vendor created successfully!');
     }
 
     public function render()

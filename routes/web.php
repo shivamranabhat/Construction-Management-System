@@ -35,6 +35,12 @@ use App\Livewire\Item\Edit as ItemEdit;
 use App\Livewire\Bill\Index as BillIndex;
 use App\Livewire\Bill\Create as BillCreate;
 use App\Livewire\Bill\Edit as BillEdit;
+use App\Livewire\Tax\Index as TaxIndex;
+use App\Livewire\Tax\Create as TaxCreate;
+use App\Livewire\Tax\Edit as TaxEdit;
+use App\Livewire\Purchase\Index as PurchaseIndex;
+use App\Livewire\Purchase\Create as PurchaseCreate;
+use App\Livewire\Purchase\Edit as PurchaseEdit;
 
 
 Route::get('/signin', AuthLogin::class)->name('signin');
@@ -70,6 +76,11 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/boq/{slug}', BoqEdit::class)->name('edit');  
         Route::get('/boq/preview/{slug}', BoqPreview::class)->name('preview');  
     });
+    Route::name('tax.')->group(function () {
+        Route::get('/taxes', TaxIndex::class)->name('index');            
+        Route::get('/tax/create', TaxCreate::class)->name('create');   
+        Route::get('/tax/{slug}', TaxEdit::class)->name('edit');  
+    });
     
     Route::name('project.')->group(function () {
         Route::get('/projects', ProjectIndex::class)->name('index');            
@@ -95,6 +106,11 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/bills', BillIndex::class)->name('index');            
         Route::get('/bill/create', BillCreate::class)->name('create');      
         Route::get('/bill/{slug}', BillEdit::class)->name('edit');    
+    });
+    Route::name('purchase.')->group(function () {
+        Route::get('/purchases', PurchaseIndex::class)->name('index');            
+        Route::get('/purchase/new', PurchaseCreate::class)->name('create');      
+        Route::get('/purchase/{slug}', PurchaseEdit::class)->name('edit');    
     });
 });
 
