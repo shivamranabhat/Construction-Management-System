@@ -41,6 +41,8 @@ use App\Livewire\Tax\Edit as TaxEdit;
 use App\Livewire\Purchase\Index as PurchaseIndex;
 use App\Livewire\Purchase\Create as PurchaseCreate;
 use App\Livewire\Purchase\Edit as PurchaseEdit;
+use App\Livewire\Stock\Index as StockIndex;
+use App\Livewire\Stock\Show as StockShow;
 
 
 Route::get('/signin', AuthLogin::class)->name('signin');
@@ -112,5 +114,10 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/purchase/new', PurchaseCreate::class)->name('create');      
         Route::get('/purchase/{slug}', PurchaseEdit::class)->name('edit');    
     });
+    Route::name('stock.')->group(function () {
+        Route::get('/stocks', StockIndex::class)->name('index');            
+        Route::get('/stock/{slug}', StockShow::class)->name('show');       
+    });
+
 });
 

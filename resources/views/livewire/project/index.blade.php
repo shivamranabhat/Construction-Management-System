@@ -1,4 +1,5 @@
 <div class="row row-sm">
+    @if($projects->count() > 0)
     <div class="col-sm-12 col-md-6 mb-3">
         <div class="dataTables_length">
             <label style="display:inline-flex; gap:0.5rem; align-items:center">
@@ -13,7 +14,7 @@
             </label>
         </div>
     </div>
-    @if($projects->count() > 0)
+
     <div class="col-lg-12">
         <div class="card mb-4">
             <div class="card-body d-flex p-3 align-items-center">
