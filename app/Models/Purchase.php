@@ -3,9 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\CompanyScope;
+use App\Models\Scopes\ActiveProjectScope;
 
 class Purchase extends Model
 {
+    protected static function booted()
+    {
+        static::addGlobalScope(new CompanyScope);
+        static::addGlobalScope(new ActiveProjectScope);
+    }
+
     protected $fillable = [
         'purchase_date',
         'purchase_number',
@@ -18,6 +26,7 @@ class Purchase extends Model
         'notes',
         'slug',
     ];
+
 
     public function products()
     {

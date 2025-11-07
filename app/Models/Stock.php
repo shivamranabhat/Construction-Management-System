@@ -19,6 +19,7 @@ class Stock extends Model
         'stock',
         'project_id',
         'company_id',
+        'purchase_product_id',
         'slug',
     ];
 
@@ -31,4 +32,10 @@ class Stock extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function purchaseProduct()
+    {
+        return $this->belongsTo(PurchaseProduct::class);
+    }
 }
+

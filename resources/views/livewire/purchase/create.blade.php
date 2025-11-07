@@ -27,17 +27,28 @@
                             <label>Vendor</label>
                             <select wire:model.live="vendor_id" class="form-select form-select-sm">
                                 <option value="">Select</option>
-                                @foreach($vendors as $v) <option value="{{ $v->id }}">{{ $v->name }}</option>
-                                @endforeach
+                                @forelse($vendors as $v) <option value="{{ $v->id }}">{{ $v->name }}</option>
+                                @empty
+                                <option value="" disabled>No vendors found</option>
+                                @endforelse
                             </select>
+                            @error('vendor_id')
+                            <small class="text-danger">Please select a vendor</small>
+                            @enderror
+
                         </div>
                         <div class="col-md-3">
                             <label>Project</label>
                             <select wire:model.live="project_id" class="form-select form-select-sm">
                                 <option value="">None</option>
-                                @foreach($projects as $p) <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                @endforeach
+                                @forelse($projects as $p) <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                @empty
+                                <option value="" disabled>No projects found</option>
+                                @endforelse
                             </select>
+                            @error('project_id')
+                            <small class="text-danger">Please select a project</small>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -94,14 +105,14 @@
                                                 </div>
                                                 <small class="text-muted">Reorder: {{ $item->reorder_level }}</small>
                                             </div>
-                                            
+
                                             @empty
                                             <div class="p-3">
                                                 @if(strlen($query) > 0)
                                                 <p class="text-muted mb-2 border-bottom pb-2">No results found. Try a
                                                     different keyword.
                                                 </p>
-                                                
+
                                                 @else
                                                 <p class="text-muted">Start typing to search items...</p>
                                                 @endif
@@ -115,14 +126,23 @@
                                             </div>
                                         </div>
                                         @endif
+                                        @error('lines.' . $i . '.item_name')
+                                        <small class="text-danger">Please enter item name</small>
+                                        @enderror
                                     </td>
                                     <td>
                                         <input type="number" wire:model.live="lines.{{ $i }}.quantity" min="1"
                                             class="form-control form-control-sm text-center" style="width: 70px;">
+                                        @error('lines.' . $i . '.quantity')
+                                        <small class="text-danger">Please enter quantity</small>
+                                        @enderror
                                     </td>
                                     <td>
                                         <input type="number" step="0.01" wire:model.live="lines.{{ $i }}.rate" min="0"
                                             class="form-control form-control-sm text-end" style="width: 90px;">
+                                        @error('lines.' . $i . '.rate')
+                                        <small class="text-danger">Please enter rate</small>
+                                        @enderror
                                     </td>
                                     <td>
                                         <select wire:model.live="lines.{{ $i }}.tax_id"
@@ -163,7 +183,7 @@
                 <div class="border-top px-4 py-3 bg-light">
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Customer Notes</label>
+                            <label>Notes</label>
                             <textarea wire:model.live="notes" class="form-control form-control-sm" rows="2"
                                 placeholder="Will be displayed on purchase order."></textarea>
                         </div>
@@ -189,7 +209,14 @@
                 <!-- Actions -->
                 <div class="border-top px-4 py-3 d-flex justify-content-end gap-2">
                     <a href="{{ route('purchase.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Purchase</button>
+                    <button type="submit" class="btn btn-primary d-flex align-items-center gap-1"
+                        wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="save">Save Purchase</span>
+                        <span wire:loading wire:target="save">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span aria-hidden="true">Saving…</span>
+                        </span>
+                    </button>
                 </div>
             </form>
         </div>

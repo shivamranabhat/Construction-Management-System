@@ -180,6 +180,7 @@ class Create extends Component
             'purchase_date' => 'required|date',
             'purchase_number' => 'required|string',
             'vendor_id' => 'required|exists:vendors,id',
+            'project_id' => 'required|exists:projects,id',
             'lines' => 'required|array|min:1',
             'lines.*.quantity' => 'required|integer|min:1',
             'lines.*.rate' => 'required|numeric|min:0',
@@ -222,38 +223,46 @@ class Create extends Component
                 $taxAmount = $line['tax_id'] ? $subtotal * (Tax::find($line['tax_id'])?->rate ?? 0) / 100 : 0;
                 $lineTotal = $subtotal + $taxAmount;
 
-                // PurchaseProduct::create([
-                //     'purchase_id' => $purchase->id,
-                //     'item_id' => $item->id,
-                //     'tax_id' => $line['tax_id'] ?? null,
-                //     'quantity' => $line['quantity'],
-                //     'unit_price' => $line['rate'],
-                //     'total_price' => $lineTotal,
-                //     'company_id' => $companyId,
-                //     'entered_by' => $userId,
-                //     'updated_by' => $userId,
-                //     'slug' => Str::slug("{$item->name}-{$purchase->purchase_number}-{$i}"),
-                // ]);
+                foreach ($this->lines as $i => $line) {
+                    $this->validate([
+                        "lines.$i.quantity" => 'required|numeric|min:1',
+                        "lines.$i.rate" => 'required|numeric|min:0',
+                        "lines.$i.tax_id" => 'nullable|exists:taxes,id', // ← allows null
+                    ]);
+                }
+                $purchaseProduct = PurchaseProduct::create([
+                    'purchase_id' => $purchase->id,
+                    'item_id' => $item->id,
+                    'tax_id' => $line['tax_id'] ?? null,
+                    'quantity' => $line['quantity'],
+                    'unit_price' => $line['rate'],
+                    'total_price' => $lineTotal,
+                    'company_id' => $companyId,
+                    'entered_by' => $userId,
+                    'updated_by' => $userId,
+                    'slug' => Str::slug("{$item->name}-{$purchase->purchase_number}-{$i}"),
+                ]);
 
-                // StockMovement::create([
-                //     'type' => 'in',
-                //     'item_id' => $item->id,
-                //     'quantity' => $line['quantity'],
-                //     'unit_cost' => $line['rate'],
-                //     'date' => $this->purchase_date,
-                //     'entered_by' => $userId,
-                //     'project_id' => $this->project_id ?: null,
-                //     'company_id' => $companyId,
-                //     'vendor_id' => $this->vendor_id,
-                //     'status' => 'completed',
-                //     'updated_by' => $userId,
-                //     'slug' => Str::slug("in-po-{$item->name}-" . now()->format('YmdHis')),
-                // ]);
+                StockMovement::create([
+                    'purchase_product_id' => $purchaseProduct->id,
+                    'type' => 'in',
+                    'item_id' => $item->id,
+                    'quantity' => $line['quantity'],
+                    'unit_cost' => $line['rate'],
+                    'date' => $this->purchase_date,
+                    'entered_by' => $userId,
+                    'project_id' => $this->project_id ?: null,
+                    'company_id' => $companyId,
+                    'vendor_id' => $this->vendor_id,
+                    'status' => 'completed',
+                    'updated_by' => $userId,
+                    'slug' => Str::slug("in-po-{$item->name}-" . now()->format('YmdHis')),
+                ]);
 
-                // Stock::updateOrCreate(
-                //     ['item_id' => $item->id, 'project_id' => $this->project_id ?: null, 'company_id' => $companyId],
-                //     ['stock' => DB::raw('stock + ' . $line['quantity'])]
-                // );
+                Stock::updateOrCreate(
+                    ['item_id' => $item->id,'purchase_product_id' => $purchaseProduct->id, 'project_id' => $this->project_id ?: null, 'company_id' => $companyId,'slug'=>Str::slug("{$item->name}-{$purchase->purchase_number}-{$i}")],
+                    ['stock' => DB::raw('stock + ' . $line['quantity'])]
+                );
             }
         });
 

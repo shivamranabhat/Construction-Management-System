@@ -31,5 +31,15 @@ class PurchaseProduct extends Model
         return $this->belongsTo(Tax::class);
     }
 
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
+    }
+    
     
 }

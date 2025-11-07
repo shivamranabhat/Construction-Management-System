@@ -3,19 +3,26 @@
 namespace App\Livewire\Purchase;
 
 use App\Models\Purchase;
+use App\Models\Stock;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Traits\PermissionAwareDelete;
 
 class Index extends Component
 {
     use WithPagination;
-
+    use PermissionAwareDelete;
     public $search = '';
     public $status_filter = '';
 
     protected $queryString = ['search', 'status_filter'];
 
     public $perPage = 10;
+
+    public function delete($slug)
+    {
+        $this->deleteWithPermission(Purchase::class, $slug, 'delete_purchase');
+    }
 
 
     public function render()

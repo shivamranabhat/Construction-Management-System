@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('date')->default(now());
             $table->unsignedBigInteger('entered_by');
             $table->foreign('entered_by')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('purchase_product_id');
+            $table->foreign('purchase_product_id')->references('id')->on('purchase_products')->onDelete('cascade');
             $table->unsignedBigInteger('project_id'); 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');  
             $table->unsignedBigInteger('company_id'); 

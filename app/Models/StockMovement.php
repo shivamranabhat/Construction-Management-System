@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\CompanyScope;
 
 class StockMovement extends Model
 {
+    protected static function booted()
+    {
+        static::addGlobalScope(new CompanyScope);
+    }
+
     protected $fillable = [
         'type',
         'item_id',
@@ -16,9 +22,15 @@ class StockMovement extends Model
         'project_id',
         'company_id',
         'vendor_id',
+        'purchase_product_id',
         'status',
         'slug',
     ];
+
+    public function purchaseProduct()
+    {
+        return $this->belongsTo(PurchaseProduct::class);
+    }
 
     public function item()
     {

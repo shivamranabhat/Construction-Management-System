@@ -572,7 +572,8 @@
 
                                             <!-- Start::slide -->
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' || request()->segment(1) == 'categories' || request()->segment(1) == 'category' ? 'active' : ''}}">
+                                                    class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' || request()->segment(1) == 'categories' || request()->segment(1) == 'category' || request()->segment(1) == 'purchases' || request()->segment(1) == 'purchase'
+                                                     ? 'active' : ''}}">
                                                     <svg viewBox="0 0 24 24" class="side-menu__icon" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
                                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -597,7 +598,7 @@
                                                             class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' ? 'active' : ''}}">Items</a>
                                                     </li>
                                                     <li class="slide"> <a href="{{route('purchase.index')}}"
-                                                            class="side-menu__item">Purchase</a> </li>
+                                                            class="side-menu__item {{request()->segment(1) == 'purchases' || request()->segment(1) == 'purchase' ? 'active' : ''}}">Purchase</a> </li>
 
                                                 </ul>
                                             </li> <!-- End::slide -->

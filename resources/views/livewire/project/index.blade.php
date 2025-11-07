@@ -13,6 +13,7 @@
             </label>
         </div>
     </div>
+    @if($projects->count() > 0)
     <div class="col-lg-12">
         <div class="card mb-4">
             <div class="card-body d-flex p-3 align-items-center">
@@ -23,7 +24,7 @@
             </div>
         </div>
     </div>
-
+    @endif
     @forelse($projects as $index => $project)
     <div class="col-xl-4 col-md-6" x-data="{ openModal: false }">
         <div class="card mb-4">
@@ -32,8 +33,8 @@
                     <span class="fs-12 text-muted">
                         Start Date: {{ \Carbon\Carbon::parse($project->start_date)->format('d M Y') }}
                     </span>
-                    
-                    
+
+
                     <div class="dropdown d-flex">
                         <div class="drop-down-profile" data-bs-toggle="dropdown" role="button"><i
                                 class="bi bi-three-dots-vertical"></i></div>
@@ -41,21 +42,21 @@
                                 href="{{ route('project.edit', $project->slug) }}">Edit</a> <a class="dropdown-item"
                                 href="javascript:void(0);">Mark As Important</a> <a class="dropdown-item"
                                 @click="openModal = true" role="button">Delete</a>
-                            </div>
                         </div>
-                        <div x-show="openModal" class="modal-backdrop" style="display: none;">
-                            <div class="modal-box">
-                                <div class="modal-header p-0">
-                                    <div class="modal-title">Confirm Delete</div> <button class="close-btn"
-                                        @click="openModal = false">&times;</button>
-                                </div>
-                                <div class="modal-body"> Are you sure you want to delete? </div>
-                                <div class="modal-footer"> <button class="btn btn-cancel"
-                                        @click="openModal = false">Cancel</button> <button class="btn btn-delete"
-                                        wire:click="delete('{{ $project->slug }}')"
-                                        @click="openModal = false">Delete</button> </div>
+                    </div>
+                    <div x-show="openModal" class="modal-backdrop" style="display: none;">
+                        <div class="modal-box">
+                            <div class="modal-header p-0">
+                                <div class="modal-title">Confirm Delete</div> <button class="close-btn"
+                                    @click="openModal = false">&times;</button>
                             </div>
+                            <div class="modal-body"> Are you sure you want to delete? </div>
+                            <div class="modal-footer"> <button class="btn btn-cancel"
+                                    @click="openModal = false">Cancel</button> <button class="btn btn-delete"
+                                    wire:click="delete('{{ $project->slug }}')"
+                                    @click="openModal = false">Delete</button> </div>
                         </div>
+                    </div>
                 </div>
                 <div class="px-4 pb-4 pt-2 ">
                     <div class="d-flex align-items-end">
@@ -80,8 +81,43 @@
         </div>
     </div>
     @empty
-    <div class="col-12">
-        <div class="text-center text-muted">No projects found.</div>
+    <div class="text-center py-5">
+        <div class="card border-0 shadow-sm mx-auto">
+            <div class="card-body p-5">
+                <!-- Icon -->
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor"
+                        class="bi bi-folder-plus text-primary" viewBox="0 0 16 16">
+                        <path
+                            d="M.5 3a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V3zm1 0v10h12V3H1z" />
+                        <path
+                            d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V10.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z" />
+                        <path fill-rule="evenodd"
+                            d="M2.5 1A1.5 1.5 0 0 0 1 2.5v1A1.5 1.5 0 0 0 2.5 5h2.757l.5-1H2.5a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 0 .354.146h4a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1.793l-.5 1h2.293a1.5 1.5 0 0 0 1.5-1.5v-1A1.5 1.5 0 0 0 13.5 1h-11z" />
+                    </svg>
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-dark mb-3">No Projects Yet</h3>
+
+                <!-- Description -->
+                <p class="text-muted mb-4">
+                    Organize your purchases by creating a project first. This helps track costs and progress.
+                </p>
+
+                <!-- CTA Button -->
+                <a href="{{ route('project.create') }}"
+                    class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2 px-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                        class="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path
+                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                    </svg>
+                    Create First Project
+                </a>
+            </div>
+        </div>
     </div>
     @endforelse
 
