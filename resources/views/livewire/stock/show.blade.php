@@ -4,7 +4,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Stock Details</h5>
-                    <a href="{{route('stock.index')}}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('stock.index') }}" class="btn btn-primary btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-arrow-left" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
@@ -29,8 +29,8 @@
 
                         <div class="col-md-6">
                             <label class="form-label text-muted small">Current Stock</label>
-                            <div class="display-6 fw-bold text-{{ $stock->stock > 0 ? 'success' : 'danger' }}">
-                                {{ $stock->stock }}
+                            <div class="display-6 fw-bold text-{{ $stock->total_stock > 0 ? 'success' : 'danger' }}">
+                                {{ $stock->total_stock }}
                             </div>
                         </div>
 
@@ -38,24 +38,15 @@
                             <label class="form-label text-muted small">Project</label>
                             <p class="mb-0">
                                 <span class="badge bg-light text-dark">
-                                    {{ $stock->project?->name }}
+                                    {{ $stock->project?->name ?? 'Global (No Project)' }}
                                 </span>
                             </p>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label text-muted small">Source Purchase</label>
+                            <label class="form-label text-muted small">Last Updated</label>
                             <p class="mb-0">
-                                @if($stock->purchaseProduct?->purchase)
-                                <a href="#" class="text-decoration-none">
-                                    #{{ $stock->purchaseProduct->purchase->purchase_number }}
-                                    <small class="text-muted">
-                                        ({{ $stock->purchaseProduct->purchase->vendor?->name }})
-                                    </small>
-                                </a>
-                                @else
-                                <span class="text-muted">Manual / Initial Stock</span>
-                                @endif
+                                {{ \Carbon\Carbon::parse($stock->last_updated)->format('d M Y, h:i A') }}
                             </p>
                         </div>
                     </div>
@@ -70,8 +61,8 @@
                 </div>
                 <div class="list-group list-group-flush">
                     <div class="list-group-item d-flex justify-content-between">
-                        <span>Total Received</span>
-                        <strong>{{ $stock->stock }}</strong>
+                        <span>Total Stock</span>
+                        <strong>{{ $stock->total_stock }}</strong>
                     </div>
                     <div class="list-group-item d-flex justify-content-between">
                         <span>Unit</span>
@@ -79,7 +70,7 @@
                     </div>
                     <div class="list-group-item d-flex justify-content-between">
                         <span>Last Updated</span>
-                        <strong>{{ \Carbon\Carbon::parse($stock->updated_at)->format('d M Y') }}</strong>
+                        <strong>{{ \Carbon\Carbon::parse($stock->last_updated)->format('d M Y') }}</strong>
                     </div>
                 </div>
             </div>

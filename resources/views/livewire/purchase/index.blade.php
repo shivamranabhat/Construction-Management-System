@@ -35,9 +35,9 @@
     </div>
 
     @if($purchases->count())
-    <div class="row g-4" x-data="{ openModal: false }">
+    <div class="row g-4">
         @foreach($purchases as $purchase)
-        <div class="col-md-6 col-xl-4">
+        <div class="col-md-6 col-xl-4" x-data="{ openModal: false }">
             <div class="card h-100 shadow-sm border-0 hover-shadow">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">

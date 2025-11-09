@@ -16,9 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('item_id');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->decimal('stock', 15, 2)->default(0);
-            $table->unsignedBigInteger('project_id')->nullable(); 
+            $table->unsignedBigInteger('project_id'); 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');  
-            $table->unsignedBigInteger('company_id')->nullable(); 
+            $table->unsignedBigInteger('company_id'); 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');  
             $table->string('slug');
             $table->timestamps();

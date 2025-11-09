@@ -35,11 +35,6 @@ class PurchaseProduct extends Model
     {
         return $this->hasMany(StockMovement::class);
     }
-
-    public function stocks()
-    {
-        return $this->hasMany(Stock::class);
-    }
     
     
 }

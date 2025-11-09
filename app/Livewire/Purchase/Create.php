@@ -258,11 +258,28 @@ class Create extends Component
                     'updated_by' => $userId,
                     'slug' => Str::slug("in-po-{$item->name}-" . now()->format('YmdHis')),
                 ]);
+                // -----------------------------------------------------------------
+                // 3. **UPDATE / CREATE** Stock record
+                // -----------------------------------------------------------------
+                $stock = Stock::where('company_id', $companyId)
+                    ->where('project_id', $this->project_id ?: null)
+                    ->where('item_id', $item->id)
+                    ->first();
 
-                Stock::updateOrCreate(
-                    ['item_id' => $item->id,'purchase_product_id' => $purchaseProduct->id, 'project_id' => $this->project_id ?: null, 'company_id' => $companyId,'slug'=>Str::slug("{$item->name}-{$purchase->purchase_number}-{$i}")],
-                    ['stock' => DB::raw('stock + ' . $line['quantity'])]
-                );
+                if ($stock) {
+                    // Existing row → just add the new quantity
+                    $stock->increment('stock', $line['quantity']);
+                } else {
+                    // No row yet → create it
+                    Stock::create([
+                        'item_id'    => $item->id,
+                        'stock'      => $line['quantity'],
+                        'project_id' => $this->project_id ?: null,
+                        'company_id' => $companyId,
+                        'slug'       => Str::slug("stock-{$item->name}-{$companyId}-{$this->project_id}"),
+                    ]);
+                }
+
             }
         });
 

@@ -202,6 +202,137 @@ class Edit extends Component
         unset($this->showItemDropdown[$index]);
     }
 
+    // public function save()
+    // {
+    //     $this->validate([
+    //         'purchase_date'   => 'required|date',
+    //         'purchase_number' => 'required|string',
+    //         'vendor_id'       => 'required|exists:vendors,id',
+    //         'project_id'      => 'nullable|exists:projects,id',
+    //         'lines'           => 'required|array|min:1',
+    //         'lines.*.quantity'=> 'required|integer|min:1',
+    //         'lines.*.rate'    => 'required|numeric|min:0',
+    //         'lines.*.tax_id'  => 'nullable|exists:taxes,id',
+    //     ]);
+
+    //     $companyId = auth()->user()->company_id ?? 1;
+    //     $userId    = auth()->id();
+
+    //     DB::transaction(function () use ($companyId, $userId) {
+    //         // ---- 1. Update Purchase header ---------------------------------
+    //         $this->purchase->update([
+    //             'purchase_date'   => $this->purchase_date,
+    //             'purchase_number' => $this->purchase_number,
+    //             'vendor_id'       => $this->vendor_id,
+    //             'project_id'      => $this->project_id ?: null,
+    //             'total_price'     => $this->grand_total,
+    //             'status'          => $this->status,
+    //             'notes'           => $this->notes,
+    //             'updated_by'      => $userId,
+    //             'slug'            => Str::slug($this->purchase_number),
+    //         ]);
+
+    //         // ---- 2. Prepare tracking ---------------------------------------
+    //         $existingIds   = $this->purchase->products->pluck('id')->toArray();
+    //         $updatedIds    = [];
+
+    //         // ---- 3. Loop through lines --------------------------------------
+    //         foreach ($this->lines as $i => $line) {
+    //             // Resolve / create Item
+    //             $item = $line['item_id'] ? Item::find($line['item_id']) : null;
+
+    //             if (!$item && $line['item_name']) {
+    //                 $item = Item::create([
+    //                     'name'          => $line['item_name'],
+    //                     'type'          => 'Product',
+    //                     'unit'          => 'pcs',
+    //                     'reorder_level' => 0,
+    //                     'company_id'    => $companyId,
+    //                     'slug'          => Str::slug($line['item_name'] . '-' . now()->format('YmdHis')),
+    //                 ]);
+    //             }
+    //             if (!$item) continue;
+
+    //             // ---- Tax handling ('' → null) ---------------------------
+    //             $taxId = $line['tax_id'] ?? null;
+    //             if ($taxId === '' || $taxId === '0') {
+    //                 $taxId = null;
+    //             }
+
+    //             // ---- Line totals ----------------------------------------
+    //             $subtotal  = $line['quantity'] * $line['rate'];
+    //             $taxAmt    = $taxId ? $subtotal * (Tax::find($taxId)?->rate ?? 0) / 100 : 0;
+    //             $lineTotal = $subtotal + $taxAmt;
+
+    //             // ---- Common data ----------------------------------------
+    //             $data = [
+    //                 'purchase_id' => $this->purchase->id,
+    //                 'item_id'     => $item->id,
+    //                 'tax_id'      => $taxId,
+    //                 'quantity'    => $line['quantity'],
+    //                 'unit_price'  => $line['rate'],
+    //                 'total_price' => $lineTotal,
+    //                 'company_id'  => $companyId,
+    //                 'entered_by'  => $line['id']
+    //                     ? $this->purchase->products->find($line['id'])?->entered_by
+    //                     : $userId,
+    //                 'updated_by'  => $userId,
+    //                 'slug'        => $this->generateUniqueSlug($item->name, $this->purchase->purchase_number, $i),
+    //             ];
+
+    //             // ---- UPDATE existing ----------------------------------------
+    //             if (!empty($line['id']) && in_array($line['id'], $existingIds)) {
+    //                 $pp = PurchaseProduct::find($line['id']);
+    //                 $oldQty = $pp->quantity;
+    //                 $pp->update($data);
+    //                 $updatedIds[] = $line['id'];
+
+    //                 $this->adjustStock($item->id, $oldQty, $line['quantity'], $this->project_id, $companyId);
+    //             }
+    //             // ---- CREATE new --------------------------------------------
+    //             else {
+    //                 $pp = PurchaseProduct::create($data);
+    //                 $updatedIds[] = $pp->id;
+
+    //                 $this->addToStock($item->id, $line['quantity'], $line['rate'], $this->project_id, $companyId, $userId);
+    //             }
+
+    //             // ---- StockMovement (always upsert) -------------------------
+    //             StockMovement::updateOrCreate(
+    //                 ['purchase_product_id' => $pp->id],
+    //                 [
+    //                     'type'        => 'in',
+    //                     'item_id'     => $item->id,
+    //                     'quantity'    => $line['quantity'],
+    //                     'unit_cost'   => $line['rate'],
+    //                     'date'        => $this->purchase_date,
+    //                     'entered_by'  => $userId,
+    //                     'project_id'  => $this->project_id ?: null,
+    //                     'company_id'  => $companyId,
+    //                     'vendor_id'   => $this->vendor_id,
+    //                     'status'      => 'completed',
+    //                     'updated_by'  => $userId,
+    //                     'slug'        => Str::slug("in-po-{$item->name}-" . now()->format('YmdHis')),
+    //                 ]
+    //             );
+    //         }
+
+    //         // ---- 4. Delete removed lines -----------------------------------
+    //         $deletedIds = array_diff($existingIds, $updatedIds);
+    //         if ($deletedIds) {
+    //             $deleted = PurchaseProduct::whereIn('id', $deletedIds)->get();
+    //             foreach ($deleted as $pp) {
+    //                 $this->removeFromStock($pp->item_id, $pp->quantity, $this->project_id, $companyId);
+    //                 $pp->stockMovements()->delete();
+    //                 $pp->delete();
+    //             }
+    //         }
+    //     });
+
+    //     session()->flash('message', 'Purchase updated successfully!');
+    //     return redirect()->route('purchase.index');
+    // }
+    
     public function save()
     {
         $this->validate([
@@ -219,7 +350,10 @@ class Edit extends Component
         $userId    = auth()->id();
 
         DB::transaction(function () use ($companyId, $userId) {
-            // ---- 1. Update Purchase header ---------------------------------
+
+            // -----------------------------------------------------------------
+            // 1. Update Purchase header
+            // -----------------------------------------------------------------
             $this->purchase->update([
                 'purchase_date'   => $this->purchase_date,
                 'purchase_number' => $this->purchase_number,
@@ -232,13 +366,18 @@ class Edit extends Component
                 'slug'            => Str::slug($this->purchase_number),
             ]);
 
-            // ---- 2. Prepare tracking ---------------------------------------
-            $existingIds   = $this->purchase->products->pluck('id')->toArray();
-            $updatedIds    = [];
+            // -----------------------------------------------------------------
+            // 2. Prepare tracking
+            // -----------------------------------------------------------------
+            $existingIds = $this->purchase->products->pluck('id')->toArray();
+            $updatedIds  = [];
 
-            // ---- 3. Loop through lines --------------------------------------
+            // -----------------------------------------------------------------
+            // 3. Loop through every line
+            // -----------------------------------------------------------------
             foreach ($this->lines as $i => $line) {
-                // Resolve / create Item
+
+                // ---- Resolve / create Item ---------------------------------
                 $item = $line['item_id'] ? Item::find($line['item_id']) : null;
 
                 if (!$item && $line['item_name']) {
@@ -253,19 +392,19 @@ class Edit extends Component
                 }
                 if (!$item) continue;
 
-                // ---- Tax handling ('' → null) ---------------------------
+                // ---- Tax handling -----------------------------------------
                 $taxId = $line['tax_id'] ?? null;
                 if ($taxId === '' || $taxId === '0') {
                     $taxId = null;
                 }
 
-                // ---- Line totals ----------------------------------------
+                // ---- Line totals -------------------------------------------
                 $subtotal  = $line['quantity'] * $line['rate'];
                 $taxAmt    = $taxId ? $subtotal * (Tax::find($taxId)?->rate ?? 0) / 100 : 0;
                 $lineTotal = $subtotal + $taxAmt;
 
-                // ---- Common data ----------------------------------------
-                $data = [
+                // ---- Common data for PurchaseProduct -----------------------
+                $ppData = [
                     'purchase_id' => $this->purchase->id,
                     'item_id'     => $item->id,
                     'tax_id'      => $taxId,
@@ -280,24 +419,47 @@ class Edit extends Component
                     'slug'        => $this->generateUniqueSlug($item->name, $this->purchase->purchase_number, $i),
                 ];
 
-                // ---- UPDATE existing ----------------------------------------
+                // -------------------------------------------------------------
+                // 3a. UPDATE existing line
+                // -------------------------------------------------------------
                 if (!empty($line['id']) && in_array($line['id'], $existingIds)) {
                     $pp = PurchaseProduct::find($line['id']);
-                    $oldQty = $pp->quantity;
-                    $pp->update($data);
+                    $oldQty = $pp->quantity;               // <-- keep for stock diff
+
+                    $pp->update($ppData);
                     $updatedIds[] = $line['id'];
 
-                    $this->adjustStock($item->id, $oldQty, $line['quantity'], $this->project_id, $companyId);
+                    // ---- Adjust stock (old → new) -------------------------
+                    $this->adjustStock(
+                        $item->id,
+                        $oldQty,
+                        $line['quantity'],
+                        $this->project_id,
+                        $companyId
+                    );
                 }
-                // ---- CREATE new --------------------------------------------
+                // -------------------------------------------------------------
+                // 3b. CREATE new line
+                // -------------------------------------------------------------
                 else {
-                    $pp = PurchaseProduct::create($data);
+                    $pp = PurchaseProduct::create($ppData);
                     $updatedIds[] = $pp->id;
 
-                    $this->addToStock($item->id, $line['quantity'], $line['rate'], $this->project_id, $companyId, $userId);
+                    // ---- Add to stock ------------------------------------
+                    $this->addToStock(
+                        $item->id,
+                        $line['quantity'],
+                        $line['rate'],
+                        $this->project_id,
+                        $companyId,
+                        $userId,
+                        $pp->id
+                    );
                 }
 
-                // ---- StockMovement (always upsert) -------------------------
+                // -------------------------------------------------------------
+                // 4. StockMovement – always keep ONE row per PurchaseProduct
+                // -------------------------------------------------------------
                 StockMovement::updateOrCreate(
                     ['purchase_product_id' => $pp->id],
                     [
@@ -317,12 +479,22 @@ class Edit extends Component
                 );
             }
 
-            // ---- 4. Delete removed lines -----------------------------------
+            // -----------------------------------------------------------------
+            // 5. Delete removed lines
+            // -----------------------------------------------------------------
             $deletedIds = array_diff($existingIds, $updatedIds);
             if ($deletedIds) {
                 $deleted = PurchaseProduct::whereIn('id', $deletedIds)->get();
                 foreach ($deleted as $pp) {
-                    $this->removeFromStock($pp->item_id, $pp->quantity, $this->project_id, $companyId);
+                    // ---- Remove from stock ---------------------------------
+                    $this->removeFromStock(
+                        $pp->item_id,
+                        $pp->quantity,
+                        $this->project_id,
+                        $companyId
+                    );
+
+                    // ---- Delete movement & product -------------------------
                     $pp->stockMovements()->delete();
                     $pp->delete();
                 }
