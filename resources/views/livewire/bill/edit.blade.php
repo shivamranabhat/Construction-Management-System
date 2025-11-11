@@ -1,215 +1,196 @@
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Edit Bill #{{ $bill->bill_number }}</h4>
+<div class="container-fluid py-4" wire:loading.remove>
+    <div class="card border-0 shadow-sm">
+        <!-- Sticky Header -->
+        <div class="card-header bg-white border-bottom sticky-top" style="top: 0; z-index: 10;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary">
+                    <i class="bi bi-receipt me-2"></i>Edit Bill #{{ $bill_number }}
+                </h5>
+                <a href="{{ route('bill.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <form wire:submit.prevent="update">
+                <!-- Vendor, Project, Bill Number (readonly) -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-4">
+                        <label class="form-label fw-semibold text-dark">
+                            Vendor <span class="text-danger">*</span>
+                        </label>
+                        <select 
+                            wire:model.live="vendor_id" 
+                            class="form-select form-select-lg" 
+                            required 
+                            disabled>
+                            <option value="">Choose Vendor</option>
+                            @foreach($vendors as $v)
+                                <option value="{{ $v->id }}">{{ $v->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label class="form-label fw-semibold text-dark">Project</label>
+                        <select 
+                            wire:model.live="project_id" 
+                            class="form-select form-select-lg"
+                            disabled>
+                            <option value="">Any Project</option>
+                            <option value="global">Global (No Project)</option>
+                            @foreach($projects as $p)
+                                <option value="{{ $p->id }}">{{ $p->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label class="form-label fw-semibold text-dark">Bill Number</label>
+                        <input 
+                            type="text" 
+                            wire:model="bill_number" 
+                            class="form-control form-control-lg" 
+                            readonly>
+                    </div>
                 </div>
-                <div class="card-body">
-                    @if (session()->has('message'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('message') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    @endif
 
-                    <form wire:submit="save">
-                        {{-- Header --}}
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Bill Date <span class="text-danger">*</span></label>
-                                <input type="date" wire:model="bill_date" class="form-control @error('bill_date') is-invalid @enderror">
-                                @error('bill_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Bill Number <span class="text-danger">*</span></label>
-                                <input type="text" wire:model="bill_number" class="form-control @error('bill_number') is-invalid @enderror">
-                                @error('bill_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Vendor <span class="text-danger">*</span></label>
-                                <select wire:model="vendor_id" class="form-select @error('vendor_id') is-invalid @enderror">
-                                    <option value="">Select Vendor</option>
-                                    @foreach($vendors as $vendor)
-                                        <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('vendor_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Project</label>
-                                <select wire:model="project_id" class="form-select">
-                                    <option value="">No Project</option>
-                                    @foreach($projects as $project)
-                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                <!-- Dates -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark">Bill Date</label>
+                        <input 
+                            type="date" 
+                            wire:model="bill_date" 
+                            class="form-control form-control-lg" 
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark">Due Date</label>
+                        <input 
+                            type="date" 
+                            wire:model="due_date" 
+                            class="form-control form-control-lg" 
+                            required>
+                    </div>
+                </div>
 
-                        {{-- Line Items Table --}}
-                        <div class="table-responsive mb-4">
-                            <table class="table table-bordered align-middle" x-data="billLineCalc()">
-                                <thead class="table-light">
+                <!-- Items Section -->
+                <div class="border rounded-3 p-4 bg-light mb-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <h6 class="mb-0 text-primary fw-bold">
+                            <i class="bi bi-cart-check me-2"></i>Bill Items
+                        </h6>
+                        <span class="ms-2 badge bg-primary">
+                            {{ count($items) }} item{{ count($items) !== 1 ? 's' : '' }}
+                        </span>
+                    </div>
+
+                    @if(count($items) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-primary">
                                     <tr>
-                                        <th width="30%">Item Name</th>
-                                        <th width="12%">Qty</th>
-                                        <th width="15%">Unit Price</th>
-                                        <th width="15%">Tax</th>
-                                        <th width="15%">Line Total</th>
-                                        <th width="8%">Action</th>
+                                        <th>Item</th>
+                                        <th width="100" class="text-center">Qty</th>
+                                        <th width="140" class="text-end">Unit Price</th>
+                                        <th width="100" class="text-center">Tax</th>
+                                        <th width="140" class="text-end">Line Total</th>
+                                        <th width="50"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($lines as $index => $line)
-                                        <tr>
-                                            <td>
-                                                <input 
-                                                    type="text" 
-                                                    wire:model.live="lines.{{ $index }}.name" 
-                                                    wire:change="updatedLines({{ $index }}, 'name')"
-                                                    class="form-control form-control-sm"
-                                                    placeholder="Type item name..."
-                                                    x-on:input="calcLine({{ $index }})">
-                                                @if(isset($line['item_id']))
-                                                    <small class="text-muted d-block">ID: {{ $line['item_id'] }}</small>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <input 
-                                                    type="number" 
-                                                    wire:model.live="lines.{{ $index }}.quantity" 
-                                                    class="form-control form-control-sm" 
-                                                    min="1"
-                                                    x-on:input="calcLine({{ $index }})">
-                                            </td>
-                                            <td>
+                                    @foreach($items as $i => $item)
+                                    <tr class="border-bottom">
+                                        <td class="fw-medium">{{ $item['item_name'] }}</td>
+                                        <td>
+                                            <input 
+                                                type="number" 
+                                                wire:model.live="items.{{ $i }}.quantity" 
+                                                class="form-control form-control-sm text-center"
+                                                min="1"
+                                                style="width: 80px;">
+                                        </td>
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">£</span>
                                                 <input 
                                                     type="number" 
                                                     step="0.01" 
-                                                    wire:model.live="lines.{{ $index }}.unit_price" 
-                                                    class="form-control form-control-sm" 
-                                                    min="0"
-                                                    x-on:input="calcLine({{ $index }})">
-                                            </td>
-                                            <td>
-                                                <select wire:model.live="lines.{{ $index }}.tax_id" class="form-select form-select-sm" x-on:change="calcLine({{ $index }})">
-                                                    <option value="">No Tax</option>
-                                                    @foreach($taxes as $tax)
-                                                        <option value="{{ $tax->id }}">{{ $tax->name }} ({{ $tax->rate }}%)</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="fw-bold">
-                                                <span x-text="formatCurrency(lineTotals[{{ $index }}] || 0)"></span>
-                                            </td>
-                                            <td>
-                                                <button 
-                                                    type="button" 
-                                                    wire:click="removeLine({{ $index }})" 
-                                                    class="btn btn-sm btn-outline-danger">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted">No items added</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                                <tfoot>
-                                    <tr class="table-primary">
-                                        <td colspan="4" class="text-end fw-bold fs-5">Grand Total:</td>
-                                        <td class="fw-bold fs-5">${{ number_format($total_price, 2) }}</td>
-                                        <td>
-                                            <button type="button" wire:click="addLine" class="btn btn-sm btn-success">
-                                                Add Line
-                                            </button>
+                                                    wire:model.live="items.{{ $i }}.unit_price" 
+                                                    class="form-control text-end"
+                                                    min="0">
+                                            </div>
                                         </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info fs-6">
+                                                {{ $item['tax_rate'] }}%
+                                            </span>
+                                        </td>
+                                        <td class="text-end fw-bold text-primary">
+                                            £{{ number_format($item['quantity'] * $item['unit_price'], 2) }}
+                                        </td>
+                                       
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot class="table-light fw-bold">
+                                    <tr>
+                                        <td colspan="5" class="text-end">Subtotal</td>
+                                        <td class="text-end">£{{ number_format($subtotal, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-end">Tax</td>
+                                        <td class="text-end text-warning">£{{ number_format($tax, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-end">Grand Total</td>
+                                        <td class="text-end">£{{ number_format($total, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
 
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Status</label>
-                                <select wire:model="status" class="form-select">
-                                    <option value="draft">Draft</option>
-                                    <option value="paid">Paid</option>
-                                    <option value="partial">Partial</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Notes</label>
-                                <textarea wire:model="notes" class="form-control" rows="3" placeholder="Internal notes..."></textarea>
-                            </div>
+                       
+                    @else
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox display-1"></i>
+                            <p class="mt-3">No items on this bill.</p>
                         </div>
-
-                        <div class="d-flex justify-content-between">
-                            <button 
-                                type="button" 
-                                wire:click="confirmDelete" 
-                                class="btn btn-danger">
-                                Delete Bill
-                            </button>
-
-                            <div>
-                                <a href="{{ route('bill.index') }}" class="btn btn-secondary me-2">Cancel</a>
-                                <button type="submit" class="btn btn-primary">
-                                    Update Bill
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    @endif
                 </div>
-            </div>
+
+                <!-- Notes -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold text-dark">Notes (Optional)</label>
+                    <textarea 
+                        wire:model="notes" 
+                        class="form-control" 
+                        rows="3" 
+                        placeholder="Add any internal notes or terms..."></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3 justify-content-end">
+                    <a href="{{ route('bill.index') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary"
+                        wire:loading.attr="disabled"
+                        wire:target="update">
+                        <span wire:loading.remove wire:target="update">
+                            Save
+                        </span>
+                        <span wire:loading wire:target="update">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Saving...
+                        </span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    {{-- Delete Confirmation Modal --}}
-    @if($showDeleteModal)
-    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirm Delete</h5>
-                    <button type="button" wire:click="$set('showDeleteModal', false)" class="btn-close btn-close-white"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to <strong>permanently delete</strong> this bill?</p>
-                    <p class="text-muted small">This will reverse stock and cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" wire:click="$set('showDeleteModal', false)" class="btn btn-secondary">Cancel</button>
-                    <button type="button" wire:click="deleteBill" class="btn btn-danger">Yes, Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-    {{-- Alpine.js for Real-time Line Totals --}}
-    <script>
-    function billLineCalc() {
-        return {
-            lineTotals: @json($lines)->map(line => (line.quantity || 0) * (line.unit_price || 0)),
-    
-            calcLine(index) {
-                const qty = document.querySelector(`[wire\\:model="lines.${index}.quantity"]`)?.value || 0;
-                const price = document.querySelector(`[wire\\:model="lines.${index}.unit_price"]`)?.value || 0;
-                const taxId = document.querySelector(`[wire\\:model="lines.${index}.tax_id"]`)?.value;
-                let subtotal = qty * price;
-                // Fetch tax rate via Livewire (simplified)
-                const taxRate = taxId ? @json($taxes)->find(t => t.id == taxId)?.rate || 0 : 0;
-                this.lineTotals[index] = subtotal + (subtotal * taxRate / 100);
-            },
-    
-            formatCurrency(value) {
-                return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-            }
-        }
-    }
-    </script>
 </div>
-
-

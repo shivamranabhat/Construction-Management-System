@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('entered_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->decimal('total_price', 12, 2);
-            $table->enum('status', ['draft', 'received', 'partial'])->default('draft');
+            $table->enum('status', ['draft', 'billed', 'paid'])->default('draft');
             $table->text('notes')->nullable();
             $table->string('slug')->unique();
             $table->timestamps();

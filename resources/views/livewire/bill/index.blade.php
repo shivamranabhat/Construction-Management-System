@@ -1,148 +1,261 @@
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" wire:loading.remove>
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div
+        class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3 mb-4">
         <div>
-            <h2 class="mb-1 fw-bold text-dark">Bills</h2>
-            <p class="text-muted mb-0">Manage all vendor bills in one place</p>
+            <h4 class="mb-1 text-primary fw-bold">
+                <i class="bi bi-receipt me-2"></i>Bills
+            </h4>
+            <p class="text-muted mb-0">View and manage all vendor bills</p>
         </div>
-        <div>
-            <a href="{{ route('bill.create') }}" class="btn btn-primary shadow-sm px-4">
-                <i class="bi bi-plus-lg me-2"></i>New Bill
+        <div class="d-flex gap-2 flex-wrap">
+            <!-- ✅ Fixed Filter Toggle Button -->
+            <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" wire:click="toggleFilters">
+                <i class="bi bi-funnel"></i>
+                <span class="d-none d-sm-inline">Filters</span>
+                @if($activeFilters > 0)
+                <span class="badge bg-primary rounded-pill">{{ $activeFilters }}</span>
+                @endif
+            </button>
+
+            <a href="{{ route('bill.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-plus-circle"></i>
+                <span class="d-none d-sm-inline">New Bill</span>
             </a>
         </div>
     </div>
 
-    <!-- Search & Filters -->
-    <div class="card shadow-sm mb-4 border-0">
+    <!-- Filters (Collapsible) -->
+    @if($showFilters)
+    <div class="card border-0 shadow-sm mb-4" wire:transition.fade>
         <div class="card-body">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-6">
-                    <div class="position-relative">
-                        <i class="bi bi-search position-absolute top-50 start-3 translate-middle-y text-muted"></i>
-                        <input 
-                            type="text" 
-                            wire:model.live.debounce.500ms="search" 
-                            class="form-control ps-5" 
-                            placeholder="Search by bill number or vendor..."
-                            style="border-radius: 12px;">
-                    </div>
+            <div class="row g-3">
+                <!-- Search -->
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Search</label>
+                    <input type="text" wire:model.live.debounce.400ms="search" class="form-control form-control-sm"
+                        placeholder="Bill #, Vendor, Email...">
                 </div>
+
+                <!-- Status -->
                 <div class="col-md-3">
-                    <select class="form-select" wire:model.live="status_filter">
+                    <label class="form-label text-muted small">Status</label>
+                    <select wire:model.live="status_filter" wire:change="$refresh" class="form-select form-select-sm">
                         <option value="">All Status</option>
                         <option value="draft">Draft</option>
+                        <option value="sent">Sent</option>
                         <option value="paid">Paid</option>
-                        <option value="partial">Partial</option>
+                        <option value="overdue">Overdue</option>
                     </select>
                 </div>
-                <div class="col-md-3 text-end">
-                    <small class="text-muted">{{ $bills->total() }} bills</small>
+
+                <!-- Date Range -->
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Date Range</label>
+                    <select wire:model.live="date_range" wire:change="$refresh" class="form-select form-select-sm">
+                        <option value="">All Time</option>
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+
+                <!-- Custom Range -->
+                @if($date_range === 'custom')
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">From / To</label>
+                    <div class="input-group input-group-sm">
+                        <input type="date" wire:model.live="date_from" wire:change="$refresh" class="form-control">
+                        <input type="date" wire:model.live="date_to" wire:change="$refresh" class="form-control">
+                    </div>
+                </div>
+                @endif
+            </div>
+
+            <div class="mt-3 text-end">
+                <button wire:click="toggleFilters" class="btn btn-link btn-sm text-muted">
+                    <i class="bi bi-x"></i> Hide Filters
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted small mb-1">Total Bills</p>
+                            <h5 class="mb-0 text-primary">{{ $totalBills }}</h5>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded p-2">
+                            <i class="bi bi-receipt text-primary" style="font-size:1.5rem"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted small mb-1">Unpaid</p>
+                            <h5 class="mb-0 text-warning">{{ $unpaidCount }}</h5>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded p-2">
+                            <i class="bi bi-clock-history text-warning" style="font-size:1.5rem"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted small mb-1">Overdue</p>
+                            <h5 class="mb-0 text-danger">{{ $overdueCount }}</h5>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 rounded p-2">
+                            <i class="bi bi-exclamation-triangle text-danger" style="font-size:1.5rem"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted small mb-1">Total Amount</p>
+                            <h5 class="mb-0 text-success">£{{ number_format($totalAmount, 2) }}</h5>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded p-2">
+                            <i class="bi bi-currency-pound text-success" style="font-size:1.5rem"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bills Grid -->
-    @if($bills->count() > 0)
-        <div class="row g-4">
-            @foreach($bills as $bill)
-                <div class="col-md-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 hover-shadow transition-all" 
-                         style="border-radius: 16px; transition: all 0.3s ease;">
-                        <div class="card-body p-4">
-                            <!-- Header: Bill Number & Status -->
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h5 class="mb-1 fw-bold text-primary">
-                                        <a href="{{ route('bill.edit', $bill) }}" class="text-decoration-none">
-                                            #{{ $bill->bill_number }}
-                                        </a>
-                                    </h5>
-                                    <small class="text-muted">
-                                        {{ $bill->bill_date->format('d M Y') }}
-                                    </small>
+    <!-- Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-muted text-uppercase">
+                        <tr>
+                            <th>Bill #</th>
+                            <th>Vendor</th>
+                            <th>Project</th>
+                            <th class="text-center">Due Date</th>
+                            <th class="text-end">Amount</th>
+                            <th class="text-center">Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($bills as $bill)
+                        <tr class="border-start {{ $bill->status === 'overdue' ? 'border-danger' : '' }}">
+                            <td>
+                                <a href="{{ route('bill.edit', $bill->slug) }}"
+                                    class="text-decoration-none fw-semibold text-primary">
+                                    #{{ $bill->bill_number }}
+                                </a>
+                                <br>
+                                <small class="text-muted">{{ \Carbon\Carbon::parse($bill->bill_date)->format('d M Y')
+                                    }}</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-1">
+                                        <i class="bi bi-person text-primary" style="font-size:0.9rem"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-medium">{{ $bill->vendor->name }}</div>
+                                        <small class="text-muted">{{ $bill->vendor->email }}</small>
+                                    </div>
                                 </div>
-                                <span class="badge rounded-pill px-3 py-2
-                                    @if($bill->status === 'paid') bg-success
-                                    @elseif($bill->status === 'partial') bg-warning text-dark
-                                    @else bg-secondary @endif
-                                    ">
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark">{{ $bill->project?->name ?? 'Global' }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="{{ $bill->status === 'overdue' ? 'text-danger' : 'text-muted' }}">
+                                    {{ \Carbon\Carbon::parse($bill->due_date)->format('d M Y') }}
+                                </span>
+                            </td>
+                            <td class="text-end fw-bold">£{{ number_format($bill->total, 2) }}</td>
+                            <td class="text-center">
+                                <span class="badge fw-medium {{
+                                        $bill->status === 'paid' ? 'bg-success' :
+                                        ($bill->status === 'draft' ? 'bg-secondary' :
+                                        ($bill->status === 'overdue' ? 'bg-danger' : 'bg-warning'))
+                                    }}">
                                     {{ ucfirst($bill->status) }}
                                 </span>
-                            </div>
-
-                            <!-- Vendor & Project -->
-                            <div class="mb-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="bi bi-building text-muted me-2"></i>
-                                    <span class="fw-semibold">{{ $bill->vendor->name ?? 'Unknown Vendor' }}</span>
-                                </div>
-                                @if($bill->project)
-                                    <div class="d-flex align-items-center text-muted small">
-                                        <i class="bi bi-folder me-2"></i>
-                                        {{ $bill->project->name }}
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Amount -->
-                            <div class="d-flex justify-content-between align-items-end">
-                                <div>
-                                    <p class="text-muted mb-1 small">Total Amount</p>
-                                    <h4 class="mb-0 fw-bold text-dark">
-                                        ${{ number_format($bill->total_price, 2) }}
-                                    </h4>
-                                </div>
-                                <div>
-                                    <a href="{{ route('bill.edit', $bill) }}" 
-                                       class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                        <i class="bi bi-pencil"></i> Edit
+                            </td>
+                            <td x-data="{ openModal: false }">
+                                 <div class="hstack gap-2">
+                                    <a href="{{ route('bill.edit', $bill->slug) }}"
+                                        class="btn btn-icon btn-info-transparent rounded-pill">
+                                        <i class="ri-edit-line"></i>
                                     </a>
+                                  
+                                    <button type="button" @click="openModal = true"
+                                        class="btn btn-icon btn-danger-transparent rounded-pill">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Footer: Entered By -->
-                        <div class="card-footer bg-light border-0 px-4 py-3">
-                            <small class="text-muted">
-                                <i class="bi bi-person-circle me-1"></i>
-                                {{ $bill->enteredBy?->name ?? 'System' }}
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+                                <div x-show="openModal" class="modal-backdrop" style="display: none;">
+                                    <div class="modal-box">
+                                        <div class="modal-header p-0">
+                                            <div class="modal-title">Confirm Delete</div>
+                                            <button class="close-btn" @click="openModal = false">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-cancel" @click="openModal = false">Cancel</button>
+                                            <button class="btn btn-delete" wire:click="delete('{{ $bill->slug }}')"
+                                                @click="openModal = false">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                                <p>No bills found.</p>
+                                <a href="{{ route('bill.create') }}" class="btn btn-primary btn-sm">
+                                    Create Your First Bill
+                                </a>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Pagination -->
-        <div class="mt-5">
-            {{ $bills->links('vendor.livewire.bootstrap') }}
-        </div>
-    @else
-        <!-- Empty State -->
-        <div class="text-center py-5">
-            <div class="mb-4">
-                <i class="bi bi-receipt display-1 text-muted opacity-25"></i>
+        <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center py-3">
+            <div class="text-muted small">
+                Showing {{ $bills->firstItem() }} to {{ $bills->lastItem() }} of {{ $bills->total() }} bills
             </div>
-            <h4 class="text-muted mb-3">No bills found</h4>
-            <p class="text-muted">Start by creating your first vendor bill.</p>
-            <a href="{{ route('bill.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Create First Bill
-            </a>
+            <div>{{ $bills->links() }}</div>
         </div>
-    @endif
+    </div>
 </div>
-@push('styles')
-<style>
-.hover-shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-.hover-shadow:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-.transition-all {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-</style>
-@endpush

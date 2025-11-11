@@ -13,20 +13,19 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->date('bill_date')->default(now());
-            $table->string('bill_number');
-            $table->unsignedBigInteger('entered_by');
-            $table->foreign('entered_by')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('project_id'); 
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');  
-            $table->unsignedBigInteger('company_id'); 
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');  
-            $table->unsignedBigInteger('vendor_id')->nullable(); 
-            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');  
-            $table->string('status')->default('UNPAID'); // UNPAID, APPROVED, REJECTED
-            $table->decimal('total_price', 15, 2)->default(0);
+            $table->foreignId('vendor_id')->constrained();
+            $table->foreignId('purchase_id')->nullable()->constrained(); // link to PO
+            $table->foreignId('project_id')->nullable()->constrained();
+            $table->foreignId('company_id')->constrained();
+            $table->string('bill_number')->unique();
+            $table->date('bill_date');
+            $table->date('due_date');
+            $table->decimal('subtotal', 12, 2);
+            $table->decimal('tax', 12, 2)->default(0);
+            $table->decimal('total', 12, 2);
+            $table->enum('status', ['draft', 'sent', 'paid', 'overdue'])->default('draft');
             $table->text('notes')->nullable();
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

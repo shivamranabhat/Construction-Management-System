@@ -481,10 +481,9 @@
 
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
                                                     class="side-menu__item {{request()->segment(1) == 'projects' || request()->segment(1) == 'project' || request()->segment(1) == 'boqs' || request()->segment(1) == 'boq' ? 'active' : ''}}">
-                                                   
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        fill="currentColor" class="bi bi-folder-plus side-menu__icon"
-                                                        viewBox="0 0 16 16">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                        class="bi bi-folder-plus side-menu__icon" viewBox="0 0 16 16">
                                                         <path
                                                             d="M.5 3a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V3zm1 0v10h12V3H1z" />
                                                         <path
@@ -582,35 +581,19 @@
                                             </li> <!-- End::slide -->
                                             <li class="slide"> <a href="{{route('bill.index')}}"
                                                     class="side-menu__item {{request()->segment(1) == 'bills' || request()->segment(1) == 'bill' ? 'active' : ''}}">
-                                                    <svg viewBox="0 0 24 24" fill="none" class="side-menu__icon"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                            stroke-linejoin="round"></g>
-                                                        <g id="SVGRepo_iconCarrier">
-                                                            <path d="M10.5 11L17 11" stroke="#1C274C" stroke-width="1.5"
-                                                                stroke-linecap="round"></path>
-                                                            <path d="M7 11H7.5" stroke="#1C274C" stroke-width="1.5"
-                                                                stroke-linecap="round"></path>
-                                                            <path d="M7 7.5H7.5" stroke="#1C274C" stroke-width="1.5"
-                                                                stroke-linecap="round"></path>
-                                                            <path d="M7 14.5H7.5" stroke="#1C274C" stroke-width="1.5"
-                                                                stroke-linecap="round"></path>
-                                                            <path d="M17 14.5H16M10.5 14.5H13.5" stroke="#1C274C"
-                                                                stroke-width="1.5" stroke-linecap="round"></path>
-                                                            <path d="M17 7.5H14M10.5 7.5H11.5" stroke="#1C274C"
-                                                                stroke-width="1.5" stroke-linecap="round"></path>
-                                                            <path
-                                                                d="M21 7V6.37006C21 5.17705 21 4.58055 20.842 4.09946C20.5425 3.18719 19.8468 2.47096 18.9606 2.16261C18.4933 2 17.9139 2 16.755 2H7.24502C6.08614 2 5.50671 2 5.03939 2.16261C4.15322 2.47096 3.45748 3.18719 3.15795 4.09946C3 4.58055 3 5.17705 3 6.37006V15M21 11V20.3742C21 21.2324 20.015 21.6878 19.3919 21.1176C19.0258 20.7826 18.4742 20.7826 18.1081 21.1176L17.625 21.5597C16.9834 22.1468 16.0166 22.1468 15.375 21.5597C14.7334 20.9726 13.7666 20.9726 13.125 21.5597C12.4834 22.1468 11.5166 22.1468 10.875 21.5597C10.2334 20.9726 9.26659 20.9726 8.625 21.5597C7.98341 22.1468 7.01659 22.1468 6.375 21.5597L5.8919 21.1176C5.52583 20.7826 4.97417 20.7826 4.6081 21.1176C3.985 21.6878 3 21.2324 3 20.3742V19"
-                                                                stroke="currentColor" stroke-width="1.5"
-                                                                stroke-linecap="round"></path>
-                                                        </g>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                        fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z" />
+                                                        <path
+                                                            d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5" />
                                                     </svg>
+
                                                     <span class="side-menu__label">Bills</span> </a>
 
                                             </li> <!-- End::slide -->
 
-                                            
+
                                             <!-- Start::slide__category -->
                                             <li class="slide__category"><span class="category-name">Multi Levels</span>
                                             </li> <!-- End::slide__category -->

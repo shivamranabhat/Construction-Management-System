@@ -3,225 +3,154 @@
 namespace App\Livewire\Bill;
 
 use App\Models\Bill;
-use App\Models\BillProduct;
-use App\Models\Item;
-use App\Models\Stock;
-use App\Models\StockMovement;
-use App\Models\Tax;
+use App\Models\BillItem;
 use App\Models\Vendor;
 use App\Models\Project;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Livewire\Component;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-class Edit extends Create // Inherits shared logic: addLine, removeLine, updatedLines, calculateTotals
+class Edit extends Component
 {
-    public $bill;
-    public $showDeleteModal = false;
+    public $slug;
 
-    public function mount($bill = null)
+    public $vendor_id = '';
+    public $project_id = '';
+    public $bill_number;
+    public $bill_date;
+    public $due_date;
+    public $notes;
+
+    public $items = [];
+    public $subtotal = 0;
+    public $tax = 0;
+    public $total = 0;
+
+    public $vendors;
+    public $projects;
+
+    public function mount($slug)
     {
-        $this->bill = Bill::with(['products.item', 'products.tax'])->findOrFail($bill);
+        $this->slug = $slug;
 
-        $this->bill_date = $this->bill->bill_date->format('Y-m-d');
-        $this->bill_number = $this->bill->bill_number;
-        $this->vendor_id = $this->bill->vendor_id;
-        $this->project_id = $this->bill->project_id ?? '';
-        $this->status = $this->bill->status;
-        $this->notes = $this->bill->notes;
-        $this->total_price = $this->bill->total_price;
+        $this->vendors = Vendor::orderBy('name')->get();
+        $this->projects = Project::orderBy('name')->get();
 
-        $this->lines = $this->bill->products->map(function ($product) {
+        $this->loadBill();
+    }
+
+    public function loadBill()
+    {
+        $bill = Bill::with(['items.item', 'items.tax'])->whereSlug( $this->slug)->firstOrFail();
+
+        $this->vendor_id    = $bill->vendor_id;
+        $this->project_id   = $bill->project_id === null ? 'global' : $bill->project_id;
+        $this->bill_number  = $bill->bill_number;
+        $this->bill_date    = Carbon::parse($bill->bill_date)->format('Y-m-d');
+        $this->due_date     = Carbon::parse($bill->due_date)->format('Y-m-d');
+        $this->notes        = $bill->notes;
+
+        $this->items = $bill->items->map(function ($bi) {
             return [
-                'id' => $product->id,
-                'name' => $product->item?->name ?? '',
-                'item_id' => $product->item_id,
-                'tax_id' => $product->tax_id,
-                'quantity' => $product->quantity,
-                'unit_price' => $product->unit_price,
-                'total_price' => $product->total_price,
+                'bill_item_id' => $bi->id,
+                'item_id'      => $bi->item_id,
+                'item_name'    => $bi->item->name,
+                'quantity'     => $bi->quantity,
+                'unit_price'   => $bi->unit_price,
+                'tax_id'       => $bi->tax_id,
+                'tax_rate'     => $bi->tax?->rate ?? 0,
+                'total'        => $bi->quantity * $bi->unit_price,
             ];
         })->toArray();
 
-        // Allow same bill_number
-        $this->rules['bill_number'] = 'required|string|unique:bills,bill_number,' . $this->bill->id;
+        $this->recalculate();
     }
 
-    public function updatedLines($value, $key)
+    public function updated($field)
     {
-        parent::updatedLines(...func_get_args());
-        $this->calculateTotals();
-    }
-
-    public function updated($property)
-    {
-        $this->validateOnly($property);
-        if (str_starts_with($property, 'lines')) {
-            $this->calculateTotals();
+        if (str_starts_with($field, 'items.')) {
+            $this->recalculate();
         }
     }
 
-    public function calculateTotals()
+    public function recalculate()
     {
-        $total = 0;
-        foreach ($this->lines as $index => $line) {
-            $subtotal = ($line['quantity'] ?? 0) * ($line['unit_price'] ?? 0);
-            $taxAmount = 0;
-            if (!empty($line['tax_id'])) {
-                $tax = Tax::find($line['tax_id']);
-                $taxAmount = $subtotal * ($tax->rate ?? 0) / 100;
-            }
-            $lineTotal = $subtotal + $taxAmount;
-            $this->lines[$index]['total_price'] = $lineTotal;
-            $total += $lineTotal;
-        }
-        $this->total_price = $total;
+        $subtotal = collect($this->items)->sum('total');
+        $this->subtotal = $subtotal;
+        $this->tax = collect($this->items)->sum(fn($i) => $i['total'] * ($i['tax_rate'] / 100));
+        $this->total = $subtotal + $this->tax;
     }
 
-    public function save()
+  
+
+    public function update()
     {
-        $this->validate();
+        $this->validate([
+            'bill_date' => 'required|date',
+            'due_date'  => 'required|date|after_or_equal:bill_date',
+            'items'     => 'array|min:1',
+            'items.*.quantity'   => 'required|numeric|min:1',
+            'items.*.unit_price' => 'required|numeric|min:0',
+            'items.*.item_name'  => 'required|string',
+        ]);
 
         DB::transaction(function () {
-            // 1. Update Bill Header
-            $this->bill->update([
+            $bill = Bill::whereSlug($this->slug)->firstOrFail();
+
+            // Update main bill fields
+            $bill->update([
                 'bill_date' => $this->bill_date,
-                'bill_number' => $this->bill_number,
-                'vendor_id' => $this->vendor_id,
-                'project_id' => $this->project_id ?: null,
-                'status' => $this->status,
-                'notes' => $this->notes,
-                'total_price' => $this->total_price,
-                'slug' => Str::slug($this->bill_number),
+                'due_date'  => $this->due_date,
+                'subtotal'  => $this->subtotal,
+                'tax'       => $this->tax,
+                'total'     => $this->total,
+                'notes'     => $this->notes,
             ]);
 
-            // 2. Track Old Quantities
-            $oldQuantities = [];
-            foreach ($this->bill->products as $oldProduct) {
-                $key = $oldProduct->item_id . '-' . ($this->project_id ?: 'null');
-                $oldQuantities[$key] = ($oldQuantities[$key] ?? 0) + $oldProduct->quantity;
-            }
+            // Sync Bill Items
+            $existingIds = collect($this->items)
+                ->filter(fn($i) => !empty($i['bill_item_id']))
+                ->pluck('bill_item_id');
 
-            // 3. Delete Old Bill Products
-            $this->bill->products()->delete();
+            // Delete removed items
+            BillItem::where('bill_id', $bill->id)
+                ->whereNotIn('id', $existingIds)
+                ->delete();
 
-            // 4. Create New Bill Products + Stock Movements
-            $newQuantities = [];
-            foreach ($this->lines as $index => $lineData) {
-                // Resolve or create Item
-                $item = Item::find($lineData['item_id']);
-                if (!$item && !empty($lineData['name'])) {
-                    $item = Item::create([
-                        'name' => $lineData['name'],
-                        'type' => 'product',
-                        'description' => '',
-                        'unit' => '',
-                        'reorder_level' => 0,
-                        'company_id' => auth()->user()->company_id ?? 1,
-                        'slug' => Str::slug($lineData['name']),
-                    ]);
-                    $lineData['item_id'] = $item->id;
-                    $this->lines[$index]['item_id'] = $item->id;
+            foreach ($this->items as $item) {
+                $data = [
+                    'item_id'     => $item['item_id'],
+                    'quantity'    => $item['quantity'],
+                    'unit_price'  => $item['unit_price'],
+                    'tax_id'      => $item['tax_id'],
+                    'total'       => $item['quantity'] * $item['unit_price'],
+                ];
+
+                if (!empty($item['bill_item_id'])) {
+                    // Update existing
+                    BillItem::where('id', $item['bill_item_id'])
+                        ->update($data);
+                } else {
+                    // Create new
+                    BillItem::create(array_merge($data, [
+                        'bill_id' => $bill->id,
+                        'item_id' => $item['item_id'] ?? null,
+                    ]));
                 }
-
-                if (!$item) continue;
-
-                $subtotal = $lineData['quantity'] * $lineData['unit_price'];
-                $taxAmount = 0;
-                if (!empty($lineData['tax_id'])) {
-                    $tax = Tax::find($lineData['tax_id']);
-                    $taxAmount = $subtotal * ($tax->rate ?? 0) / 100;
-                }
-                $lineTotal = $subtotal + $taxAmount;
-
-                BillProduct::create([
-                    'bill_id' => $this->bill->id,
-                    'item_id' => $item->id,
-                    'tax_id' => $lineData['tax_id'] ?? null,
-                    'quantity' => $lineData['quantity'],
-                    'unit_price' => $lineData['unit_price'],
-                    'total_price' => $lineTotal,
-                    'slug' => Str::slug("{$item->name}-{$this->bill->bill_number}-{$index}"),
-                ]);
-
-                $key = $item->id . '-' . ($this->project_id ?: 'null');
-                $newQuantities[$key] = ($newQuantities[$key] ?? 0) + $lineData['quantity'];
-
-                StockMovement::create([
-                    'type' => 'in',
-                    'item_id' => $item->id,
-                    'quantity' => $lineData['quantity'],
-                    'unit_cost' => $lineData['unit_price'],
-                    'date' => $this->bill_date,
-                    'entered_by' => auth()->id(),
-                    'project_id' => $this->project_id ?: null,
-                    'company_id' => $this->bill->company_id,
-                    'vendor_id' => $this->vendor_id,
-                    'status' => 'completed',
-                    'slug' => Str::slug("in-edit-{$item->name}-" . now()->format('YmdHis') . "-{$index}"),
-                ]);
             }
 
-            // 5. Adjust Stock (Delta)
-            $allKeys = array_unique(array_merge(array_keys($oldQuantities), array_keys($newQuantities)));
-            foreach ($allKeys as $key) {
-                [$itemId, $projId] = explode('-', $key);
-                $projId = $projId === 'null' ? null : $projId;
+            $this->dispatch('toast', [
+                'title'   => 'Bill Updated!',
+                'message' => "Bill #{$bill->bill_number} has been updated.",
+                'type'    => 'success'
+            ]);
 
-                $old = $oldQuantities[$key] ?? 0;
-                $new = $newQuantities[$key] ?? 0;
-                $delta = $new - $old;
-
-                if ($delta === 0) continue;
-
-                $stock = Stock::firstOrCreate(
-                    ['item_id' => $itemId, 'project_id' => $projId, 'company_id' => $this->bill->company_id],
-                    ['stock' => 0, 'slug' => Str::slug("stock-{$itemId}-{$projId}")]
-                );
-
-                $delta > 0 ? $stock->increment('stock', $delta) : $stock->decrement('stock', abs($delta));
-            }
+            return redirect()->route('bill.index');
         });
-
-        session()->flash('message', 'Bill updated successfully!');
-        return redirect()->route('bills.index');
-    }
-
-    public function confirmDelete()
-    {
-        $this->showDeleteModal = true;
-    }
-
-    public function deleteBill()
-    {
-        DB::transaction(function () {
-            // Reverse stock
-            foreach ($this->bill->products as $product) {
-                $stock = Stock::where('item_id', $product->item_id)
-                    ->where('project_id', $this->project_id ?: null)
-                    ->where('company_id', $this->bill->company_id)
-                    ->first();
-
-                if ($stock && $stock->stock >= $product->quantity) {
-                    $stock->decrement('stock', $product->quantity);
-                }
-            }
-
-            $this->bill->products()->delete();
-            $this->bill->delete();
-        });
-
-        $this->showDeleteModal = false;
-        session()->flash('message', 'Bill deleted successfully!');
-        return redirect()->route('bills.index');
     }
 
     public function render()
     {
-        $vendors = Vendor::all();
-        $taxes = Tax::all();
-        $projects = Project::all();
-
-        return view('livewire.bill.edit', compact('vendors', 'taxes', 'projects'));
+        return view('livewire.bill.edit');
     }
 }
