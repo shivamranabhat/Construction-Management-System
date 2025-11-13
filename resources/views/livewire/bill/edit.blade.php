@@ -142,7 +142,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-end">Tax</td>
-                                        <td class="text-end text-warning">£{{ number_format($tax, 2) }}</td>
+                                        <td class="text-end text-primary">£{{ number_format($tax, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-end">Grand Total</td>

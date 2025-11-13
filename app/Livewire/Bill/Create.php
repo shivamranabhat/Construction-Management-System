@@ -88,72 +88,96 @@ class Create extends Component
     }
 
     public function save()
-    {
-        $this->validate([
-            'vendor_id' => 'required',
-            'project_id' => 'required',
-            'bill_number' => 'required|unique:bills',
-            'bill_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:bill_date',
-            'items' => 'array|min:1',
-            'items.*.quantity' => 'required|numeric|min:1',
-            'items.*.unit_price' => 'required|numeric|min:0',
-        ]);
+{
+    $this->validate([
+        'vendor_id' => 'required',
+        'project_id' => 'required',
+        'bill_number' => 'required|unique:bills',
+        'bill_date' => 'required|date',
+        'due_date' => 'required|date|after_or_equal:bill_date',
+        'items' => 'array|min:1',
+        'items.*.quantity' => 'required|numeric|min:1',
+        'items.*.unit_price' => 'required|numeric|min:0',
+    ]);
 
-        DB::transaction(function () {
-            // Create Bill
-            $bill = Bill::create([
-                'vendor_id' => $this->vendor_id,
-                'project_id' => $this->project_id === 'global' ? null : $this->project_id,
-                'company_id' => auth()->user()->company_id,
-                'bill_number' => $this->bill_number,
-                'bill_date' => $this->bill_date,
-                'due_date' => $this->due_date,
-                'subtotal' => $this->subtotal,
-                'tax' => $this->tax,
-                'total' => $this->total,
-                'notes' => $this->notes,
-                'status' => 'draft',
-            ]);
+    DB::transaction(function () {
+        // === 1. Determine the Purchase ID (all items should come from same purchase) ===
+        $firstItem = collect($this->items)->first();
+        $purchaseId = null;
 
-            // Create Bill Items + Track Purchase IDs
-            $purchaseIds = collect();
+        if ($firstItem && !empty($firstItem['purchase_product_id'])) {
+            $pp = PurchaseProduct::find($firstItem['purchase_product_id']);
+            $purchaseId = $pp?->purchase_id;
+        }
 
-            foreach ($this->items as $item) {
-                BillItem::create([
-                    'bill_id' => $bill->id,
-                    'item_id' => $item['item_id'],
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['unit_price'],
-                    'tax_id' => $item['tax_id'],
-                    'total' => $item['quantity'] * $item['unit_price'],
-                ]);
-
-                // Collect purchase_id from purchase_product
-                if (!empty($item['purchase_product_id'])) {
-                    $pp = PurchaseProduct::find($item['purchase_product_id']);
-                    if ($pp) {
-                        $purchaseIds->push($pp->purchase_id);
-                    }
+        // Optional: Validate all items belong to same purchase
+        foreach ($this->items as $item) {
+            if (!empty($item['purchase_product_id'])) {
+                $pp = PurchaseProduct::find($item['purchase_product_id']);
+                if ($pp && $pp->purchase_id !== $purchaseId) {
+                    throw new \Exception('All bill items must belong to the same purchase.');
                 }
             }
+        }
 
-            // Update Purchase.bill_status to 'billed'
-            if ($purchaseIds->isNotEmpty()) {
-                Purchase::whereIn('id', $purchaseIds->unique())
-                    ->update(['status' => 'billed']);
-            }
+        // === 2. Create Bill with purchase_id ===
+        $bill = Bill::create([
+            'vendor_id'    => $this->vendor_id,
+            'project_id'   => $this->project_id === 'global' ? null : $this->project_id,
+            'company_id'   => auth()->user()->company_id,
+            'purchase_id'  => $purchaseId, // ← HERE
+            'bill_number'  => $this->bill_number,
+            'bill_date'    => $this->bill_date,
+            'due_date'     => $this->due_date,
+            'subtotal'     => $this->subtotal,
+            'tax'          => $this->tax,
+            'total'        => $this->total,
+            'notes'        => $this->notes,
+            'status'       => 'draft',
+        ]);
 
-            $this->dispatch('toast', [
-                'title' => 'Bill Created!',
-                'message' => "Bill #{$bill->bill_number} has been created.",
-                'type' => 'success'
+        // === 3. Create Bill Items ===
+        $purchaseIdsToBill = collect(); // To update status later
+
+        foreach ($this->items as $item) {
+            $billItem = BillItem::create([
+                'bill_id'             => $bill->id,
+                'item_id'             => $item['item_id'],
+                'quantity'            => $item['quantity'],
+                'unit_price'          => $item['unit_price'],
+                'tax_id'              => $item['tax_id'],
+                'total'               => $item['quantity'] * $item['unit_price'],
+                'purchase_product_id' => $item['purchase_product_id'] ?? null,
             ]);
 
-            return redirect()->route('bill.index');
-        });
-    }
+            if (!empty($item['purchase_product_id'])) {
+                $pp = PurchaseProduct::find($item['purchase_product_id']);
+                if ($pp) {
+                    $purchaseIdsToBill->push($pp->purchase_id);
+                }
+            }
+        }
 
+        // === 4. Mark related Purchases as 'billed' ===
+        if ($purchaseIdsToBill->isNotEmpty()) {
+            Purchase::whereIn('id', $purchaseIdsToBill->unique())
+                ->update(['status' => 'billed']);
+        }
+
+        // === 5. Generate slug (if using) ===
+        if (method_exists($bill, 'refreshSlug')) {
+            $bill->refreshSlug();
+        }
+
+        $this->dispatch('toast', [
+            'title'   => 'Bill Created!',
+            'message' => "Bill #{$bill->bill_number} has been created.",
+            'type'    => 'success'
+        ]);
+
+        return redirect()->route('bill.index');
+    });
+}
     public function render()
     {
         return view('livewire.bill.create');

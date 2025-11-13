@@ -3,6 +3,7 @@
 namespace App\Livewire\Bill;
 
 use App\Models\Bill;
+use App\Models\Purchase;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -28,6 +29,8 @@ class Index extends Component
     public function delete($slug)
     {
         $bill = Bill::whereSlug($slug)->first();
+        $purchase = Purchase::find($bill->purchase_id);
+        $purchase->update(['status' => 'draft']);
         $bill->delete();
         
         session()->flash('success', 'Bill deleted successfully.');
