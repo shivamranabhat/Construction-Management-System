@@ -13,6 +13,7 @@ class PurchaseProduct extends Model
         'quantity',
         'unit_price',
         'total_price',
+        'billed_amount',
         'slug',
     ];
 
@@ -36,5 +37,10 @@ class PurchaseProduct extends Model
         return $this->hasMany(StockMovement::class);
     }
     
+    public function getRemainingAmountAttribute()
+    {
+        $total = $this->quantity * $this->unit_price;
+        return max(0, $total - $this->billed_amount);
+    }
     
 }

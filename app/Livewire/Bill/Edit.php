@@ -139,12 +139,6 @@ class Edit extends Component
                 }
             }
 
-            $this->dispatch('toast', [
-                'title'   => 'Bill Updated!',
-                'message' => "Bill #{$bill->bill_number} has been updated.",
-                'type'    => 'success'
-            ]);
-
             return redirect()->route('bill.index');
         });
     }

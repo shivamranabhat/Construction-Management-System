@@ -52,4 +52,20 @@ class Purchase extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    /**
+     * Update status based on total_price vs billed_amount
+     */
+    public function updateBillingStatus()
+    {
+        $totalAmount = (float) $this->total_price;
+        $totalBilled = (float) $this->products->sum('billed_amount');
+
+        if ($totalBilled >= $totalAmount - 0.01) {
+            $this->update(['status' => 'billed']);
+        } elseif ($totalBilled > 0.01) {
+            $this->update(['status' => 'partially_billed']);
+        }
+        // else: remains 'draft'
+    }
+
 }

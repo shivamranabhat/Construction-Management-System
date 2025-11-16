@@ -169,11 +169,6 @@ class Create extends Component
             $bill->refreshSlug();
         }
 
-        $this->dispatch('toast', [
-            'title'   => 'Bill Created!',
-            'message' => "Bill #{$bill->bill_number} has been created.",
-            'type'    => 'success'
-        ]);
 
         return redirect()->route('bill.index');
     });

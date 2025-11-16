@@ -532,7 +532,17 @@
                                             <!-- Start::slide__category -->
                                             <li class="slide__category"><span class="category-name">Stock
                                                     Management</span></li>
-                                            <!-- End::slide__category -->
+                                             <!-- Start::slide -->
+                                            <li class="slide"> <a href="{{route('vendor.index')}}"
+                                                    class="side-menu__item {{request()->segment(1) == 'vendors' || request()->segment(1) == 'vendor' ? 'active' : ''}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                        fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" />
+                                                    </svg>
+                                                    <span class="side-menu__label">Vendor</span> </a>
+
+                                            </li> <!-- End::slide -->
                                             <!-- Start::slide -->
                                             <li class="slide has-sub"> <a href="javascript:void(0);" class="side-menu__item {{request()->segment(1) == 'items' || request()->segment(1) == 'item' || request()->segment(1) == 'categories' || request()->segment(1) == 'category' || request()->segment(1) == 'purchases' || request()->segment(1) == 'purchase' || request()->segment(1) == 'stocks' || request()->segment(1) == 'stock'
                                                      ? 'active' : ''}}">
@@ -568,17 +578,7 @@
 
                                                 </ul>
                                             </li> <!-- End::slide -->
-                                            <!-- Start::slide -->
-                                            <li class="slide"> <a href="{{route('vendor.index')}}"
-                                                    class="side-menu__item {{request()->segment(1) == 'vendors' || request()->segment(1) == 'vendor' ? 'active' : ''}}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
-                                                        fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" />
-                                                    </svg>
-                                                    <span class="side-menu__label">Vendor</span> </a>
-
-                                            </li> <!-- End::slide -->
+                                           
                                             <li class="slide"> <a href="{{route('bill.index')}}"
                                                     class="side-menu__item {{request()->segment(1) == 'bills' || request()->segment(1) == 'bill' ? 'active' : ''}}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
@@ -590,6 +590,21 @@
                                                     </svg>
 
                                                     <span class="side-menu__label">Bills</span> </a>
+
+                                            </li> <!-- End::slide -->
+                                            <li class="slide"> <a href="{{route('payment.index')}}"
+                                                    class="side-menu__item {{request()->segment(1) == 'payments' || request()->segment(1) == 'payment' ? 'active' : ''}}">
+                                                   
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                        fill="currentColor" class="bi bi-wallet-fill"
+                                                        viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542s.987-.254 1.194-.542C9.42 6.644 9.5 6.253 9.5 6a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2z" />
+                                                        <path
+                                                            d="M16 6.5h-5.551a2.7 2.7 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5s-1.613-.412-2.006-.958A2.7 2.7 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5z" />
+                                                    </svg>
+
+                                                    <span class="side-menu__label">Payments</span> </a>
 
                                             </li> <!-- End::slide -->
 

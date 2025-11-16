@@ -35,4 +35,9 @@ class Tax extends Model
         return $this->hasMany(Boq::class);
     }
 
+    public function billItems()
+    {
+        return $this->hasMany(BillItem::class);
+    }
+
 }

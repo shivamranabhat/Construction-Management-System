@@ -4,7 +4,7 @@
         <div class="card-header bg-white border-bottom sticky-top" style="top: 0; z-index: 10;">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-primary">
-                    <i class="bi bi-receipt me-2"></i>Edit Bill #{{ $bill_number }}
+                    <i class="bi bi-receipt me-2"></i>Bill #{{ $bill_number }}
                 </h5>
                 <a href="{{ route('bill.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left"></i> Back
