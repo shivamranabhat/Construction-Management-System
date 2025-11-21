@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vendor_id')->constrained();
-            $table->foreignId('purchase_id')->nullable()->constrained(); // link to PO
-            $table->foreignId('project_id')->nullable()->constrained();
-            $table->foreignId('company_id')->constrained();
+            $table->foreignId('vendor_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('purchase_id')->nullable()->constrained()->cascadeOnDelete(); // link to PO
+            $table->foreignId('project_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('bill_number')->unique();
             $table->date('bill_date');
             $table->date('due_date');
             $table->decimal('subtotal', 12, 2);
             $table->decimal('tax', 12, 2)->default(0);
             $table->decimal('total', 12, 2);
-            $table->enum('status', ['draft', 'sent', 'paid', 'overdue'])->default('draft');
+            $table->enum('status', ['draft', 'partially_paid', 'paid'])->default('draft');
             $table->text('notes')->nullable();
             $table->string('slug')->unique();
             $table->timestamps();

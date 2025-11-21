@@ -16,11 +16,11 @@ return new class extends Migration
             $table->date('purchase_date');
             $table->string('purchase_number')->unique();
             $table->foreignId('vendor_id')->constrained()->onDelete('cascade');
-            $table->foreignId('project_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('project_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('entered_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->decimal('total_price', 12, 2);
-            $table->enum('status', ['draft', 'billed', 'paid'])->default('draft');
+            $table->enum('status', ['draft', 'billed'])->default('draft');
             $table->text('notes')->nullable();
             $table->string('slug')->unique();
             $table->timestamps();

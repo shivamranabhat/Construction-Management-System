@@ -44,6 +44,10 @@ use App\Livewire\Purchase\Edit as PurchaseEdit;
 use App\Livewire\Payment\Index as PaymentIndex;
 use App\Livewire\Payment\Create as PaymentCreate;
 use App\Livewire\Payment\Edit as PaymentEdit;
+use App\Livewire\Requisition\Index as RequisitionIndex;
+use App\Livewire\Requisition\Create as RequisitionCreate;
+use App\Livewire\Requisition\Show as RequisitionShow;
+use App\Livewire\Requisition\Edit as RequisitionEdit;
 use App\Livewire\Stock\Index as StockIndex;
 use App\Livewire\Stock\Show as StockShow;
 
@@ -124,6 +128,12 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/payments', PaymentIndex::class)->name('index');            
         Route::get('/payment/new', PaymentCreate::class)->name('create');      
         Route::get('/payment/{slug}', PaymentEdit::class)->name('edit');    
+    });
+    Route::name('requisition.')->group(function () {
+        Route::get('/requisitions', RequisitionIndex::class)->name('index');            
+        Route::get('/requisition/new', RequisitionCreate::class)->name('create');      
+        Route::get('/requisition/show/{id}', RequisitionShow::class)->name('show');    
+        Route::get('/requisition/{slug}', RequisitionEdit::class)->name('edit');    
     });
 
     Route::name('stock.')->group(function () {

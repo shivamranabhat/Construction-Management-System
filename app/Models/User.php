@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'image',
         'password',
+        'type',
         'company_id',
         'slug',
     ];
@@ -59,6 +60,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'role_users');
     }
 
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_user');
+    }
+
+    public function assignedProjects()
+    {
+        return $this->projects();
+    }
+
+    
     public function hasPermission($module, $action)
     {
         return $this->roles()

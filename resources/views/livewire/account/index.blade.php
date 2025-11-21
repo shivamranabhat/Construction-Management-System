@@ -52,20 +52,38 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @foreach($user->roles as $role)
+                                @forelse($user->roles as $role)
                                 {{ $role->name }}
-                                @endforeach
+                                @empty
+                                Company
+                                @endforelse
                             </td>
                             <td>{{ $user->created_at->format('d M Y') }}</td>
-                            <td>
+                            <td x-data="{ openModal: false }">
                                 <a href="{{ route('account.edit', $user->slug) }}"
                                     class="btn btn-icon btn-info-transparent rounded-pill">
                                     <i class="ri-edit-line"></i>
                                 </a>
-                                <button wire:click="delete({{ $user->slug }})"
+                                <button @click="openModal = true"
                                     class="btn btn-icon btn-danger-transparent rounded-pill">
                                     <i class="ri-delete-bin-line"></i>
                                 </button>
+                                <div x-show="openModal" class="modal-backdrop" style="display: none;">
+                                    <div class="modal-box">
+                                        <div class="modal-header p-0">
+                                            <div class="modal-title">Confirm Delete</div>
+                                            <button class="close-btn" @click="openModal = false">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-cancel" @click="openModal = false">Cancel</button>
+                                            <button class="btn btn-delete" wire:click="delete('{{ $user->id }}')"
+                                                @click="openModal = false">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @empty

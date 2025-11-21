@@ -26,7 +26,7 @@ class Edit extends Component
     public function update()
     {
         $this->validate([
-            'name' => 'required|unique:roles,name,' . $this->role->id,
+            'name' => 'required|string' ,
             'description' => 'nullable|string',
         ]);
 
@@ -34,7 +34,7 @@ class Edit extends Component
         $this->role->update([
             'name' => $this->name,
             'description' => $this->description,
-            'slug' => Str::slug('rol'.'-'.$this->name.'-'.now()), // update slug dynamically
+            'slug' => Str::slug($this->name), // update slug dynamically
         ]);
 
         // Sync permissions

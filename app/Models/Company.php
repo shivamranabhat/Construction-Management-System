@@ -85,4 +85,19 @@ class Company extends Model
     {
         return $this->hasMany(Stock::class);
     }
+
+    public function requisitions()
+    {
+        return $this->hasMany(Requisition::class);
+    }
+
+    public function requisitionApprovals()
+    {
+        return $this->hasMany(RequisitionApproval::class);
+    }
+
+    public function requisitionItems()
+    {
+        return $this->hasMany(RequisitionItem::class);
+    }
 }

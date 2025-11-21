@@ -39,7 +39,6 @@
                             class="form-select form-select-lg"
                             disabled>
                             <option value="">Any Project</option>
-                            <option value="global">Global (No Project)</option>
                             @foreach($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
@@ -114,7 +113,7 @@
                                         </td>
                                         <td>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text">£</span>
+                                                <span class="input-group-text"></span>
                                                 <input 
                                                     type="number" 
                                                     step="0.01" 
@@ -129,7 +128,7 @@
                                             </span>
                                         </td>
                                         <td class="text-end fw-bold text-primary">
-                                            £{{ number_format($item['quantity'] * $item['unit_price'], 2) }}
+                                            {{ number_format($item['quantity'] * $item['unit_price'], 2) }}
                                         </td>
                                        
                                     </tr>
@@ -138,15 +137,15 @@
                                 <tfoot class="table-light fw-bold">
                                     <tr>
                                         <td colspan="5" class="text-end">Subtotal</td>
-                                        <td class="text-end">£{{ number_format($subtotal, 2) }}</td>
+                                        <td class="text-end">{{ number_format($subtotal, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-end">Tax</td>
-                                        <td class="text-end text-primary">£{{ number_format($tax, 2) }}</td>
+                                        <td class="text-end text-primary">{{ number_format($tax, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-end">Grand Total</td>
-                                        <td class="text-end">£{{ number_format($total, 2) }}</td>
+                                        <td class="text-end">{{ number_format($total, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>

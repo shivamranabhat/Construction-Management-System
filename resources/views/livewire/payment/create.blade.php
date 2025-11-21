@@ -19,7 +19,7 @@
                             @foreach($bills as $bill)
                             <option value="{{ $bill->id }}">
                                 #{{ $bill->bill_number }} - {{ $bill->vendor->name }}
-                                (Due: £{{ number_format($bill->remaining_amount, 2) }})
+                                (Due: {{ number_format($bill->remaining_amount, 2) }})
                             </option>
                             @endforeach
                         </select>
@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <label class="form-label">Amount</label>
                         <div class="input-group">
-                            <span class="input-group-text">£</span>
+                            {{-- <span class="input-group-text">£</span> --}}
                             <input type="number" step="0.01" wire:model.live="amount"
                                 class="form-control @error('amount') is-invalid @enderror" required>
                         </div>
@@ -53,7 +53,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12">
                         <label class="form-label">Reference</label>
                         <input type="text" wire:model="reference" class="form-control" placeholder="e.g. BACS123">
                     </div>

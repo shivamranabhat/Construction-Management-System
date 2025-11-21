@@ -19,6 +19,13 @@ class Index extends Component
     {
         $this->resetPage();
     }
+    
+    public function delete($userId)
+    {
+        $user = User::findOrFail($userId);
+        $user->delete();
+        session()->flash('message', 'User deleted successfully.');
+    }
 
     public function render()
     {

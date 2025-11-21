@@ -24,9 +24,9 @@
                                 readonly>
                         </div>
                         <small class="text-muted d-block">
-                            Total: £{{ number_format($payment->bill->total, 2) }} 
-                            | Paid: £{{ number_format($payment->bill->total_paid - $payment->amount + $amount, 2) }}
-                            | Remaining: £{{ number_format($payment->bill->remaining_amount + $payment->amount - $amount, 2) }}
+                            Total: {{ number_format($payment->bill->total, 2) }} 
+                            | Paid: {{ number_format($payment->bill->total_paid - $payment->amount + $amount, 2) }}
+                            | Remaining: {{ number_format($payment->bill->remaining_amount + $payment->amount - $amount, 2) }}
                         </small>
                     </div>
 
@@ -36,7 +36,7 @@
                             Amount <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text">£</span>
+                            {{-- <span class="input-group-text">£</span> --}}
                             <input 
                                 type="number" 
                                 step="0.01" 
@@ -85,7 +85,7 @@
                     </div>
 
                     <!-- Reference -->
-                    <div class="col-md-6">
+                    <div class="col-12">
                         <label class="form-label fw-semibold text-dark">Reference</label>
                         <input 
                             type="text" 

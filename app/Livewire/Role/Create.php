@@ -19,20 +19,18 @@ class Create extends Component
     {
         // Validate inputs
         $this->validate([
-            'name' => 'required|unique:roles,name',
+            'name' => 'required|string',
             'description' => 'nullable|string|max:255',
         ], [
             'name.required' => 'Please enter role name.',
-            'name.unique' => 'This role name already exists.',
         ]);
 
-        $slug = Str::slug('rol'.'-'.$this->name.'-'.now());;
         // Create the role
         $role = Role::create([
             'name' => $this->name,
             'description' => $this->description,
             'company_id' => auth()->user()->company_id,
-            'slug' => $slug,
+            'slug' => Str::slug($this->name),
         ]);
 
         // Attach selected permissions (many-to-many)
