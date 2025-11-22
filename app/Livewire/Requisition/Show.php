@@ -121,9 +121,9 @@ class Show extends Component
     public $showProcurementApproval = false;
     public $showCompanyApproval = false;
 
-    public function mount($id)
+    public function mount($slug)
     {
-        $this->requisition = Requisition::with(['items.item', 'project', 'requester'])->findOrFail($id);
+        $this->requisition = Requisition::with(['items.item', 'project', 'requester'])->whereSlug($slug)->first();
         $this->vendors = Vendor::where('company_id', auth()->user()->company_id)->get();
         $this->determineStatusAndProgress();
     }
@@ -200,7 +200,7 @@ class Show extends Component
 
     public function approveProcurement()
     {
-        $this->requisition->update(['status' => 'procurement_approved']);
+        $this->requisition->update(['vendor_id' => $this->selectedVendor,'status' => 'procurement_approved']);
         $this->logApproval('procurement', $this->comments);
         $this->reset('comments');
         $this->determineStatusAndProgress();
@@ -214,12 +214,6 @@ class Show extends Component
         $this->reset('comments');
         $this->determineStatusAndProgress();
         $this->dispatch('toast', type: 'success', message: 'Requisition fully approved!');
-    }
-
-    public function saveVendor()
-    {
-        $this->requisition->update(['selected_vendor_id' => $this->selectedVendor]);
-        $this->dispatch('toast', type: 'success', message: 'Vendor saved successfully');
     }
 
     public function render()

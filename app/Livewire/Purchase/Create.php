@@ -36,11 +36,29 @@ class Create extends Component
     public $item_search = [];
 
     public $vendors, $taxes, $projects, $categories;
+    public $userProjects;     // Collection of user's projects
+    public $singleProject = false;
+    public $noProjectAccess = false;
 
     public function mount()
     {
         $this->purchase_date = now()->format('Y-m-d');
         $this->purchase_number = 'PO-' . now()->format('Ymd-His');
+        // Get ONLY projects user is assigned to via project_user pivot
+    $this->userProjects = Project::whereHas('users', function ($q) {
+        $q->where('user_id', auth()->id());
+    })
+    ->orderBy('name')
+    ->get()
+    ->pluck('name', 'id'); // Safe: 'id' refers to projects.id
+
+    if ($this->userProjects->isEmpty()) {
+        $this->noProjectAccess = true;
+        $this->addError('project_access', 'You are not assigned to any project. Contact admin.');
+    } elseif ($this->userProjects->count() === 1) {
+        $this->project_id = $this->userProjects->keys()->first();
+        $this->singleProject = true;
+    }
         $this->loadSelects();
         $this->addEmptyRow();
     }

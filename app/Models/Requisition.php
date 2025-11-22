@@ -16,8 +16,8 @@ class Requisition extends Model
     }
 
     protected $fillable = [
-        'company_id', 'requisition_number', 'project_id', 'requested_by',
-        'required_date', 'purpose', 'status', 'rejection_reason'
+        'company_id', 'requisition_number', 'project_id','vendor_id', 'requested_by',
+        'required_date', 'purpose', 'status', 'rejection_reason','slug'
     ];
 
 
@@ -39,6 +39,11 @@ class Requisition extends Model
     public function requester()
     {
         return $this->belongsTo(User::class, 'requested_by');
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
     }
 
     public function project()

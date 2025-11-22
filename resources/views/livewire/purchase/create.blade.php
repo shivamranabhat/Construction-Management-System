@@ -15,40 +15,84 @@
                 <!-- Header -->
                 <div class="border-bottom px-4 py-3">
                     <div class="row g-3">
+                        <!-- Date -->
                         <div class="col-md-3">
-                            <label>Date</label>
-                            <input type="date" wire:model.live="purchase_date" class="form-control form-control-sm">
+                            <label class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar3"></i>
+                                </span>
+                                <input type="date" wire:model.live="purchase_date" class="form-control form-control-sm">
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label>Purchase #</label>
-                            <input type="text" wire:model.live="purchase_number" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-3">
-                            <label>Vendor</label>
-                            <select wire:model.live="vendor_id" class="form-select form-select-sm">
-                                <option value="">Select</option>
-                                @forelse($vendors as $v) <option value="{{ $v->id }}">{{ $v->name }}</option>
-                                @empty
-                                <option value="" disabled>No vendors found</option>
-                                @endforelse
-                            </select>
-                            @error('vendor_id')
-                            <small class="text-danger">Please select a vendor</small>
-                            @enderror
 
-                        </div>
+                        <!-- Purchase # -->
                         <div class="col-md-3">
-                            <label>Project</label>
-                            <select wire:model.live="project_id" class="form-select form-select-sm">
-                                <option value="">None</option>
-                                @forelse($projects as $p) <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                @empty
-                                <option value="" disabled>No projects found</option>
-                                @endforelse
-                            </select>
-                            @error('project_id')
-                            <small class="text-danger">Please select a project</small>
+                            <label class="form-label fw-semibold">Purchase</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-hash"></i>
+                                </span>
+                                <input type="text" wire:model.live="purchase_number"
+                                    class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <!-- Vendor -->
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Vendor <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-truck"></i>
+                                </span>
+                                <select wire:model.live="vendor_id" class="form-select form-select-sm">
+                                    <option value="">Select Vendor</option>
+                                    @forelse($vendors as $v)
+                                    <option value="{{ $v->id }}">{{ $v->name }}</option>
+                                    @empty
+                                    <option value="" disabled>No vendors found</option>
+                                    @endforelse
+                                </select>
+                            </div>
+                            @error('vendor_id')
+                            <small class="text-danger">{{ $message }}</small>
                             @enderror
+                        </div>
+
+                        <!-- Project -->
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Project <span class="text-danger">*</span></label>
+
+                            @if($singleProject)
+                            <!-- Only one project → show as readonly -->
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <dboinput type="text" value="{{ $userProjects->first() }}"
+                                    class="form-control form-control-sm" readonly>
+                                    <input type="hidden" wire:model="project_id" value="{{ $project_id }}">
+                            </div>
+                            <small class="text-muted">Your assigned project</small>
+                            @else
+                            <!-- Multiple projects → dropdown -->
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <select wire:model.live="project_id"
+                                    class="form-select form-select-sm @error('project_id') is-invalid @enderror"
+                                    required>
+                                    <option value="">Select Project</option>
+                                    @foreach($userProjects as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('project_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                            @endif
                         </div>
                     </div>
                 </div>

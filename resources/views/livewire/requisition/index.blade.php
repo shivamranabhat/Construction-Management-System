@@ -16,33 +16,6 @@
         </a>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3 col-lg-2">
-            <div class="card border-0 shadow-sm text-center p-3 bg-primary text-white">
-                <div class="fs-4 fw-bold">{{ $statusCounts['pending_pm'] ?? 0 }}</div>
-                <small>Pending PM</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2">
-            <div class="card border-0 shadow-sm text-center p-3 bg-warning text-dark">
-                <div class="fs-4 fw-bold">{{ $statusCounts['pending_procurement'] ?? 0 }}</div>
-                <small>Procurement</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2">
-            <div class="card border-0 shadow-sm text-center p-3 bg-info text-white">
-                <div class="fs-4 fw-bold">{{ $statusCounts['owner_approved'] ?? 0 }}</div>
-                <small>Ready for PO</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2">
-            <div class="card border-0 shadow-sm text-center p-3 bg-success text-white">
-                <div class="fs-4 fw-bold">{{ $statusCounts['po_created'] ?? 0 }}</div>
-                <small>PO Created</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Filters -->
     <div class="card border-0 shadow-sm mb-4">
@@ -60,10 +33,7 @@
                         <option value="draft">Draft</option>
                         <option value="pending_pm">Pending PM</option>
                         <option value="pm_approved">PM Approved</option>
-                        <option value="pending_procurement">Pending Procurement</option>
                         <option value="owner_approved">Owner Approved</option>
-                        <option value="po_created">PO Created</option>
-                        <option value="delivered">Delivered</option>
                         <option value="rejected">Rejected</option>
                     </select>
                 </div>
@@ -118,21 +88,34 @@
                                     {{ ucwords(str_replace('_', ' ', $req->status)) }}
                                 </span>
                             </td>
-                            <td x-data="{ openModal: false }" class="text-end pe-4">
+                            <td x-data="{ openModal: false }">
                                 <div class="d-flex gap-2">
+                                    @can('update-requisition')
                                     <a href="{{ route('requisition.edit', $req->id) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>
+                                    @else
+                                    <button class="btn btn-icon btn-info-transparent rounded-pill" disabled>
+                                        <i class="ri-edit-line"></i>
+                                    </button>
+                                    @endcan
                                     <a href="{{ route('requisition.show', $req->id) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-eye-line"></i>
                                     </a>
 
+                                    @can('delete-requisition')
                                     <button type="button" @click="openModal = true"
                                         class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
+                                    @else
+                                    <button type="button" class="btn btn-icon btn-danger-transparent rounded-pill"
+                                        disabled>
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @endcan
                                 </div>
                                 <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                     <div class="modal-box">

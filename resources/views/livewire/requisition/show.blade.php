@@ -10,8 +10,8 @@
                     Project: {{ $requisition->project->name }} • Requested by: {{ $requisition->requester->name }}
                 </small>
             </div>
-            <a href="{{ route('requisition.index') }}" class="btn btn-outline-secondary btn-sm">
-                ← Back
+            <a href="{{ route('requisition.index') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-arrow-left"></i>
             </a>
         </div>
 
@@ -100,14 +100,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Current Status Badge -->
-            <div class="text-center mt-5 mb-5">
-                <span class="badge bg-primary fs-6 px-4 py-2 rounded-pill">
-                    {{ $currentStatus }}
-                </span>
-            </div>
-
             <!-- Requested Materials Table -->
             <h6 class="text-primary fw-bold mb-3">Requested Materials</h6>
             <div class="table-responsive mb-5">
@@ -142,58 +134,112 @@
             <!-- Approval Section -->
             @if($showApprovalSection)
             <div class="card border-0 shadow-sm bg-light-subtle rounded-4 mt-5">
-                <div class="card-body text-center py-5">
+                <div class="card-body py-5">
+                    @if($requisition->vendor_id)
+                    <div class="d-flex align-items-center justify-content-between border-bottom pb-4 mb-5">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">
+                                    <i class="bi bi-truck fs-5"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <small class="text-muted text-uppercase fw-semibold">Selected Vendor</small>
+                                <div class="fw-bold text-primary fs-5">
+                                    {{ $requisition->vendor?->name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill small">
+                                Confirmed
+                            </span>
+                        </div>
+                    </div>
+                    @endif
                     @if($showPMApproval)
                     <h5 class="text-primary mb-4">Project Manager Approval Required</h5>
 
-                    <div class="mb-4 w-100" style="max-width: 500px; margin: 0 auto;">
+                    <div class="mb-4 col-12 col-md-6">
                         <textarea wire:model="comments" class="form-control" rows="3"
                             placeholder="Add optional comments..."></textarea>
                     </div>
 
-                    <div class="d-flex justify-content-center gap-4">
-                        <button wire:click="approvePM" class="btn btn-success btn-lg px-5 shadow-sm">Approve</button>
-                        <button wire:click="rejectPM" class="btn btn-danger btn-lg px-5 shadow-sm">Reject</button>
+                    <div class="d-flex gap-4">
+                        <button wire:click="approvePM" class="btn btn-primary shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-check-lg" viewBox="0 0 16 16">
+                                <path
+                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                            </svg>
+                            Approve</button>
+                        <button wire:click="rejectPM" class="btn btn-danger shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-x" viewBox="0 0 16 16">
+                                <path
+                                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                            </svg>
+                            Reject</button>
                     </div>
 
                     @elseif($showProcurementApproval)
                     <h5 class="text-primary mb-4">Select Best Vendor & Approve</h5>
 
-                    <div class="mb-3">
-                        <select wire:model="selectedVendor" class="form-select form-select-lg d-inline-block"
-                            style="width: 350px;">
+                    <div class="mb-3 col-12 col-md-6">
+                        <select wire:model="selectedVendor" class="form-select form-select-lg">
                             <option value="">Choose Vendor</option>
                             @foreach($vendors as $vendor)
                             <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
                             @endforeach
                         </select>
-                        <button wire:click="saveVendor" class="btn btn-outline-primary ms-2">Save Vendor</button>
                     </div>
 
-                    <div class="mb-4 w-100" style="max-width: 500px; margin: 0 auto;">
+                    <div class="mb-4 col-12 col-md-6">
                         <textarea wire:model="comments" class="form-control" rows="3"
                             placeholder="Add optional comments (e.g. reason for vendor selection)..."></textarea>
                     </div>
 
-                    <div class="d-flex justify-content-center gap-4">
-                        <button wire:click="approveProcurement"
-                            class="btn btn-primary btn-lg px-5 shadow-sm">Approve</button>
-                        <button wire:click="rejectProcurement"
-                            class="btn btn-danger btn-lg px-5 shadow-sm">Reject</button>
+                    <div class="d-flex gap-4">
+                        <button wire:click="approveProcurement" class="btn btn-primary shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-check-lg" viewBox="0 0 16 16">
+                                <path
+                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                            </svg>
+                            Approve</button>
+                        <button wire:click="rejectProcurement" class="btn btn-danger shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-x" viewBox="0 0 16 16">
+                                <path
+                                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                            </svg>
+                            Reject</button>
+
                     </div>
 
                     @elseif($showCompanyApproval)
-                    <h5 class="text-primary mb-4">Final Review & Approval by Company</h5>
+                    <h5 class="text-primary mb-4">Final Approval</h5>
 
-                    <div class="mb-4 w-100" style="max-width: 500px; margin: 0 auto;">
+                    <div class="mb-4 col-12 col-md-6">
                         <textarea wire:model="comments" class="form-control" rows="3"
                             placeholder="Final comments (optional)..."></textarea>
                     </div>
 
-                    <div class="d-flex justify-content-center gap-4">
-                        <button wire:click="approveCompany" class="btn btn-primary btn-lg px-5 shadow-sm">Final
+                    <div class="d-flex gap-4">
+                        <button wire:click="approveCompany" class="btn btn-primary shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-check-lg" viewBox="0 0 16 16">
+                                <path
+                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                            </svg>
                             Approve</button>
-                        <button wire:click="rejectCompany" class="btn btn-danger btn-lg px-5 shadow-sm">Reject</button>
+                        <button wire:click="rejectCompany" class="btn btn-danger shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-x" viewBox="0 0 16 16">
+                                <path
+                                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                            </svg>
+                            Reject</button>
                     </div>
                     @endif
                 </div>

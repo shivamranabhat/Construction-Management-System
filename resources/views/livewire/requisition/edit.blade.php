@@ -5,8 +5,8 @@
                 <h5 class="mb-0 text-primary">
                     Edit Requisition #{{ $requisition->requisition_number }}
                 </h5>
-                <a href="{{ route('requisition.index') }}" class="btn btn-outline-secondary btn-sm">
-                    Back
+               <a href="{{ route('requisition.index') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
                 </a>
             </div>
         </div>

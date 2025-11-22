@@ -35,6 +35,12 @@ class Index extends Component
         ]);
     }
 
+    public function delete($id)
+    {
+        $requisition = Requisition::find($id);
+        $requisition->delete();
+    }
+
     public function updatingSearch()
     {
         $this->resetPage();

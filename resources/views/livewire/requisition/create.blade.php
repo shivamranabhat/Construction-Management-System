@@ -5,9 +5,9 @@
                 <h5 class="mb-0 text-primary">
                     Create Requisition
                 </h5>
-                 <a href="{{ route('requisition.index') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-arrow-left"></i>
-            </a>
+                <a href="{{ route('requisition.index') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
             </div>
         </div>
 
@@ -61,7 +61,7 @@
                             class="text-danger">*</span></label>
                     <textarea wire:model="purpose" class="form-control @error('purpose') is-invalid @enderror" rows="3"
                         required></textarea>
-                    @error('purpose') <span class="text-danger small">{{ $message }}</span> @enderror
+                    @error('purpose') <span class="text-danger small">Please provide the purpose/justification of Requisition.</span> @enderror
                 </div>
 
                 <!-- Items -->
@@ -86,7 +86,7 @@
                                 <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
                             </select>
-                            @error("items.{$index}.item_id") <span class="text-danger small">{{ $message }}</span>
+                            @error("items.{$index}.item_id") <span class="text-danger small">Please select an item</span>
                             @enderror
                         </div>
 
@@ -123,16 +123,19 @@
                     @endforeach
                 </div>
 
-                @can('create-requisition')
                 <!-- Submit -->
                 <div class="d-flex justify-content-end gap-3">
                     <a href="{{ route('requisition.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    @can('create-requisition')
                     <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
                         <span wire:loading.remove>Save</span>
                         <span wire:loading>Saving...</span>
                     </button>
+                    @else
+                    <button class="btn btn-primary" disabled>Save
+                    </button>
+                    @endcan
                 </div>
-                @endcan
             </form>
         </div>
     </div>

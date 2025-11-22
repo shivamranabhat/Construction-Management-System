@@ -25,6 +25,7 @@ return new class extends Migration
                 'po_created', 'delivered', 'rejected'
             ])->default('draft');
             $table->text('rejection_reason')->nullable();
+            $table->string('slug');
             $table->timestamps();
 
             $table->index(['company_id', 'status']);
