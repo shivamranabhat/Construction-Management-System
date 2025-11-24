@@ -28,7 +28,7 @@
                                 wire:model.live="search">
                         </label>
                         <a href="{{ route('item.create') }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-circle"></i>
+                            <i class="bi bi-plus-circle"></i> New
                         </a>
                     </div>
                 </div>
@@ -58,13 +58,17 @@
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>
-                                    {{-- <button type="button" class="btn btn-icon btn-danger-transparent rounded-pill">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button> --}}
+                                    @can('delete-item')
                                     <button type="button" @click="openModal = true"
                                         class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
+                                    @else
+                                    <button type="button" disabled
+                                        class="btn btn-icon btn-danger-transparent rounded-pill">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @endif
                                 </div>
                                 <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                     <div class="modal-box">

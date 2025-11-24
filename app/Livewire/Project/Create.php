@@ -10,6 +10,33 @@ class Create extends Component
 {
     public $name, $code, $client, $start_date, $end_date, $budget, $status;
 
+    public function mount()
+    {
+        $this->generateProjectCode();
+    }
+
+    public function generateProjectCode()
+    {
+        $year = now()->format('Y');
+        $prefix = "PROJ-{$year}";
+
+        // Find the highest existing code for this year
+        $lastProject = Project::where('company_id', auth()->user()->company_id)
+            ->where('code', 'LIKE', $prefix . '%')
+            ->orderByRaw("CAST(SUBSTRING(code, LENGTH('{$prefix}-') + 1) AS UNSIGNED) DESC")
+            ->first();
+
+        if ($lastProject) {
+            $lastNumber = (int) substr($lastProject->code, strlen($prefix) + 1); // extract number after prefix
+            $newNumber = $lastNumber + 1;
+        } else {
+            $newNumber = 1;
+        }
+
+        // Format with leading zeros (e.g., 001, 012)
+        $this->code = $prefix . '-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+    }
+    
     public function store()
     {
         $this->validate([

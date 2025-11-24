@@ -22,6 +22,7 @@ class Index extends Component
             ->when($this->search, fn($q) => $q->where('requisition_number', 'like', "%{$this->search}%")
                 ->orWhere('purpose', 'like', "%{$this->search}%"))
             ->when($this->status, fn($q) => $q->where('status', $this->status))
+            ->where('requested_by',auth()->user()->id)
             ->latest()
             ->paginate($this->perPage);
 

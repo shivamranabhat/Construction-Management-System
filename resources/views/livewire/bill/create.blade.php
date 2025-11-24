@@ -163,6 +163,7 @@
                     <a href="{{ route('bill.index') }}" class="btn btn-outline-secondary">
                         Cancel
                     </a>
+                    @can('create-bill')
                     <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save">
                         <span wire:loading.remove wire:target="save">
                             Save
@@ -172,6 +173,11 @@
                             Saving...
                         </span>
                     </button>
+                    @else
+                    <button type="submit" class="btn btn-primary" disabled>
+                        Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

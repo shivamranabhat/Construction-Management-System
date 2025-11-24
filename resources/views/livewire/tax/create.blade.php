@@ -13,24 +13,40 @@
         <form class="card-body" wire:submit='save'>
             <div class="row g-3">
 
-                <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Name</label> <input type="text"
-                        class="form-control" wire:model="name" placeholder="Name">
+                <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Name</label> <input
+                        type="text" class="form-control" wire:model="name" placeholder="Name">
                     @error('name')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Rate</label> <input type="text"
-                        class="form-control" wire:model="rate" placeholder="Rate">
+                <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Rate</label> <input
+                        type="text" class="form-control" wire:model="rate" placeholder="Rate">
                     @error('name')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
 
-            <div class="button mt-4">
-                <button type="submit" class="btn btn-primary">Save
-                    <x-spinner />
+            <!-- Action Buttons -->
+            <div class="d-flex gap-3 justify-content-end mt-3">
+                <a href="{{ route('tax.index') }}" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+                @can('create-tax')
+                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save">
+                    <span wire:loading.remove wire:target="save">
+                        Save
+                    </span>
+                    <span wire:loading wire:target="save">
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                        Saving...
+                    </span>
                 </button>
+                @else
+                <button class="btn btn-primary" disabled>
+                    Save
+                </button>
+                @endcan
             </div>
         </form>
 

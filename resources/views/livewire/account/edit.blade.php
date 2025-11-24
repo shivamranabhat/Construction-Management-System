@@ -1,7 +1,7 @@
 <div class="col-xl-12">
     <div class="card custom-card">
         <div class="card-header justify-content-between">
-            <div class="card-title">Edit User</div>
+            <div class="card-title">Edit</div>
             <a href="{{ route('account.index') }}" class="btn btn-primary btn-sm">Back</a>
         </div>
 
@@ -62,10 +62,26 @@
                     @error('selectedRole') <small class="text-danger">Please select a role</small> @enderror
                 </div>
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">Update
-                        <x-spinner />
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3 justify-content-end my-4">
+                    <a href="{{ route('account.index') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                    @can('update-account')
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="update">
+                        <span wire:loading.remove wire:target="update">
+                            Save
+                        </span>
+                        <span wire:loading wire:target="update">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Saving...
+                        </span>
                     </button>
+                    @else
+                    <button type="submit" class="btn btn-primary" disabled>
+                       Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

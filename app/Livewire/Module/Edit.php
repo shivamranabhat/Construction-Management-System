@@ -13,34 +13,59 @@ class Edit extends Component
     public $module;
     public $name;
 
+    public $allowedModules = [
+        'account', 'bill', 'boq', 'category', 'item', 'module',
+        'payment', 'project', 'purchase', 'requisition',
+        'role', 'tax', 'vendor'
+    ];
     public function mount(string $slug)
     {
         $this->module = Module::where('slug', $slug)->firstOrFail();
+
+        // Ensure current name is in allowed list (safety)
+        if (!in_array($this->module->name, $this->allowedModules)) {
+            abort(404, 'Module not found or invalid.');
+        }
+
         $this->name = $this->module->name;
     }
 
     public function update()
     {
         $this->validate([
-            'name' => 'required|unique:modules,name,' . $this->module->id,
-        ],
-        [
-            'name.required' => 'Please enter module name.', 
-            'name.unique' => 'This module name is already exists.'
+            'name' => 'required|in:' . implode(',', $this->allowedModules),
+        ], [
+            'name.required' => 'Please select a module.',
+            'name.in'       => 'Invalid module selected.',
         ]);
-        $slug = Str::slug('mod'.'-'.$this->name.'-'.now());
+
+        // Generate new slug
+        $newSlug = Str::slug('mod-' . $this->name . '-' . now()->timestamp);
+
+        // Update module
         $this->module->update([
             'name' => $this->name,
-            'slug' => $slug,
+            'slug' => $newSlug,
         ]);
+
+        // Update all related permission slugs
+        // Example: old: view-project → new: view-account
         foreach ($this->module->permissions as $permission) {
-            $action = strtolower(explode('-', $permission->slug)[0]); 
+            // Extract action (view, create, edit, delete)
+            $action = strtok($permission->slug, '-'); // gets part before first '-'
+
+            $newPermissionSlug = Str::slug("{$action}-{$this->name}");
+
             $permission->update([
-                'slug' => \Str::slug("{$action}-{$this->name}"),
+                'slug' => $newPermissionSlug,
+                // Optional: update display name too
+                'name' => ucfirst($action) . ' ' . ucfirst($this->name),
             ]);
         }
-       
-        return redirect()->route('module.index')->with('success', 'Module updated successfully!');
+
+        session()->flash('success', 'Module updated successfully! All permissions have been updated.');
+
+        return redirect()->route('module.index');
     }
 
     public function render()

@@ -44,6 +44,7 @@ class Index extends Component
                                 });
                         })
                         ->where('id', '!=', auth()->id())
+                        ->orWhere('type','<>','Super Admin')
                         ->latest()
                         ->paginate($this->perPage);
         }
@@ -60,6 +61,7 @@ class Index extends Component
                                 });
                         })
                         ->where('id', '!=', auth()->id())
+                        ->where('type', '<>', 'Super Admin')
                         ->where('company_id',auth()->user()->company_id)
                         ->latest()
                         ->paginate($this->perPage);

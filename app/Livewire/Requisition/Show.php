@@ -123,7 +123,7 @@ class Show extends Component
 
     public function mount($slug)
     {
-        $this->requisition = Requisition::with(['items.item', 'project', 'requester'])->whereSlug($slug)->first();
+        $this->requisition = Requisition::with(['items.item', 'project', 'requester'])->whereSlug($slug)->firstOrFail();
         $this->vendors = Vendor::where('company_id', auth()->user()->company_id)->get();
         $this->determineStatusAndProgress();
     }

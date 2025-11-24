@@ -8,7 +8,7 @@
         </div>
 
         <div class="card-body">
-            <form wire:submit="save" wire:loading.attr="disabled" wire:target="save">
+            <form wire:submit="save">
                 <div class="row g-3">
                     <div class="row">
                         <!-- Type -->
@@ -102,9 +102,22 @@
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <button class="btn btn-primary">Save 
+                <div class="border-top px-4 py-3 d-flex justify-content-end gap-2">
+                    <a href="{{ route('item.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('create-item')
+                    <button type="submit" class="btn btn-primary d-flex align-items-center gap-1"
+                        wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="save">Save</span>
+                        <span wire:loading wire:target="save">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span aria-hidden="true">Saving…</span>
+                        </span>
                     </button>
+                    @else
+                    <button class="btn btn-primary d-flex align-items-center gap-1" disabled>
+                        Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

@@ -66,10 +66,16 @@
 
                 <div class="d-flex gap-3 justify-content-end mt-4">
                     <a href="{{ route('payment.index') }}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
+                    @can('create-payment')
+                     <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
                         <span wire:loading.remove>Save</span>
                         <span wire:loading>Saving...</span>
                     </button>
+                    @else
+                    <button class="btn btn-primary" disabled>
+                        Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

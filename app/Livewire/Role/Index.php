@@ -20,9 +20,9 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function delete($slug)
+    public function delete($id)
     {
-        $role = Role::whereSlug($slug)->delete();
+        $role = Role::find($id)->delete();
         session()->flash('success', 'Role deleted successfully!');
     }
 

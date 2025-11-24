@@ -36,18 +36,26 @@
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="col-sm-12"> <label for="input-text" class="form-label">PAN</label> <input
-                        type="text" class="form-control" wire:model="PAN" placeholder="Vendor PAN">
+                <div class="col-sm-12"> <label for="input-text" class="form-label">PAN</label> <input type="text"
+                        class="form-control" wire:model="PAN" placeholder="Vendor PAN">
                     @error('PAN')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="button mt-4">
-                    <button type="submit" class="btn btn-primary">Save
-                        <x-spinner />
-                    </button>
-                </div>
+            </div>
+            <!-- Submit -->
+            <div class="d-flex justify-content-end gap-3 my-3">
+                <a href="{{ route('vendor.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                @can('create-vendor')
+                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
+                    <span wire:loading.remove>Save</span>
+                    <span wire:loading>Saving...</span>
+                </button>
+                @else
+                <button class="btn btn-primary" disabled>Save
+                </button>
+                @endcan
             </div>
         </form>
 

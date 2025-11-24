@@ -17,7 +17,7 @@ class Edit extends Component
 
     public function mount(Requisition $requisition)
     {
-        $this->authorize('update', $requisition); // optional policy
+        $this->authorize('update', $requisition);
 
         $this->requisition = $requisition;
         $this->project_id = $requisition->project_id;

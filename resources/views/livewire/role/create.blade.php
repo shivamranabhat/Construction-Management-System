@@ -93,10 +93,26 @@
                 </div>
 
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">Save
-                        <x-spinner />
+                 <!-- Action Buttons -->
+                <div class="d-flex gap-3 justify-content-end mt-3">
+                    <a href="{{ route('role.index') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                    @can('create-role')
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save">
+                        <span wire:loading.remove wire:target="save">
+                            Save
+                        </span>
+                        <span wire:loading wire:target="save">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Saving...
+                        </span>
                     </button>
+                    @else
+                    <button class="btn btn-primary" disabled>
+                        Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

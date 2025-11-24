@@ -110,17 +110,24 @@
                     <a href="{{ route('payment.index') }}" class="btn btn-outline-secondary">
                         Cancel
                     </a>
+                    @can('update-payment')
                     <button 
                         type="submit" 
                         class="btn btn-primary" 
                         wire:loading.attr="disabled"
                         wire:target="save">
-                        <span wire:loading.remove wire:target="save">Update Payment</span>
+                        <span wire:loading.remove wire:target="save">Save</span>
                         <span wire:loading wire:target="save">
                             <span class="spinner-border spinner-border-sm" role="status"></span>
-                            Updating...
+                            Saving...
                         </span>
                     </button>
+                    @else
+                    <button 
+                        class="btn btn-primary" disabled>
+                        Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

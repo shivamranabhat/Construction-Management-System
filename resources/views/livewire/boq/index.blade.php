@@ -53,9 +53,15 @@
                                 <a href="{{ route('boq.edit', $boq->slug) }}" class="dropdown-item">
                                     Edit BOQ
                                 </a>
+                                @can('delete-boq')
                                 <button class="dropdown-item text-danger" @click="openModal = true">
                                     Delete BOQ
                                 </button>
+                                @else
+                                <button class="dropdown-item text-danger" disabled>
+                                    Delete BOQ
+                                </button>
+                                @endcan
                             </div>
                             <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                 <div class="modal-box">

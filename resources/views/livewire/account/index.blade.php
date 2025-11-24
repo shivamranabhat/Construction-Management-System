@@ -27,7 +27,7 @@
                                 wire:model.live="search">
                         </label>
                         <a href="{{ route('account.create') }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-circle"></i>
+                            <i class="bi bi-plus-circle"></i> New
                         </a>
                     </div>
                 </div>
@@ -46,6 +46,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @can('preview-account')
                         @forelse($users as $index => $user)
                         <tr>
                             <td>{{ $users->firstItem() + $index }}</td>
@@ -64,6 +65,7 @@
                                     class="btn btn-icon btn-info-transparent rounded-pill">
                                     <i class="ri-edit-line"></i>
                                 </a>
+                                @can('delete-account')
                                 <button @click="openModal = true"
                                     class="btn btn-icon btn-danger-transparent rounded-pill">
                                     <i class="ri-delete-bin-line"></i>
@@ -84,6 +86,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                @else
+                                 <button
+                                    class="btn btn-icon btn-danger-transparent rounded-pill" disabled>
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                                @endcan
                             </td>
                         </tr>
                         @empty
@@ -91,6 +99,11 @@
                             <td colspan="6" class="text-center text-muted">No users found.</td>
                         </tr>
                         @endforelse
+                        @else 
+                         <tr>
+                            <td colspan="6" class="text-center text-muted">No users found.</td>
+                        </tr>
+                        @endcan
                     </tbody>
                 </table>
             </div>

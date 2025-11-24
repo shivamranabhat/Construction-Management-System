@@ -40,9 +40,12 @@
                         <div class="drop-down-profile" data-bs-toggle="dropdown" role="button"><i
                                 class="bi bi-three-dots-vertical"></i></div>
                         <div class="dropdown-menu fs-13"> <a class="dropdown-item"
-                                href="{{ route('project.edit', $project->slug) }}">Edit</a> <a class="dropdown-item"
-                                href="javascript:void(0);">Mark As Important</a> <a class="dropdown-item"
-                                @click="openModal = true" role="button">Delete</a>
+                                href="{{ route('project.edit', $project->slug) }}">Edit</a>
+                            @can('delete-project')
+                            <a class="dropdown-item" @click="openModal = true" role="button">Delete</a>
+                            @else
+                            <a class="dropdown-item" role="button" disabled>Delete</a>
+                            @endcan
                         </div>
                     </div>
                     <div x-show="openModal" class="modal-backdrop" style="display: none;">

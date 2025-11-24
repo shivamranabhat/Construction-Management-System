@@ -27,10 +27,27 @@
                 </div>
             </div>
 
-            <div class="button mt-4">
-                <button type="submit" class="btn btn-primary">Save
-                    <x-spinner />
-                </button>
+            <!-- Action Buttons -->
+                <div class="d-flex gap-3 justify-content-end mt-3">
+                    <a href="{{ route('tax.index') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                    @can('update-tax')
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="update">
+                        <span wire:loading.remove wire:target="update">
+                            Save
+                        </span>
+                        <span wire:loading wire:target="update">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Saving...
+                        </span>
+                    </button>
+                    @else
+                    <button class="btn btn-primary" disabled>
+                        Save
+                    </button>
+                    @endcan
+                </div>
             </div>
         </form>
 

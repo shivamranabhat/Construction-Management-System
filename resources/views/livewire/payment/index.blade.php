@@ -124,10 +124,17 @@
                                         <i class="ri-edit-line"></i>
                                     </a>
                                   
+                                    @can('delete-payment')
                                     <button type="button" @click="openModal = true"
                                         class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
+                                    @else
+                                     <button
+                                        class="btn btn-icon btn-danger-transparent rounded-pill" disabled>
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @endcan
                                 </div>
                                 <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                     <div class="modal-box">

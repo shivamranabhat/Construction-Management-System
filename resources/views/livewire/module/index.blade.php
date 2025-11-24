@@ -28,7 +28,7 @@
                                 wire:model.live="search">
                         </label>
                         <a href="{{ route('module.create') }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-circle"></i>
+                            <i class="bi bi-plus-circle"></i> New
                         </a>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         @forelse($modules as $index=>$module)
                         <tr>
                             <td>{{ $modules->firstItem()+$index }}</td>
-                            <td>{{ $module->name }}</td>
+                            <td><span style="text-transform: capitalize">{{ $module->name }}</span></td>
                             <td>{{ $module->created_at }}</td>
                             <td x-data="{ openModal: false }">
                                 <div class="hstack gap-2">
@@ -59,10 +59,17 @@
                                     {{-- <button type="button" class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
                                     </button> --}}
+                                    @can('delete-module')
                                     <button type="button" @click="openModal = true"
                                         class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
+                                    @else
+                                    <button type="button" disabled
+                                        class="btn btn-icon btn-danger-transparent rounded-pill">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @endcan
                                 </div>
                                 <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                     <div class="modal-box">

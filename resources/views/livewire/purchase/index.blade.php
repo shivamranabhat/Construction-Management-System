@@ -60,9 +60,15 @@
                                 <a href="{{ route('purchase.edit', $purchase->slug) }}" class="dropdown-item">
                                     Edit
                                 </a>
+                                @can('delete-purchase')
                                 <button class="dropdown-item text-danger" @click="openModal = true">
                                     Delete
                                 </button>
+                                @else
+                                <button class="dropdown-item text-danger" disabled>
+                                    Delete
+                                </button>
+                                @endcan
                             </div>
                             <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                 <div class="modal-box">
@@ -125,29 +131,30 @@
     </div>
     <div class="mt-5">{{ $purchases->links() }}</div>
     @else
-    
+
     <div class="text-center py-5">
-            <div class="card border-0 shadow-sm mx-auto">
-                <div class="card-body p-5">
-                    <div class="mb-4">
-                        <i class="bi bi-cart display-1 text-primary"></i>
-                    </div>
-                    <h3 class="text-dark mb-3">No Purchases Yet</h3>
-                    <p class="text-muted mb-4">
-                        Start tracking your purchases by creating your first one.
-                    </p>
-                    <a href="{{ route('purchase.create') }}"
-                       class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                             class="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                        </svg>
-                        Create First Purchase
-                    </a>
+        <div class="card border-0 shadow-sm mx-auto">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <i class="bi bi-cart display-1 text-primary"></i>
                 </div>
+                <h3 class="text-dark mb-3">No Purchases Yet</h3>
+                <p class="text-muted mb-4">
+                    Start tracking your purchases by creating your first one.
+                </p>
+                <a href="{{ route('purchase.create') }}"
+                    class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                        class="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path
+                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                    </svg>
+                    Create First Purchase
+                </a>
             </div>
         </div>
+    </div>
     @endif
 </div>
 

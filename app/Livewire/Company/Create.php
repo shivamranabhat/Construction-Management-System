@@ -44,7 +44,7 @@ class Create extends Component
             'email' => $this->email,
             'password' => Hash::make($this->password),
             'image' => $imagePath,
-            'type' => 'company',
+            'type' => 'Company',
             'company_id' => $company->id,
             'slug' => Str::slug('com'.'-'.$this->name.'-'.now()),
         ]);

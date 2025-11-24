@@ -216,14 +216,20 @@
                 <!-- Actions -->
                 <div class="border-top px-4 py-3 d-flex justify-content-end gap-2">
                     <a href="{{ route('purchase.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('update-purchase')
                     <button type="submit" class="btn btn-primary d-flex align-items-center gap-1"
                             wire:loading.attr="disabled">
-                        <span wire:loading.remove wire:target="save">Update Purchase</span>
+                        <span wire:loading.remove wire:target="save">Save Purchase</span>
                         <span wire:loading wire:target="save">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Updating…
+                            Saving...
                         </span>
                     </button>
+                    @else
+                    <button class="btn btn-primary d-flex align-items-center gap-1" disabled>
+                        Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

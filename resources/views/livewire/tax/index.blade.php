@@ -58,13 +58,17 @@
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>
-                                    {{-- <button type="button" class="btn btn-icon btn-danger-transparent rounded-pill">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button> --}}
+                                    @can('delete-tax')
                                     <button type="button" @click="openModal = true"
                                         class="btn btn-icon btn-danger-transparent rounded-pill">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
+                                    @else
+                                    <button type="button" disabled
+                                        class="btn btn-icon btn-danger-transparent rounded-pill">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @endif
                                 </div>
                                 <div x-show="openModal" class="modal-backdrop" style="display: none;">
                                     <div class="modal-box">
@@ -77,8 +81,8 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-cancel" @click="openModal = false">Cancel</button>
-                                            <button class="btn btn-delete"
-                                                wire:click="delete('{{ $tax->slug }}')" @click="openModal = false">Delete</button>
+                                            <button class="btn btn-delete" wire:click="delete('{{ $tax->slug }}')"
+                                                @click="openModal = false">Delete</button>
                                         </div>
                                     </div>
                                 </div>

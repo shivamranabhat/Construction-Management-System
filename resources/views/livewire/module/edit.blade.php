@@ -11,17 +11,66 @@
             </a>
         </div>
         <form class="card-body" wire:submit='update'>
-            <div class="col-md-6 col-sm-12"> <label for="input-text" class="form-label">Name</label> <input type="text"
-                    class="form-control" wire:model="name" placeholder="Eg: Billing, Users...">
-                @error('name')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
+            <div class="row gy-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label">
+                        Module Name <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select @error('name') is-invalid @enderror" wire:model="name">
+                        <option value="">-- Select Module --</option>
+
+                        @foreach([
+                        'account' => 'Account',
+                        'bill' => 'Bill',
+                        'boq' => 'BOQ',
+                        'category' => 'Category',
+                        'item' => 'Item',
+                        'module' => 'Module',
+                        'payment' => 'Payment',
+                        'project' => 'Project',
+                        'purchase' => 'Purchase',
+                        'requisition' => 'Requisition',
+                        'role' => 'Role',
+                        'tax' => 'Tax',
+                        'vendor' => 'Vendor',
+                        ] as $value => $label)
+                        <option value="{{ $value }}" {{ $name===$value ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
+                        @endforeach
+                    </select>
+
+                    @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+
+                    <small class="text-muted">
+                        Changing module name will update all related permissions (e.g., view-project → view-account)
+                    </small>
+                </div>
             </div>
 
-            <div class="button mt-4">
-                <button type="submit" class="btn btn-primary">Save
-                    <x-spinner />
+            <!-- Action Buttons -->
+            <div class="d-flex gap-3 justify-content-end mt-4">
+                <a href="{{ route('module.index') }}" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+                @can('update-module')
+                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="update">
+                    <span wire:loading.remove wire:target="update">
+                        Save
+                    </span>
+                    <span wire:loading wire:target="update">
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                        Saving...
+                    </span>
                 </button>
+                @else
+                <button class="btn btn-primary" disabled>
+                    Save
+                </button>
+                @endcan
             </div>
         </form>
 

@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label class="form-label">End Date</label>
+                        <label class="form-label">Est. End Date</label>
                         <input type="date" class="form-control" wire:model="end_date">
                         @error('end_date') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
@@ -58,8 +58,25 @@
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary px-4">Save <x-spinner /></button>
+               <!-- Action Buttons -->
+                <div class="d-flex gap-3 justify-content-end my-4">
+                    <a href="{{ route('project.index') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                    @can('update-project')
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="update">
+                        <span wire:loading.remove wire:target="update">
+                            Save
+                        </span>
+                        <span wire:loading wire:target="update">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Saving...
+                        </span>
+                    </button>
+                    @else
+                    <button class="btn btn-primary" disabled>
+                       Save
+                    @endcan
                 </div>
             </form>
         </div>
