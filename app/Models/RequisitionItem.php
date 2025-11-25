@@ -12,7 +12,7 @@ class RequisitionItem extends Model
         static::addGlobalScope(new CompanyScope);
     }
 
-    protected $fillable = ['company_id', 'requisition_id', 'item_id', 'quantity', 'unit', 'remarks'];
+    protected $fillable = ['company_id', 'requisition_id', 'item_id', 'quantity', 'remarks'];
 
     public function company()
     {

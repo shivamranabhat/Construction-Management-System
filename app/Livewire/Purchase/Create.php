@@ -10,6 +10,7 @@ use App\Models\Stock;
 use App\Models\StockMovement;
 use App\Models\Tax;
 use App\Models\Vendor;
+use App\Models\Requisition;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -31,47 +32,104 @@ class Create extends Component
 
     public $lines = [];
 
+
+
     // Dropdown
     public $showItemDropdown = [];
     public $item_search = [];
 
     public $vendors, $taxes, $projects, $categories;
-    public $userProjects;     // Collection of user's projects
+    public $userProjects = [];
     public $singleProject = false;
     public $noProjectAccess = false;
+
+    // Requisition Modal
+    public $pendingRequisitions = [];
+    public $showRequisitionModal = false;
+    public $selectedRequisitionId = null;
 
     public function mount()
     {
         $this->purchase_date = now()->format('Y-m-d');
         $this->purchase_number = 'PO-' . now()->format('Ymd-His');
-        // Get ONLY projects user is assigned to via project_user pivot
-    $this->userProjects = Project::whereHas('users', function ($q) {
-        $q->where('user_id', auth()->id());
-    })
-    ->orderBy('name')
-    ->get()
-    ->pluck('name', 'id'); // Safe: 'id' refers to projects.id
 
-    if ($this->userProjects->isEmpty()) {
-        $this->noProjectAccess = true;
-        $this->addError('project_access', 'You are not assigned to any project. Contact admin.');
-    } elseif ($this->userProjects->count() === 1) {
-        $this->project_id = $this->userProjects->keys()->first();
-        $this->singleProject = true;
-    }
+        $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+            ->orderBy('name')
+            ->get()
+            ->pluck('name', 'id');
+
+        if ($this->userProjects->isEmpty()) {
+            $this->noProjectAccess = true;
+            $this->addError('project_access', 'You are not assigned to any project.');
+        } elseif ($this->userProjects->count() === 1) {
+            $this->project_id = $this->userProjects->keys()->first();
+            $this->singleProject = true;
+        }
+
         $this->loadSelects();
         $this->addEmptyRow();
     }
 
     public function loadSelects()
     {
-        $companyId = auth()->user()->company_id ?? 1;
+        $companyId = auth()->user()->company_id;
         $this->vendors = Vendor::where('company_id', $companyId)->orderBy('name')->get();
         $this->taxes = Tax::where('company_id', $companyId)->orderBy('name')->get();
-        $this->projects = Project::where('company_id', $companyId)->orderBy('name')->get();
         $this->categories = Category::where('company_id', $companyId)->orderBy('name')->get();
     }
 
+    public function updatedVendorId() { $this->checkForRequisitions(); }
+    public function updatedProjectId() { $this->checkForRequisitions(); }
+
+    public function checkForRequisitions()
+    {
+        if (!$this->vendor_id || !$this->project_id) {
+            $this->pendingRequisitions = [];
+            $this->showRequisitionModal = false;
+            return;
+        }
+
+        $this->pendingRequisitions = Requisition::with(['items.item', 'project'])
+            ->where('vendor_id', $this->vendor_id)
+            ->where('project_id', $this->project_id)
+            ->where('status', 'owner_approved')
+            ->whereDoesntHave('purchase')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $this->showRequisitionModal = $this->pendingRequisitions->isNotEmpty();
+    }
+
+    public function useRequisition($requisitionId)
+    {
+        $requisition = Requisition::with('items.item')->findOrFail($requisitionId);
+
+        $this->lines = [];
+        foreach ($requisition->items as $reqItem) {
+            $this->lines[] = [
+                'item_id'   => $reqItem->item_id,
+                'item_name' => $reqItem->item->name,
+                'quantity'  => $reqItem->quantity,
+                'rate'      => 0,
+                'tax_id'    => null,
+                'amount'    => 0,
+            ];
+        }
+
+        $this->selectedRequisitionId = $requisition->id;
+        $this->calculateTotals();
+        $this->showRequisitionModal = false;
+
+        $this->dispatch('toast', type: 'success', 
+            message: "Items loaded from #{$requisition->requisition_number}");
+    }
+
+    public function ignoreRequisitions()
+    {
+        $this->showRequisitionModal = false;
+        $this->dispatch('toast', type: 'info', message: 'Continue manually');
+    }
+    
     public function addEmptyRow()
     {
         $index = count($this->lines);
@@ -218,8 +276,17 @@ class Create extends Component
                 'total_price' => $this->grand_total,
                 'status' => $this->status,
                 'notes' => $this->notes,
+                'requisition_id' => $this->pendingRequisitions->first()?->id ?? null,
                 'slug' => Str::slug($this->purchase_number),
             ]);
+
+            // CHANGE REQUISITION STATUS TO po_created
+            if ($this->selectedRequisitionId) {
+                $requisition = Requisition::find($this->selectedRequisitionId);
+                if ($requisition) {
+                    $requisition->update(['status' => 'po_created']);
+                }
+            }
 
             foreach ($this->lines as $i => $line) {
                 $item = $line['item_id'] ? Item::find($line['item_id']) : null;

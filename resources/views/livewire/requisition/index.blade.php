@@ -91,7 +91,7 @@
                             <td x-data="{ openModal: false }">
                                 <div class="d-flex gap-2">
                                     @can('update-requisition')
-                                    <a href="{{ route('requisition.edit', $req->id) }}"
+                                    <a href="{{ route('requisition.edit', $req->slug) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-edit-line"></i>
                                     </a>
@@ -100,7 +100,7 @@
                                         <i class="ri-edit-line"></i>
                                     </button>
                                     @endcan
-                                    <a href="{{ route('requisition.show', $req->id) }}"
+                                    <a href="{{ route('requisition.show', $req) }}"
                                         class="btn btn-icon btn-info-transparent rounded-pill">
                                         <i class="ri-eye-line"></i>
                                     </a>

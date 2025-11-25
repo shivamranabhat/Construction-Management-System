@@ -44,7 +44,7 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody wire:poll.keep-alive>
                         @forelse($categories as $index=>$category)
                         <tr>
                             <td>{{ $categories->firstItem()+$index }}</td>

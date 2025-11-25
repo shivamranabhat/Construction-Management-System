@@ -69,9 +69,8 @@
                                 <span class="input-group-text">
                                     <i class="bi bi-building"></i>
                                 </span>
-                                <dboinput type="text" value="{{ $userProjects->first() }}"
-                                    class="form-control form-control-sm" readonly>
-                                    <input type="hidden" wire:model="project_id" value="{{ $project_id }}">
+                                <span class="form-control form-control-sm"> {{$userProjects->first() }}</span>
+                                <input type="hidden" wire:model="project_id" value="{{ $project_id }}">
                             </div>
                             <small class="text-muted">Your assigned project</small>
                             @else
@@ -271,14 +270,122 @@
             </form>
         </div>
     </div>
+    <!-- Requisition Import Modal -->
+    @if($showRequisitionModal)
+    <div class="modal fade show d-block custom-modal-backdrop" tabindex="-1">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content custom-modal-content">
+
+                {{-- HEADER --}}
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold d-flex align-items-center">
+                        <i class="bi bi-box-seam me-2"></i>
+                        Found {{ $pendingRequisitions->count() }} Approved Requisition(s)
+                    </h5>
+                    <button type="button" wire:click="ignoreRequisitions" class="btn-close"></button>
+                </div>
+
+                {{-- BODY --}}
+                <div class="modal-body">
+
+                    <p class="mb-4 text-muted d-flex align-items-center">
+                        <i class="bi bi-info-circle me-2"></i>
+                        We found approved requisitions for this vendor. You may auto-fill items from one of them.
+                    </p>
+
+                    <div class="row g-3">
+                        @foreach($pendingRequisitions as $req)
+                        <div class="col-md-6">
+
+                            <div class="p-4 requisition-card h-100" style="cursor: pointer;"
+                                wire:click="useRequisition({{ $req->id }})">
+
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="fw-bold mb-0">
+                                        <i class="bi bi-hash me-1"></i>{{ $req->requisition_number }}
+                                    </h6>
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-check-circle me-1"></i> Approved
+                                    </span>
+                                </div>
+
+                                <p class="small text-muted mb-1">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    {{ $req->created_at->format('d M Y') }}
+                                </p>
+
+                                <p class="small text-muted mb-3">
+                                    <i class="bi bi-building me-1"></i>
+                                    {{ $req->project->name }}
+                                </p>
+
+                                <div class="fw-semibold text-primary d-flex align-items-center">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    {{ $req->items->count() }} item(s)
+                                </div>
+
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Manual Entry Button --}}
+                    <div class="mt-4 p-4 bg-light rounded-3 border text-center">
+                        <button type="button" wire:click="ignoreRequisitions" class="btn btn-outline-dark">
+                            <i class="bi bi-pencil-square me-1"></i>
+                            No thanks, I'll enter items manually
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Optional: Custom CSS -->
+    <style>
+        .custom-modal-backdrop {
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(2px);
+        }
+
+        .custom-modal-content {
+            background: #ffffff !important;
+            color: #000 !important;
+            border-radius: 14px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .requisition-card {
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            background: #fafafa;
+            border: 1px solid #e6e6e6;
+        }
+
+        .requisition-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #d0d0d0;
+        }
+
+        .hover-shadow:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-4px);
+            border-color: #4f46e5 !important;
+        }
+
+        .transition {
+            transition: all 0.3s ease;
+        }
+
+        .hover-bg-light:hover {
+            background-color: #f8f9fa !important;
+        }
+    </style>
 
 </div>
-
-
-@push('style')
-<style>
-    .hover-bg-light:hover {
-        background-color: #f8f9fa !important;
-    }
-</style>
-@endpush

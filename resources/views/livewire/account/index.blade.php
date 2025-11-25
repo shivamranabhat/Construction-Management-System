@@ -45,7 +45,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody wire:poll.keep-alive>
                         @can('preview-account')
                         @forelse($users as $index => $user)
                         <tr>

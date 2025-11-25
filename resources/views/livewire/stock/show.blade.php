@@ -29,7 +29,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label text-muted small">Current Stock</label>
-                            <div class="display-6 fw-bold text-{{ $stock->total_stock > 0 ? 'success' : 'danger' }}">
+                            <div class="display-6 fw-bold text-{{ $stock->total_stock > 0 ? 'primary' : 'danger' }}">
                                 {{ $stock->total_stock }}
                             </div>
                         </div>

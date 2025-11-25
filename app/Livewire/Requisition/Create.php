@@ -44,7 +44,6 @@ class Create extends Component
         $this->items[] = [
             'item_id' => '',
             'quantity' => 1,
-            'unit' => 'nos',
             'remarks' => ''
         ];
     }
@@ -143,7 +142,7 @@ class Create extends Component
                 'requisition_number' => Requisition::generateRequisitionNumber(),
                 'company_id' => auth()->user()->company_id,
                 'status' => 'pending_pm',
-                'slug'=> Str::slug(Requisition::generateRequisitionNumber())
+                'slug'=> Str::slug(Requisition::generateRequisitionNumber().'-'.now())
             ]);
 
             foreach ($this->items as $item) {
@@ -151,7 +150,6 @@ class Create extends Component
                     'requisition_id' => $requisition->id,
                     'item_id' => $item['item_id'],
                     'quantity' => $item['quantity'],
-                    'unit' => $item['unit'],
                     'company_id' => auth()->user()->company_id,
                     'remarks' => $item['remarks'] ?? null,
                 ]);
@@ -173,10 +171,7 @@ class Create extends Component
 
     public function render()
     {
-        $companyId = auth()->user()->company_id;
-
-        $availableItems = Item::where('company_id', $companyId)
-            ->when($this->itemSearch, fn($q) => $q->where('name', 'like', "%{$this->itemSearch}%")
+        $availableItems = Item::when($this->itemSearch, fn($q) => $q->where('name', 'like', "%{$this->itemSearch}%")
                 ->orWhere('code', 'like', "%{$this->itemSearch}%"))
             ->limit(30)
             ->get()

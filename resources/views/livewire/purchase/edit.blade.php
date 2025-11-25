@@ -40,14 +40,35 @@
                         </div>
                         <div class="col-md-3">
                             <label>Project</label>
-                            <select wire:model.live="project_id" class="form-select form-select-sm">
-                                <option value="">None</option>
-                                @forelse($projects as $p)
-                                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                @empty
-                                    <option value="" disabled>No projects found</option>
-                                @endforelse
-                            </select>
+                            @if($singleProject)
+                            <!-- Only one project → show as readonly -->
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <span class="form-control form-control-sm"> {{$userProjects->first() }}</span>
+                                <input type="hidden" wire:model="project_id" value="{{ $project_id }}">
+                            </div>
+                            <small class="text-muted">Your assigned project</small>
+                            @else
+                            <!-- Multiple projects → dropdown -->
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <select wire:model.live="project_id"
+                                    class="form-select form-select-sm @error('project_id') is-invalid @enderror"
+                                    required>
+                                    <option value="">Select Project</option>
+                                    @foreach($userProjects as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('project_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                            @endif
                             @error('project_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>

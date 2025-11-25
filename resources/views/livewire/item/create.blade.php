@@ -83,7 +83,16 @@
                     <!-- Unit -->
                     <div class="col-12 col-md-6">
                         <label class="form-label">Unit <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="unit" class="form-control" placeholder="e.g., kg, pcs, m">
+                        <select wire:model="unit" class="form-select">
+                            <option value="">Select Unit</option>
+                            @foreach(config('units.grouped') as $group => $codes)
+                            <optgroup label="{{ $group }}">
+                                @foreach($codes as $code)
+                                <option value="{{ $code }}">{{ config("units.item_units.{$code}") }}</option>
+                                @endforeach
+                            </optgroup>
+                            @endforeach
+                        </select>
                         @error('unit') <span class="text-danger small">{{ $message }}</span> @enderror
                     </div>
 

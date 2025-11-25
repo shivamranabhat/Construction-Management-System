@@ -47,26 +47,10 @@ class Index extends Component
                     $q->whereNull('project_id');
                 }
 
-                // Log query for debugging
-                Log::info('Stock decrement on delete', [
-                    'purchase_slug' => $slug,
-                    'item_id'       => $itemId,
-                    'project_id'    => $projectId,
-                    'effective_project_id' => $effectiveProjectId,
-                    'quantity'      => $quantity,
-                    'sql'           => $q->toSql(),
-                    'bindings'      => $q->getBindings(),
-                ]);
 
                 try {
                     $affected = $q->decrement('stock', $quantity);
                 } catch (\Exception $e) {
-                    Log::error('Stock decrement failed', [
-                        'purchase_slug' => $slug,
-                        'item_id'       => $itemId,
-                        'quantity'      => $quantity,
-                        'error'         => $e->getMessage(),
-                    ]);
                     $affected = 0;
                 }
 
@@ -80,23 +64,8 @@ class Index extends Component
                                 : $query->where('project_id', $effectiveProjectId);
                         })
                         ->exists();
-
-                    Log::warning('Stock not reduced (no matching record)', [
-                        'purchase_slug'       => $slug,
-                        'item_id'             => $itemId,
-                        'project_id'          => $projectId,
-                        'effective_project_id'=> $effectiveProjectId,
-                        'company_id'          => $companyId,
-                        'quantity'            => $quantity,
-                        'stock_exists'        => $exists,
-                    ]);
+                 
                 } else {
-                    Log::info('Stock reduced successfully', [
-                        'purchase_slug' => $slug,
-                        'item_id'       => $itemId,
-                        'quantity'      => $quantity,
-                        'affected'      => $affected,
-                    ]);
                 }
             }
 
@@ -114,9 +83,13 @@ class Index extends Component
     public function render()
     {
         $purchases = Purchase::with(['vendor', 'project', 'enteredBy'])
+            ->whereHas('project.users', function ($q) {
+                $q->where('user_id', auth()->id());
+            })
             ->when($this->search, function ($q) {
                 $q->where('purchase_number', 'like', "%{$this->search}%")
-                  ->orWhereHas('vendor', fn($q) => $q->where('name', 'like', "%{$this->search}%"));
+                ->orWhereHas('vendor', fn($query) => $query->where('name', 'like', "%{$this->search}%"))
+                ->orWhereHas('project', fn($query) => $query->where('name', 'like', "%{$this->search}%"));
             })
             ->when($this->status_filter, fn($q) => $q->where('status', $this->status_filter))
             ->latest()

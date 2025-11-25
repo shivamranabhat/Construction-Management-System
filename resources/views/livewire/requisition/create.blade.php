@@ -61,16 +61,15 @@
                             class="text-danger">*</span></label>
                     <textarea wire:model="purpose" class="form-control @error('purpose') is-invalid @enderror" rows="3"
                         required></textarea>
-                    @error('purpose') <span class="text-danger small">Please provide the purpose/justification of Requisition.</span> @enderror
+                    @error('purpose') <span class="text-danger small">Please provide the purpose/justification of
+                        Requisition.</span> @enderror
                 </div>
 
                 <!-- Items -->
                 <div class="border rounded-3 p-4 bg-light mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0 text-primary fw-bold">Materials Required</h6>
-                        <button type="button" wire:click="addItemRow" class="btn btn-sm btn-outline-success">
-                            Add Item
-                        </button>
+                        <div></div>
                     </div>
 
                     @foreach($items as $index => $item)
@@ -86,41 +85,36 @@
                                 <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
                             </select>
-                            @error("items.{$index}.item_id") <span class="text-danger small">Please select an item</span>
+                            @error("items.{$index}.item_id") <span class="text-danger small">Please select an
+                                item</span>
                             @enderror
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label class="form-label small text-muted">Quantity</label>
                             <input type="number" step="0.01" wire:model="items.{{ $index }}.quantity"
                                 class="form-control form-control-sm" min="0.01" required>
                         </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label small text-muted">Unit</label>
-                            <select wire:model="items.{{ $index }}.unit" class="form-select form-select-sm">
-                                <option>nos</option>
-                                <option>kg</option>
-                                <option>meter</option>
-                                <option>liter</option>
-                                <option>box</option>
-                            </select>
-                        </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label class="form-label small text-muted">Remarks</label>
                             <input type="text" wire:model="items.{{ $index }}.remarks"
                                 class="form-control form-control-sm">
                         </div>
 
                         <div class="col-md-1">
-                            <button type="button" wire:click="removeItemRow({{ $index }})"
-                                class="btn btn-sm btn-outline-danger">
-                                Remove
-                            </button>
+                            <button type="button" wire:click="removeItemRow({{ $index }})" class="btn text-danger"><i
+                                    class="bi bi-x-lg"></i></button>
                         </div>
                     </div>
                     @endforeach
+                    <div class="mt-3">
+                        <button type="button" wire:click="addItemRow"
+                            class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                            <i class="bi bi-plus-circle"></i> Add
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Submit -->

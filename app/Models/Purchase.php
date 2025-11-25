@@ -24,6 +24,7 @@ class Purchase extends Model
         'total_price',
         'status',
         'notes',
+        'requisition_id',
         'slug',
     ];
 
@@ -51,6 +52,10 @@ class Purchase extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+    public function requisition()
+    {
+        return $this->belongsTo(Requisition::class, 'requisition_id');
     }
     /**
      * Update status based on total_price vs billed_amount

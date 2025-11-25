@@ -132,8 +132,8 @@ Route::middleware([Authenticate::class])->group(function () {
     Route::name('requisition.')->group(function () {
         Route::get('/requisitions', RequisitionIndex::class)->name('index');            
         Route::get('/requisition/new', RequisitionCreate::class)->name('create');      
-        Route::get('/requisition/show/{id}', RequisitionShow::class)->name('show');    
-        Route::get('/requisition/{slug}', RequisitionEdit::class)->name('edit');    
+        Route::get('/requisition/show/{requisition}', RequisitionShow::class)->name('show');    
+        Route::get('/requisition/{requisition}', RequisitionEdit::class)->name('edit');    
     });
 
     Route::name('stock.')->group(function () {

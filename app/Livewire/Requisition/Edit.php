@@ -5,6 +5,8 @@ namespace App\Livewire\Requisition;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
 use App\Models\Item;
+use App\Models\Project;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class Edit extends Component
@@ -14,14 +16,37 @@ class Edit extends Component
     public $required_date;
     public $purpose;
     public $items = [];
+    public $userProjects;
+    public $singleProject = false;
+
+    // NEW: Add these
+    public $isLocked = false;
+    public $lockReason = '';
 
     public function mount(Requisition $requisition)
     {
-        $this->authorize('update', $requisition);
+        // Check if requisition is locked (fully approved or PO created)
+        if (in_array($requisition->status, ['owner_approved', 'po_created'])) {
+            $this->isLocked = true;
+            $this->lockReason = $requisition->status === 'owner_approved' 
+                ? 'This requisition is fully approved and cannot be edited.'
+                : 'A Purchase Order has been created. Editing is not allowed.';
+        }
+
+        // Load user's assigned projects
+        $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+            ->orderBy('name')
+            ->get()
+            ->pluck('name', 'id');
+
+        if ($this->userProjects->count() === 1) {
+            $this->project_id = $this->userProjects->keys()->first();
+            $this->singleProject = true;
+        }
 
         $this->requisition = $requisition;
         $this->project_id = $requisition->project_id;
-        $this->required_date = $requisition->required_date->format('Y-m-d');
+        $this->required_date = Carbon::parse($requisition->required_date)->format('Y-m-d');
         $this->purpose = $requisition->purpose;
 
         foreach ($requisition->items as $item) {
@@ -29,7 +54,6 @@ class Edit extends Component
                 'id' => $item->id,
                 'item_id' => $item->item_id,
                 'quantity' => $item->quantity,
-                'unit' => $item->unit,
                 'remarks' => $item->remarks,
             ];
         }
@@ -37,11 +61,20 @@ class Edit extends Component
 
     public function addItemRow()
     {
-        $this->items[] = ['item_id' => '', 'quantity' => 1, 'unit' => 'nos', 'remarks' => ''];
+        if ($this->isLocked) {
+            $this->dispatch('toast', type: 'error', message: $this->lockReason);
+            return;
+        }
+        $this->items[] = ['item_id' => '', 'quantity' => 1, 'remarks' => ''];
     }
 
     public function removeItemRow($index)
     {
+        if ($this->isLocked) {
+            $this->dispatch('toast', type: 'error', message: $this->lockReason);
+            return;
+        }
+
         $itemId = $this->items[$index]['id'] ?? null;
         if ($itemId) {
             RequisitionItem::find($itemId)->delete();
@@ -52,6 +85,11 @@ class Edit extends Component
 
     public function save()
     {
+        if ($this->isLocked) {
+            $this->dispatch('toast', type: 'error', message: $this->lockReason);
+            return;
+        }
+
         $this->validate([
             'project_id' => 'required',
             'required_date' => 'required|date|after:today',
@@ -66,13 +104,11 @@ class Edit extends Component
             'purpose' => $this->purpose,
         ]);
 
-        // Sync items
         $existingIds = [];
         foreach ($this->items as $itemData) {
             $data = [
                 'item_id' => $itemData['item_id'],
                 'quantity' => $itemData['quantity'],
-                'unit' => $itemData['unit'],
                 'remarks' => $itemData['remarks'] ?? null,
             ];
 
@@ -88,21 +124,18 @@ class Edit extends Component
             }
         }
 
-        // Delete removed
         RequisitionItem::where('requisition_id', $this->requisition->id)
             ->whereNotIn('id', $existingIds)
             ->delete();
 
-        $this->dispatch('toast', ['title' => 'Updated!', 'type' => 'success']);
+        $this->dispatch('toast', type: 'success', message: 'Requisition updated successfully!');
         return redirect()->route('requisition.index');
     }
 
     public function render()
     {
         $companyId = auth()->user()->company_id;
-        $availableItems = Item::where('company_id', $companyId)
-            ->pluck('name', 'id');
-
+        $availableItems = Item::where('company_id', $companyId)->pluck('name', 'id');
         return view('livewire.requisition.edit', compact('availableItems'));
     }
 }

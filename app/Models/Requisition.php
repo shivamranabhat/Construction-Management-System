@@ -15,6 +15,11 @@ class Requisition extends Model
         static::addGlobalScope(new ActiveProjectScope);
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug'; 
+    }
+
     protected $fillable = [
         'company_id', 'requisition_number', 'project_id','vendor_id', 'requested_by',
         'required_date', 'purpose', 'status', 'rejection_reason','slug'
@@ -44,6 +49,10 @@ class Requisition extends Model
     public function vendor()
     {
         return $this->belongsTo(Vendor::class);
+    }
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class); // Assuming one requisition → one purchase
     }
 
     public function project()

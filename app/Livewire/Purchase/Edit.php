@@ -36,12 +36,27 @@ class Edit extends Component
     // Dropdown
     public $showItemDropdown = [];
     public $item_search = [];
+    public $userProjects = [];
+    public $singleProject = false;
+    public $noProjectAccess = false;
 
     public $vendors, $taxes, $projects, $categories;
 
     public function mount($slug)
     {
         $this->purchase = Purchase::where('slug', $slug)->firstOrFail();
+         $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+            ->orderBy('name')
+            ->get()
+            ->pluck('name', 'id');
+
+        if ($this->userProjects->isEmpty()) {
+            $this->noProjectAccess = true;
+            $this->addError('project_access', 'You are not assigned to any project.');
+        } elseif ($this->userProjects->count() === 1) {
+            $this->project_id = $this->userProjects->keys()->first();
+            $this->singleProject = true;
+        }
         $this->loadPurchaseData();
         $this->loadSelects();
     }

@@ -67,7 +67,7 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge {{ $stock->total_stock > 0 ? 'bg-success' : 'bg-danger' }} fs-6">
+                                    <span class="badge {{ $stock->total_stock > 0 ? 'bg-primary' : 'bg-danger' }} fs-6">
                                         {{ $stock->total_stock }}
                                     </span>
                                 </td>

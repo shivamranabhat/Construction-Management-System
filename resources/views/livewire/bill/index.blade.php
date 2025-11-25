@@ -163,7 +163,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody wire:poll.keep-alive>
                         @forelse($bills as $bill)
                         <tr class="border-start {{ $bill->status === 'overdue' ? 'border-danger' : '' }}">
                             <td>
