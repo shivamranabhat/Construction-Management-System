@@ -24,6 +24,7 @@
                         @php
                         $options = [
                         'account' => 'Account',
+                        'attendance' => 'Attendance',
                         'bill' => 'Bill',
                         'boq' => 'BOQ',
                         'category' => 'Category',
@@ -37,6 +38,7 @@
                         'role' => 'Role',
                         'tax' => 'Tax',
                         'vendor' => 'Vendor',
+                        'worker' => 'Worker',
                         ];
                         @endphp
 

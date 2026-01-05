@@ -54,6 +54,12 @@ use App\Livewire\Log\Index as LogIndex;
 use App\Livewire\Log\Create as LogCreate;
 use App\Livewire\Log\Show as LogShow;
 use App\Livewire\Log\Edit as LogEdit;
+use App\Livewire\Worker\Index as WorkerIndex;
+use App\Livewire\Worker\Create as WorkerCreate;
+use App\Livewire\Worker\Edit as WorkerEdit;
+use App\Livewire\Attendance\Index as AttendanceIndex;
+use App\Livewire\Attendance\Create as AttendanceCreate;
+use App\Livewire\Attendance\Edit as AttendanceEdit;
 
 
 Route::get('/signin', AuthLogin::class)->name('signin');
@@ -146,13 +152,22 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/stocks', StockIndex::class)->name('index');            
         Route::get('/stock/{slug}', StockShow::class)->name('show');       
     });
-     Route::name('log.')->group(function () {
+    Route::name('log.')->group(function () {
         Route::get('/logs', LogIndex::class)->name('index');            
         Route::get('/log/new', LogCreate::class)->name('create');   
         Route::get('/log/show/{slug}', LogShow::class)->name('show');    
         Route::get('/log/{slug}', LogEdit::class)->name('edit');    
     });
-
+    Route::name('worker.')->group(function () {
+        Route::get('/workers', WorkerIndex::class)->name('index');            
+        Route::get('/worker/new', WorkerCreate::class)->name('create');    
+        Route::get('/worker/{slug}', WorkerEdit::class)->name('edit');    
+    });
+    Route::name('attendance.')->group(function () {
+        Route::get('/attendances', AttendanceIndex::class)->name('index');            
+        Route::get('/attendance/new', AttendanceCreate::class)->name('create');    
+        Route::get('/attendance/{id}', AttendanceEdit::class)->name('edit');    
+    });
     
 });
 

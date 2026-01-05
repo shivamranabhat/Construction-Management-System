@@ -186,7 +186,7 @@ class Create extends Component
             : 'Daily log submitted successfully!';
         session()->flash('success', $message);
 
-        return redirect()->route('projects');
+        return redirect()->route('log.index');
     }
 
     public function render()

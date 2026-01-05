@@ -122,6 +122,11 @@ class Edit extends Component
             }
         }
     }
+    public function getIsDisabledProperty()
+    {
+        return in_array($this->log->status, ['approved', 'rejected']);
+    }
+
 
     public function update()
     {

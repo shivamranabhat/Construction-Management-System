@@ -105,4 +105,14 @@ class Company extends Model
     {
         return $this->hasMany(Log::class);
     }
+
+    public function workers()
+    {
+        return $this->hasMany(Worker::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

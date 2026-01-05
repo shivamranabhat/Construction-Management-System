@@ -22,6 +22,7 @@
 
                         @foreach([
                         'account' => 'Account',
+                        'attendance' => 'Attendance',
                         'bill' => 'Bill',
                         'boq' => 'BOQ',
                         'category' => 'Category',
@@ -35,6 +36,7 @@
                         'role' => 'Role',
                         'tax' => 'Tax',
                         'vendor' => 'Vendor',
+                        'worker' => 'Worker',
                         ] as $value => $label)
                         <option value="{{ $value }}" {{ $name===$value ? 'selected' : '' }}>
                             {{ $label }}

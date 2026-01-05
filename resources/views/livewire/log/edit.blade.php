@@ -132,10 +132,13 @@
                 <div class="d-flex gap-3 justify-content-end mt-4">
                     <a href="{{ route('log.index') }}" class="btn btn-outline-secondary">Cancel</a>
                     @can('update-log')
-                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="update">
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="update"
+                        @disabled($this->isDisabled)>
+
                         <span wire:loading.remove wire:target="update">
-                           Save
+                            Save
                         </span>
+
                         <span wire:loading wire:target="update">
                             <span class="spinner-border spinner-border-sm"></span> Saving...
                         </span>
@@ -145,6 +148,7 @@
                         Save
                     </button>
                     @endcan
+
                 </div>
             </form>
         </div>

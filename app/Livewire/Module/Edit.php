@@ -14,9 +14,9 @@ class Edit extends Component
     public $name;
 
     public $allowedModules = [
-        'account', 'bill', 'boq', 'category', 'item','log', 'module',
+        'account','attendance', 'bill', 'boq', 'category', 'item','log', 'module',
         'payment', 'project', 'purchase', 'requisition',
-        'role', 'tax', 'vendor'
+        'role', 'tax', 'vendor', 'worker',
     ];
     public function mount(string $slug)
     {

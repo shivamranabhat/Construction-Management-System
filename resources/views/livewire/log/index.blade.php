@@ -5,7 +5,6 @@
         </div>
 
         <div class="card-body">
-           
 
             <div class="row mb-2">
                 <div class="col-sm-12 col-md-6">
@@ -27,14 +26,14 @@
                     <div class="dataTables_filter d-flex justify-content-end align-items:center gap-2">
                         <label>
                             <input type="search" class="form-control form-control-sm"
-                                   placeholder="Search by date, slug or project..."
-                                   wire:model.live.debounce.300ms="search">
+                                placeholder="Search by date, slug or project..."
+                                wire:model.live.debounce.300ms="search">
                         </label>
 
                         @can('create-log')
-                            <a href="{{ route('log.create') }}" class="btn btn-sm btn-primary">
-                                <i class="bi bi-plus-circle"></i> New
-                            </a>
+                        <a href="{{ route('log.create') }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle"></i> New
+                        </a>
                         @endcan
                     </div>
                 </div>
@@ -54,7 +53,7 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody wire:poll.keep-alive>
                         @forelse($logs as $index => $log)
                         <tr>
                             <td>{{ $logs->firstItem() + $index }}</td>
@@ -64,104 +63,96 @@
                             <td>{{ $log->hours }}</td>
                             <td>
                                 @switch($log->status)
-                                    @case('approved')
-                                        <span class="badge bg-success">Approved</span>
-                                        @break
-                                    @case('pending')
-                                        <span class="badge bg-warning">Pending</span>
-                                        @break
-                                    @case('rejected')
-                                        <span class="badge bg-danger">Rejected</span>
-                                        @break
+                                @case('approved') <span class="badge bg-success">Approved</span> @break
+                                @case('pending') <span class="badge bg-warning">Pending</span> @break
+                                @case('rejected') <span class="badge bg-danger">Rejected</span> @break
                                 @endswitch
                             </td>
-                            <td>{{ $log->created_at->format('d M Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d M Y') }}</td>
 
-                            <td x-data="{ openModal: false, actionType: '' }">
+                            <td x-data="{ openModal: false, actionType: '', logId: {{ $log->id }} }">
                                 <div class="hstack gap-2">
-                                    <!-- View -->
                                     <a href="{{ route('log.show', $log->slug) }}"
-                                       class="btn btn-icon btn-info-transparent rounded-pill"
-                                       title="View Details">
+                                        class="btn btn-icon btn-info-transparent rounded-pill" title="View">
                                         <i class="ri-eye-line"></i>
                                     </a>
 
-                                    <!-- Edit (pending or rejected) -->
                                     @can('update-log')
-                                        @if(in_array($log->status, ['pending', 'rejected']))
-                                            <a href="{{ route('log.edit', $log->slug) }}"
-                                               class="btn btn-icon btn-warning-transparent rounded-pill"
-                                               title="Edit Log">
-                                                <i class="ri-edit-line"></i>
-                                            </a>
-                                        @else
-                                            <button disabled class="btn btn-icon btn-warning-transparent rounded-pill"
-                                                    title="Cannot edit approved log">
-                                                <i class="ri-edit-line"></i>
-                                            </button>
-                                        @endif
-                                    @endcan
-
-                                    <!-- Company Admin: Approve & Reject (only pending) -->
-                                    @if(Auth::user()->type === 'Company')
-                                        @if($log->status === 'pending')
-                                            <button type="button" wire:click="approve({{ $log->id }})"
-                                                    class="btn btn-icon btn-success-transparent rounded-pill"
-                                                    title="Approve & Deduct Stock">
-                                                <i class="ri-check-line"></i>
-                                            </button>
-
-                                            <button type="button"
-                                                    @click="openModal = true; actionType = 'reject'"
-                                                    class="btn btn-icon btn-danger-transparent rounded-pill"
-                                                    title="Reject Log">
-                                                <i class="ri-close-line"></i>
-                                            </button>
-                                        @endif
+                                    @if($log->status === 'pending')
+                                    <a href="{{ route('log.edit', $log->slug) }}"
+                                        class="btn btn-icon btn-warning-transparent rounded-pill" title="Edit">
+                                        <i class="ri-edit-line"></i>
+                                    </a>
+                                    @else
+                                    <button disabled class="btn btn-icon btn-warning-transparent rounded-pill">
+                                        <i class="ri-edit-line"></i>
+                                    </button>
                                     @endif
 
-                                    <!-- Non-Company User: Delete (pending or rejected) -->
+                                    @endcan
+
+                                    @if(Auth::user()->type === 'Company' && $log->status === 'pending')
+                                    <button wire:click="approve({{ $log->id }})"
+                                        class="btn btn-icon btn-success-transparent rounded-pill" title="Approve">
+                                        <i class="ri-check-line"></i>
+                                    </button>
+
+                                    <button @click="openModal = true; actionType = 'reject'; logId = {{ $log->id }}"
+                                        class="btn btn-icon btn-danger-transparent rounded-pill" title="Reject">
+                                        <i class="ri-close-line"></i>
+                                    </button>
+                                    @endif
+
                                     @if(Auth::user()->type !== 'Company')
-                                        @can('delete-log')
-                                            @if(in_array($log->status, ['pending', 'rejected']))
-                                                <button type="button"
-                                                        @click="openModal = true; actionType = 'delete'"
-                                                        class="btn btn-icon btn-danger-transparent rounded-pill"
-                                                        title="Delete Log">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                            @else
-                                                <button disabled class="btn btn-icon btn-danger-transparent rounded-pill"
-                                                        title="Cannot delete approved log">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                            @endif
-                                        @endcan
+                                    @can('delete-log')
+                                    @if(in_array($log->status, ['pending', 'rejected']))
+                                    <button @click="openModal = true; actionType = 'delete'; logId = {{ $log->id }}"
+                                        class="btn btn-icon btn-danger-transparent rounded-pill" title="Delete">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @else
+                                    <button disabled class="btn btn-icon btn-danger-transparent rounded-pill">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                    @endif
+                                    @endcan
                                     @endif
                                 </div>
 
-                                <!-- Dynamic Confirmation Modal -->
-                                <div x-show="openModal" class="modal-backdrop" style="display: none;">
+                                <div x-show="openModal" class="modal-backdrop" style="display: none;" wire:ignore>
                                     <div class="modal-box">
-                                        <div class="modal-header p-0">
-                                            <div class="modal-title">
-                                                <span x-text="actionType === 'reject' ? 'Reject' : 'Delete'"></span> Log?
+                                        <div
+                                            class="modal-header p-0 d-flex justify-content-between align-items-center mb-3">
+                                            <div class="modal-title fs-5">
+                                                <span
+                                                    x-text="actionType === 'reject' ? 'Reject Log' : 'Delete Log'"></span>?
                                             </div>
-                                            <button class="close-btn" @click="openModal = false">×</button>
+                                            <button class="close-btn btn btn-sm" @click="openModal = false">×</button>
                                         </div>
+
                                         <div class="modal-body">
-                                            Are you sure you want to
-                                            this log?
+                                            <p>Are you sure you want to <strong
+                                                    x-text="actionType === 'reject' ? 'reject' : 'permanently delete'"></strong>
+                                                this log?</p>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-cancel" @click="openModal = false">
-                                                Cancel
-                                            </button>
-                                            <button class="btn btn-delete"
-                                                    wire:click="actionType === 'reject' ? reject({{ $log->id }}) : delete({{ $log->id }})"
+
+                                        <div class="modal-footer d-flex gap-2 justify-content-end">
+                                            <button class="btn btn-outline-secondary"
+                                                @click="openModal = false">Cancel</button>
+
+                                            <template x-if="actionType === 'reject'">
+                                                <button class="btn btn-danger" wire:click="reject(logId)"
                                                     @click="openModal = false">
-                                                <span x-text="actionType === 'reject' ? 'Reject' : 'Delete'"></span>
-                                            </button>
+                                                    Reject
+                                                </button>
+                                            </template>
+
+                                            <template x-if="actionType === 'delete'">
+                                                <button class="btn btn-danger" wire:click="delete(logId)"
+                                                    @click="openModal = false">
+                                                    Delete
+                                                </button>
+                                            </template>
                                         </div>
                                     </div>
                                 </div>
@@ -169,9 +160,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
-                                No logs found.
-                            </td>
+                            <td colspan="8" class="text-center text-muted py-4">No logs found.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -181,8 +170,7 @@
             <div class="row mt-4">
                 <div class="col-sm-12 col-md-5">
                     <div class="dataTables_info">
-                        Showing {{ $logs->firstItem() }} to {{ $logs->lastItem() }}
-                        of {{ $logs->total() }} entries
+                        Showing {{ $logs->firstItem() }} to {{ $logs->lastItem() }} of {{ $logs->total() }} entries
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-7">

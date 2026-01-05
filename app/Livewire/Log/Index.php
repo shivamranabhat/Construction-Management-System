@@ -25,27 +25,35 @@ class Index extends Component
     {
         $log = Log::findOrFail($logId);
 
-        // Only Company admins can approve
         if (Auth::user()->type !== 'Company') {
-            session()->flash('error', 'Unauthorized action.');
+            session()->flash('error', 'Unauthorized.');
             return;
         }
 
-        $log->approve(); // This method deducts stock
+        $log->approve(); // Deducts stock
 
-        session()->flash('success', "Log #{$log->slug} approved and stock updated.");
+        session()->flash('success', "Log #{$log->slug} approved and stock deducted.");
     }
 
     public function reject($logId)
     {
         $log = Log::findOrFail($logId);
+
         if (Auth::user()->type !== 'Company') {
-            session()->flash('error', 'Unauthorized action.');
+            session()->flash('error', 'Unauthorized.');
             return;
         }
+
+        if ($log->status !== 'pending') {
+            session()->flash('error', 'Only pending logs can be rejected.');
+            return;
+        }
+
         $log->update(['status' => 'rejected']);
+
         session()->flash('warning', "Log #{$log->slug} has been rejected.");
     }
+
     public function delete($logId)
     {
         $log = Log::findOrFail($logId);
@@ -55,28 +63,30 @@ class Index extends Component
             return;
         }
 
+        $this->authorize('delete-log');
+
         if ($log->status === 'approved') {
-            session()->flash('error', 'Cannot delete an approved log.');
+            session()->flash('error', 'Cannot delete approved log.');
             return;
         }
 
         $log->delete();
+
         session()->flash('success', "Log #{$log->slug} deleted successfully.");
     }
 
     public function render()
     {
         $logs = Log::query()
-            ->when($this->search, function ($query) {
-                $query->where('date', 'like', "%{$this->search}%")
-                      ->orWhere('slug', 'like', "%{$this->search}%")
-                      ->orWhereHas('project', fn($q) => $q->where('name', 'like', "%{$this->search}%"));
+            ->when($this->search, function ($q) {
+                $q->where('slug', 'like', "%{$this->search}%")
+                  ->orWhere('date', 'like', "%{$this->search}%")
+                  ->orWhereHas('project', fn($pq) => $pq->where('name', 'like', "%{$this->search}%"));
             })
-            ->orderByDesc('date')
-            ->orderByDesc('created_at')
+            ->latest('date')
+            ->latest()
             ->paginate($this->perPage);
-        return view('livewire.log.index', [
-            'logs' => $logs,
-        ]);
+
+        return view('livewire.log.index', compact('logs'));
     }
 }
