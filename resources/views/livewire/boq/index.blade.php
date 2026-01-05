@@ -121,7 +121,8 @@
                                     stroke-linecap="round"></path>
                                 <path d="M16.5 12H12.5M7.5 12H9.5" stroke="rgb(1, 98, 232)" stroke-width="1.5"
                                     stroke-linecap="round"></path>
-                                <path d="M7.5 8.5H16.5" stroke="rgb(1, 98, 232)" stroke-width="1.5" stroke-linecap="round">
+                                <path d="M7.5 8.5H16.5" stroke="rgb(1, 98, 232)" stroke-width="1.5"
+                                    stroke-linecap="round">
                                 </path>
                             </g>
                         </svg>
@@ -162,7 +163,11 @@
         <div>{{ $projects->links() }}</div>
     </div>
     @endif
+    
 </div>
+
+
+
 
 @push('styles')
 <style>

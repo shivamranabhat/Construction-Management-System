@@ -55,7 +55,7 @@
                                 </select>
                             </div>
                             @error('vendor_id')
-                            <small class="text-danger">{{ $message }}</small>
+                            <small class="text-danger">Please select a vendor</small>
                             @enderror
                         </div>
 
@@ -89,7 +89,7 @@
                                 </select>
                             </div>
                             @error('project_id')
-                            <small class="text-danger">{{ $message }}</small>
+                            <small class="text-danger">Please select a project</small>
                             @enderror
                             @endif
                         </div>
@@ -181,7 +181,7 @@
                                         @enderror
                                     </td>
                                     <td>
-                                        <input type="number" step="0.01" wire:model.live="lines.{{ $i }}.rate" min="0"
+                                        <input type="number" wire:model.live="lines.{{ $i }}.rate" min="0"
                                             class="form-control form-control-sm text-end" style="width: 90px;">
                                         @error('lines.' . $i . '.rate')
                                         <small class="text-danger">Please enter rate</small>

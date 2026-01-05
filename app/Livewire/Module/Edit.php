@@ -14,7 +14,7 @@ class Edit extends Component
     public $name;
 
     public $allowedModules = [
-        'account', 'bill', 'boq', 'category', 'item', 'module',
+        'account', 'bill', 'boq', 'category', 'item','log', 'module',
         'payment', 'project', 'purchase', 'requisition',
         'role', 'tax', 'vendor'
     ];
@@ -63,7 +63,7 @@ class Edit extends Component
             ]);
         }
 
-        session()->flash('success', 'Module updated successfully! All permissions have been updated.');
+        session()->flash('success', 'Module updated successfully.');
 
         return redirect()->route('module.index');
     }

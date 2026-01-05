@@ -1,0 +1,70 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Pretendard", sans-serif;
+  overflow-x: hidden;
+}
+
+.error{
+    border-left: 8px solid #ff4646;
+}
+.flash{
+    position: fixed;
+    padding: 0.7rem 1.2rem;
+    bottom:2%;
+    right:0.2%;
+    z-index: 1 !important;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+}
+.success{
+    display: flex;
+    gap:1rem;
+    align-items: center;
+    border-left: 8px solid #7fa99b;
+}
+.success h5
+{
+    color: #081C15;
+}
+.success .message{
+    display: flex;
+    flex-direction: column;
+    gap:0.4rem;
+}
+
+
+
+.error h5{
+    color: #CD0606;
+}
+.flash h5{
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 80%;
+}
+.flash p{
+    color: #1B4332;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 80%;
+}
+@media (max-width:480px) {
+    .flash h5{
+        font-size: 1rem;
+    }
+    .flash p{
+        font-size: 0.7rem;
+    }
+
+}
+
+

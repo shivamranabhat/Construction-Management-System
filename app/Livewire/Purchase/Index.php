@@ -72,20 +72,14 @@ class Index extends Component
             // Delete pivot records and purchase
             $purchase->products()->delete();
             $purchase->delete();
-
-            Log::info('Purchase deleted successfully', ['purchase_slug' => $slug]);
         });
 
-        // Refresh the list
-        $this->dispatch('$refresh');
+        session()->flash('success', 'Purchase data deleted successfully!');
     }
 
     public function render()
     {
         $purchases = Purchase::with(['vendor', 'project', 'enteredBy'])
-            ->whereHas('project.users', function ($q) {
-                $q->where('user_id', auth()->id());
-            })
             ->when($this->search, function ($q) {
                 $q->where('purchase_number', 'like', "%{$this->search}%")
                 ->orWhereHas('vendor', fn($query) => $query->where('name', 'like', "%{$this->search}%"))

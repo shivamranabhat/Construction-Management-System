@@ -39,6 +39,7 @@ class Index extends Component
     {
         $requisition = Requisition::find($id);
         $requisition->delete();
+        session()->flash('success', 'Requisition deleted successfully!');
     }
 
     public function updatingSearch()

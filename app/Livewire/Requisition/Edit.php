@@ -7,6 +7,7 @@ use App\Models\RequisitionItem;
 use App\Models\Item;
 use App\Models\Project;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Edit extends Component
@@ -33,14 +34,21 @@ class Edit extends Component
                 : 'A Purchase Order has been created. Editing is not allowed.';
         }
 
-        // Load user's assigned projects
-        $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+         $projects = Project::query()
+            ->when(Auth::user()->type === 'Company', function ($q) {
+                return $q->where('company_id', Auth::user()->company_id);
+            }, function ($q) {
+                return $q->whereHas('users', fn($sub) => $sub->where('user_id', Auth::id()));
+            })
             ->orderBy('name')
             ->get()
             ->pluck('name', 'id');
 
-        if ($this->userProjects->count() === 1) {
-            $this->project_id = $this->userProjects->keys()->first();
+        $this->userProjects = $projects;
+
+        // auto-select logic stays the same
+        if ($projects->count() === 1) {
+            $this->project_id    = $projects->keys()->first();
             $this->singleProject = true;
         }
 
@@ -128,7 +136,7 @@ class Edit extends Component
             ->whereNotIn('id', $existingIds)
             ->delete();
 
-        $this->dispatch('toast', type: 'success', message: 'Requisition updated successfully!');
+        session()->flash('success', 'Requisition updated successfully!');
         return redirect()->route('requisition.index');
     }
 

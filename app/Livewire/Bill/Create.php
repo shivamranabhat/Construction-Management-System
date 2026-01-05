@@ -171,6 +171,7 @@ class Create extends Component
 
 
         return redirect()->route('bill.index');
+        session()->flash('success', 'Bill created successfully!');
     });
 }
     public function render()

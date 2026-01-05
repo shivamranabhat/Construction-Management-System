@@ -6,13 +6,10 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Module;
 use App\Models\Permission;
-use App\Traits\PermissionAwareDelete;
 
 class Index extends Component
 {
     use WithPagination;
-
-    use PermissionAwareDelete;
     
     public $search = '';
     public $perPage = 10; 
@@ -31,7 +28,9 @@ class Index extends Component
 
     public function delete($slug)
     {
-        $this->deleteWithPermission(Module::class, $slug, 'delete_module');
+        $permissions = Permission::where('slug', $slug)->first();
+        $permissions->delete();
+        session()->flash('success', 'Module deleted successfully!');
     }
 
     public function render()

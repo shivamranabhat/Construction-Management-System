@@ -25,7 +25,6 @@ class Index extends Component
         $tax = Tax::where('slug', $slug)
             ->firstOrFail();
         $tax->delete();
-
         session()->flash('success', 'Tax deleted successfully!');
     }
 

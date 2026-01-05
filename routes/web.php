@@ -50,6 +50,10 @@ use App\Livewire\Requisition\Show as RequisitionShow;
 use App\Livewire\Requisition\Edit as RequisitionEdit;
 use App\Livewire\Stock\Index as StockIndex;
 use App\Livewire\Stock\Show as StockShow;
+use App\Livewire\Log\Index as LogIndex;
+use App\Livewire\Log\Create as LogCreate;
+use App\Livewire\Log\Show as LogShow;
+use App\Livewire\Log\Edit as LogEdit;
 
 
 Route::get('/signin', AuthLogin::class)->name('signin');
@@ -124,6 +128,8 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/bill/{slug}', BillEdit::class)->name('edit');    
     });
 
+   
+
     Route::name('payment.')->group(function () {
         Route::get('/payments', PaymentIndex::class)->name('index');            
         Route::get('/payment/new', PaymentCreate::class)->name('create');      
@@ -140,6 +146,13 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/stocks', StockIndex::class)->name('index');            
         Route::get('/stock/{slug}', StockShow::class)->name('show');       
     });
+     Route::name('log.')->group(function () {
+        Route::get('/logs', LogIndex::class)->name('index');            
+        Route::get('/log/new', LogCreate::class)->name('create');   
+        Route::get('/log/show/{slug}', LogShow::class)->name('show');    
+        Route::get('/log/{slug}', LogEdit::class)->name('edit');    
+    });
 
+    
 });
 

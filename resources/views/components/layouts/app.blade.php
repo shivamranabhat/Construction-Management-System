@@ -16,6 +16,7 @@
     <link id="style" href="{{asset('assets/libs/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <!-- Style Css -->
     <link href="{{asset('assets/css/styles.min.css')}}" rel="stylesheet"> <!-- Icons Css -->
+    <link href="{{asset('assets/css/flash.css')}}?v={{time()}}" rel="stylesheet"> <!-- Flash Css -->
     <link href="{{asset('assets/css/icons.css')}}" rel="stylesheet"> <!-- Node Waves Css -->
     <link href="{{asset('assets/libs/node-waves/waves.min.css')}}" rel="stylesheet"> <!-- Simplebar Css -->
     <link href="{{asset('assets/libs/simplebar/simplebar.min.css')}}" rel="stylesheet"> <!-- Color Picker Css -->
@@ -445,36 +446,7 @@
                                                     </svg> <span class="side-menu__label">Company</span> </a> </li>
                                             @endif
                                             <!-- End::slide -->
-                                            <!-- Start::slide__user -->
-                                            <li class="slide__category"><span class="category-name">User
-                                                    Management</span></li>
 
-                                            <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item {{request()->segment(1) == 'roles' || request()->segment(1) == 'role' || request()->segment(1) == 'modules' || request()->segment(1) == 'module' || request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
-                                                        viewBox="0 0 24 24">
-                                                        <title>User</title>
-                                                        <path
-                                                            d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                                                    </svg>
-                                                    <span class="side-menu__label">Users</span> <i
-                                                        class="fe fe-chevron-right side-menu__angle"></i> </a>
-                                                <ul class="slide-menu child1"
-                                                    style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 294px, 0px);"
-                                                    data-popper-placement="bottom">
-
-                                                    <li class="slide"> <a href="{{route('module.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}">Module</a>
-                                                    </li>
-                                                    <li class="slide"> <a href="{{route('role.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">Roles</a>
-                                                    </li>
-
-                                                    <li class="slide"> <a href="{{route('account.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">Accounts</a>
-                                                    </li>
-                                                </ul>
-                                            </li> <!-- End::slide -->
                                             <!-- Start::slide__project -->
                                             <li class="slide__category"><span class="category-name">Project
                                                     Management</span></li>
@@ -630,53 +602,57 @@
                                                     <span class="side-menu__label">Payments</span> </a>
 
                                             </li> <!-- End::slide -->
+                                            <li class="slide"> <a href="{{route('log.index')}}"
+                                                    class="side-menu__item {{request()->segment(1) == 'logs' || request()->segment(1) == 'log' ? 'active' : ''}}">
 
+                                                    <svg class="side-menu__icon" fill="currentColor" viewBox="0 0 32 32"
+                                                        version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <title>logs</title>
+                                                            <path
+                                                                d="M0 24q0 0.832 0.576 1.44t1.44 0.576h1.984q0 2.496 1.76 4.224t4.256 1.76h6.688q-2.144-1.504-3.456-4h-3.232q-0.832 0-1.44-0.576t-0.576-1.408v-20q0-0.832 0.576-1.408t1.44-0.608h16q0.8 0 1.408 0.608t0.576 1.408v7.232q2.496 1.312 4 3.456v-10.688q0-2.496-1.76-4.256t-4.224-1.76h-16q-2.496 0-4.256 1.76t-1.76 4.256h-1.984q-0.832 0-1.44 0.576t-0.576 1.408 0.576 1.44 1.44 0.576h1.984v4h-1.984q-0.832 0-1.44 0.576t-0.576 1.408 0.576 1.44 1.44 0.576h1.984v4h-1.984q-0.832 0-1.44 0.576t-0.576 1.408zM10.016 24h2.080q0-0.064-0.032-0.416t-0.064-0.576 0.064-0.544 0.032-0.448h-2.080v1.984zM10.016 20h2.464q0.288-1.088 0.768-1.984h-3.232v1.984zM10.016 16h4.576q0.992-1.216 2.112-1.984h-6.688v1.984zM10.016 12h16v-1.984h-16v1.984zM10.016 8h16v-1.984h-16v1.984zM14.016 23.008q0 1.824 0.704 3.488t1.92 2.88 2.88 1.92 3.488 0.704 3.488-0.704 2.88-1.92 1.92-2.88 0.704-3.488-0.704-3.488-1.92-2.88-2.88-1.92-3.488-0.704-3.488 0.704-2.88 1.92-1.92 2.88-0.704 3.488zM18.016 23.008q0-2.080 1.44-3.52t3.552-1.472 3.52 1.472 1.472 3.52q0 2.080-1.472 3.52t-3.52 1.472-3.552-1.472-1.44-3.52zM22.016 23.008q0 0.416 0.288 0.704t0.704 0.288h1.984q0.416 0 0.704-0.288t0.32-0.704-0.32-0.704-0.704-0.288h-0.992v-0.992q0-0.416-0.288-0.704t-0.704-0.32-0.704 0.32-0.288 0.704v1.984z">
+                                                            </path>
+                                                        </g>
+                                                    </svg>
 
-                                            <!-- Start::slide__category -->
-                                            <li class="slide__category"><span class="category-name">Multi Levels</span>
-                                            </li> <!-- End::slide__category -->
-                                            <!-- Start::slide -->
+                                                    <span class="side-menu__label">Logs</span> </a>
+
+                                            </li> <!-- End::slide -->
+
+                                            <!-- Start::slide__user -->
+                                            <li class="slide__category"><span class="category-name">User
+                                                    Management</span></li>
+
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item"> <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="side-menu__icon" viewBox="0 0 24 24">
-                                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                                    class="side-menu__item {{request()->segment(1) == 'roles' || request()->segment(1) == 'role' || request()->segment(1) == 'modules' || request()->segment(1) == 'module' || request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                        viewBox="0 0 24 24">
+                                                        <title>User</title>
                                                         <path
-                                                            d="M5 9h14V5H5v4zm2-3.5c.83 0 1.5.67 1.5 1.5S7.83 8.5 7 8.5 5.5 7.83 5.5 7 6.17 5.5 7 5.5zM5 19h14v-4H5v4zm2-3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5z"
-                                                            opacity=".3"></path>
-                                                        <path
-                                                            d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H5v-4h14v4zm-12-.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H5V5h14v4zM7 8.5c.83 0 1.5-.67 1.5-1.5S7.83 5.5 7 5.5 5.5 6.17 5.5 7 6.17 8.5 7 8.5z">
-                                                        </path>
-                                                    </svg> <span class="side-menu__label">Menu Levels</span> <i
+                                                            d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                                                    </svg>
+                                                    <span class="side-menu__label">Users</span> <i
                                                         class="fe fe-chevron-right side-menu__angle"></i> </a>
                                                 <ul class="slide-menu child1"
-                                                    style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 566px, 0px);"
+                                                    style="position: relative; left: 0px; top: 0px; margin: 0px; transform: translate3d(119.5px, 294px, 0px);"
                                                     data-popper-placement="bottom">
-                                                    <li class="slide side-menu__label1"> <a
-                                                            href="javascript:void(0);">Menu Levels</a> </li>
-                                                    <li class="slide"> <a href="javascript:void(0);"
-                                                            class="side-menu__item">Level-1</a> </li>
-                                                    <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                            class="side-menu__item">Level-2 <i
-                                                                class="fe fe-chevron-right side-menu__angle"></i></a>
-                                                        <ul class="slide-menu child2">
-                                                            <li class="slide"> <a href="javascript:void(0);"
-                                                                    class="side-menu__item">Level-2-1</a> </li>
-                                                            <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                                    class="side-menu__item">Level-2-2 <i
-                                                                        class="fe fe-chevron-right side-menu__angle"></i></a>
-                                                                <ul class="slide-menu child3">
-                                                                    <li class="slide"> <a href="javascript:void(0);"
-                                                                            class="side-menu__item">Level-2-2-1</a>
-                                                                    </li>
-                                                                    <li class="slide"> <a href="javascript:void(0);"
-                                                                            class="side-menu__item">Level-2-2-2</a>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                        </ul>
+
+                                                    <li class="slide"> <a href="{{route('module.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'modules' || request()->segment(1) == 'module' ? 'active' : ''}}">Module</a>
+                                                    </li>
+                                                    <li class="slide"> <a href="{{route('role.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'roles' || request()->segment(1) == 'role' ? 'active' : ''}}">Roles</a>
+                                                    </li>
+
+                                                    <li class="slide"> <a href="{{route('account.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'accounts' || request()->segment(1) == 'account' ? 'active' : ''}}">Accounts</a>
                                                     </li>
                                                 </ul>
                                             </li> <!-- End::slide -->
+                                            
                                             <!-- Start::slide__category -->
                                             <li class="slide__category"><span class="category-name">Components</span>
                                             </li> <!-- End::slide__category -->
@@ -995,6 +971,57 @@
                 <div class="row">
                     {{$slot}}
                 </div>
+                @if(session()->has('success'))
+                <div class="success flash p-3 p-md-4 p-lg-3 p-xl-3 position-fixed bg-white rounded"
+                    x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 2000)">
+                    <div class="d-flex flex-row align-item-center gap-3">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
+                                fill="none">
+                                <path opacity="0.5"
+                                    d="M44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4C35.0457 4 44 12.9543 44 24Z"
+                                    fill="#92BCAE" />
+                                <path
+                                    d="M32.0607 17.9393C32.6464 18.5251 32.6464 19.4749 32.0607 20.0607L22.0607 30.0607C21.4749 30.6464 20.5251 30.6464 19.9393 30.0607L15.9393 26.0607C15.3536 25.4749 15.3536 24.5251 15.9393 23.9393C16.5251 23.3536 17.4749 23.3536 18.0607 23.9393L21 26.8787L25.4697 22.409L29.9393 17.9393C30.5251 17.3536 31.4749 17.3536 32.0607 17.9393Z"
+                                    fill="#081C15" />
+                            </svg>
+                        </div>
+                        <div class="message d-flex flex-column flex-start justify-content-center">
+                            <h5>
+                                Successfull
+                            </h5>
+                            <p class="mb-0"> {{session('success')}}</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @if(session()->has('error'))
+                <div class="error flash p-3 p-md-4 p-lg-3 p-xl-3 position-fixed bg-white rounded"
+                    x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 2000)">
+                    <div class="d-flex flex-row align-item-center gap-3">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
+                                fill="none">
+                                <path opacity="0.5"
+                                    d="M44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44C35.0457 44 44 35.0457 44 24Z"
+                                    fill="#FF6F6F" />
+                                <path
+                                    d="M24 12.5C24.8284 12.5 25.5 13.1716 25.5 14V26C25.5 26.8284 24.8284 27.5 24 27.5C23.1716 27.5 22.5 26.8284 22.5 26V14C22.5 13.1716 23.1716 12.5 24 12.5Z"
+                                    fill="#081C15" />
+                                <path
+                                    d="M24 34C25.1046 34 26 33.1046 26 32C26 30.8954 25.1046 30 24 30C22.8954 30 22 30.8954 22 32C22 33.1046 22.8954 34 24 34Z"
+                                    fill="#081C15" />
+                            </svg>
+                        </div>
+                        <div class="message d-flex flex-column gap-2 flex-start justify-content-center">
+                            <h5>
+                                {{ session('error') }}
+                            </h5>
+                            <p class="mb-0">Please try again later!</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 <!--End::row-1 -->
             </div>
         </div> <!-- End::app-content -->

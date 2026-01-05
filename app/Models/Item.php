@@ -19,6 +19,8 @@ class Item extends Model
         'description',
         'unit',
         'reorder_level',
+        'project_id', 
+        'boq_id',
         'company_id',
         'slug',
     ];
@@ -39,5 +41,15 @@ class Item extends Model
     public function stocks()
     {
         return $this->hasMany(Stock::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function boq()
+    {
+        return $this->belongsTo(Boq::class);
     }
 }

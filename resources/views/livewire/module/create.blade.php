@@ -28,6 +28,7 @@
                         'boq' => 'BOQ',
                         'category' => 'Category',
                         'item' => 'Item',
+                        'log' => 'Logs',
                         'module' => 'Module',
                         'payment' => 'Payment',
                         'project' => 'Project',

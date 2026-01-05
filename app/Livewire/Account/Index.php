@@ -24,7 +24,7 @@ class Index extends Component
     {
         $user = User::findOrFail($userId);
         $user->delete();
-        session()->flash('message', 'User deleted successfully.');
+        session()->flash('message', 'Account deleted successfully.');
     }
 
     public function render()

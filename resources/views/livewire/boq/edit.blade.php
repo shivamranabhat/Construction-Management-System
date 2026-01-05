@@ -3,7 +3,7 @@
         <div class="card-header justify-content-between">
             <div class="card-title">Edit BOQ</div>
             <a href="{{ route('boq.index') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-arrow-left"></i>
+                 <i class="bi bi-arrow-left"></i>
             </a>
         </div>
 
@@ -35,21 +35,15 @@
             <div class="mb-3">
                 <label class="form-label">Project</label>
                 @if($singleProject)
-                <!-- Only one project → show as readonly -->
                 <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-building"></i>
-                    </span>
+                    <span class="input-group-text">Building</span>
                     <span class="form-control form-control-sm"> {{$userProjects->first() }}</span>
-                    <input type="hidden" wire:model="project_id" value="{{ $project_id }}">
+                    <input type="hidden" wire:model.live="project_id" value="{{ $project_id }}">
                 </div>
                 <small class="text-muted">Your assigned project</small>
                 @else
-                <!-- Multiple projects → dropdown -->
                 <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-building"></i>
-                    </span>
+                    <span class="input-group-text">Building</span>
                     <select wire:model.live="project_id"
                         class="form-select form-select-sm @error('project_id') is-invalid @enderror" required>
                         <option value="">Select Project</option>
@@ -64,8 +58,6 @@
                 @endif
             </div>
 
-
-
             <!-- Add Main BOQ -->
             <button class="btn btn-primary mb-3" wire:click="addMainBoq" type="button">+ Add BOQ</button>
 
@@ -74,9 +66,13 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h6>BOQ {{ $index + 1 }}</h6>
                     @can('delete-boq')
-                    <button class="btn btn-danger btn-sm"
+                    <button class="btn btn-lg"
                         @click="openModal = true; $wire.confirmDelete('main', { mainIndex: {{ $index }} })">
-                        Delete
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#a4303d"
+                            class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path
+                                d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                        </svg>
                     </button>
                     @endcan
                 </div>
@@ -84,7 +80,7 @@
                 <div class="row g-2 mb-2">
                     <div class="col-12 col-md-1">
                         <input type="text" wire:model.live="mainBoqs.{{ $index }}.serial_number" class="form-control"
-                            placeholder="Serial">
+                            readonly>
                     </div>
                     <div class="col-12 col-md-4">
                         <input type="text" wire:model.live="mainBoqs.{{ $index }}.name" class="form-control"
@@ -116,13 +112,28 @@
                 <div class="row g-2 mb-2 ps-3 align-items-center">
                     <div class="col-12 col-md-1"><input type="text"
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.serial_number"
-                            class="form-control" placeholder="S.No"></div>
+                            class="form-control" readonly></div>
                     <div class="col-12 col-md-4"><textarea
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.item_description"
                             class="form-control" rows="1" placeholder="Description"></textarea></div>
-                    <div class="col-12 col-md-1"><input type="text"
-                            wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit" class="form-control"
-                            placeholder="Unit"></div>
+
+                    <!-- UNIT DROPDOWN -->
+                    <div class="col-12 col-md-1">
+                        <select wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit" class="form-control"
+                            style="height: 38px;">
+                            <option value="">Unit</option>
+                            @foreach(config('units.grouped') as $group => $codes)
+                            <optgroup label="{{ ucfirst(str_replace('_', ' ', $group)) }}">
+                                @foreach($codes as $code)
+                                <option value="{{ $code }}" {{ ($boq['unit'] ?? '' )===$code ? 'selected' : '' }}>
+                                    {{ config("units.item_units.{$code}", $code) }}
+                                </option>
+                                @endforeach
+                            </optgroup>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="col-12 col-md-1"><input type="number"
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.quantity" class="form-control"
                             placeholder="Qty"></div>
@@ -137,9 +148,13 @@
                             rows="1" placeholder="Summary"></textarea></div>
                     <div class="col-12 col-md-1">
                         @can('delete-boq')
-                        <button class="btn btn-danger btn-sm"
+                        <button class="btn btn-lg"
                             @click="openModal = true; $wire.confirmDelete('mainitem', { mainIndex: {{ $index }}, boqIndex: {{ $bIndex }} })">
-                            Delete
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#a4303d"
+                                class="bi bi-trash3" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                            </svg>
                         </button>
                         @endcan
                     </div>
@@ -163,16 +178,20 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h6>Sub BOQ {{ $subIndex + 1 }}</h6>
                             @can('delete-boq')
-                            <button class="btn btn-danger btn-sm"
+                            <button class="btn btn-lg"
                                 @click="openModal = true; $wire.confirmDelete('sub', { mainIndex: {{ $index }}, subIndex: {{ $subIndex }} })">
-                                Delete
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#a4303d"
+                                    class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path
+                                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                </svg>
                             </button>
                             @endcan
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-12 col-md-1"><input type="text"
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.serial_number"
-                                    class="form-control" placeholder="S.No"></div>
+                                    class="form-control" readonly></div>
                             <div class="col-12 col-md-4"><textarea
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.name"
                                     class="form-control" rows="1" placeholder="Name"></textarea></div>
@@ -188,13 +207,30 @@
                         <div class="row g-2 mb-2 ps-3 align-items-center">
                             <div class="col-12 col-md-1"><input type="text"
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.serial_number"
-                                    class="form-control" placeholder="S.No"></div>
+                                    class="form-control" readonly></div>
                             <div class="col-12 col-md-4"><textarea
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.item_description"
                                     class="form-control" rows="1" placeholder="Desc"></textarea></div>
-                            <div class="col-12 col-md-1"><input type="text"
+
+                            <!-- UNIT DROPDOWN (Sub BOQ Items) -->
+                            <div class="col-12 col-md-1">
+                                <select
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit"
-                                    class="form-control" placeholder="Unit"></div>
+                                    class="form-control" style="height: 38px;">
+                                    <option value="">Unit</option>
+                                    @foreach(config('units.grouped') as $group => $codes)
+                                    <optgroup label="{{ ucfirst(str_replace('_', ' ', $group)) }}">
+                                        @foreach($codes as $code)
+                                        <option value="{{ $code }}" {{ ($boq['unit'] ?? '' )===$code ? 'selected' : ''
+                                            }}>
+                                            {{ config("units.item_units.{$code}", $code) }}
+                                        </option>
+                                        @endforeach
+                                    </optgroup>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="col-12 col-md-1"><input type="number"
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.quantity"
                                     class="form-control" placeholder="Qty"></div>
@@ -209,9 +245,13 @@
                                     class="form-control" rows="1" placeholder="Summary"></textarea></div>
                             <div class="col-12 col-md-1">
                                 @can('delete-boq')
-                                <button class="btn btn-danger btn-sm"
+                                <button class="btn btn-lg"
                                     @click="openModal = true; $wire.confirmDelete('subsub', { mainIndex: {{ $index }}, subIndex: {{ $subIndex }}, boqIndex: {{ $bIndex }} })">
-                                    Delete
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#a4303d"
+                                        class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path
+                                            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                    </svg>
                                 </button>
                                 @endcan
                             </div>
@@ -223,6 +263,7 @@
                 @endif
             </div>
             @endforeach
+
             <!-- Tax -->
             <div class="mb-3 d-flex align-items-center gap-3">
                 <div class="form-check form-switch">
@@ -233,12 +274,15 @@
                 <select wire:model.live="taxId" class="form-select w-auto">
                     <option value="">-- Select Tax --</option>
                     @foreach($taxes as $tax)
-                    <option value="{{ $tax->id }}">{{ $tax->name }} ({{ $tax->rate }}%)</option>
+                    <option value="{{ $tax->id }}" {{ $taxId==$tax->id ? 'selected' : '' }}>
+                        {{ $tax->name }} ({{ $tax->rate }}%)
+                    </option>
                     @endforeach
                 </select>
                 @endif
                 @error('taxId') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
+
             <!-- === TOTALS === -->
             <div class="mt-5 p-4 bg-light rounded border">
                 <div class="row justify-content-end">
@@ -270,28 +314,19 @@
                 </a>
                 @if(!empty($mainBoqs))
                 @can('update-boq')
-                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save">
-                    <span wire:loading.remove wire:target="save">
-                        Save
-                    </span>
-                    <span wire:loading wire:target="save">
-                        <span class="spinner-border spinner-border-sm" role="status"></span>
-                        Saving...
-                    </span>
+                <button type="button" class="btn btn-primary" wire:click="save" wire:loading.attr="disabled"
+                    wire:target="save">
+                    <span wire:loading.remove wire:target="save">Save</span>
+                    <span wire:loading wire:target="save">Saving...</span>
                 </button>
                 @else
-                <button class="btn btn-primary" disabled>
-                    Save
-                </button>
+                <button class="btn btn-primary" disabled>Save</button>
                 @endcan
-
                 @endif
-
-
             </div>
-
         </div>
     </div>
+
     <style>
         .modal-backdrop {
             position: fixed;
@@ -345,11 +380,9 @@
         .btn-cancel {
             background: #6c757d;
             color: white;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: white;
+            padding: 0.375rem 0.75rem;
+            border: none;
+            border-radius: 0.375rem;
         }
     </style>
 </div>

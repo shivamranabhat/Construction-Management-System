@@ -41,9 +41,9 @@ class Edit extends Component
         $billTotal = $this->bill->total;
 
         if ($this->amount < 0.01) {
-            $this->addError('amount', 'Amount must be at least £0.01.');
+            $this->addError('amount', 'Amount must be at least Rs0.01.');
         } elseif ($newTotalPaid > $billTotal + 0.01) {
-            $this->addError('amount', "Cannot exceed bill total. Max: £" . number_format($billTotal - $currentPaid, 2));
+            $this->addError('amount', "Cannot exceed bill total. Max: Rs " . number_format($billTotal - $currentPaid, 2));
         }
     }
 
@@ -73,6 +73,7 @@ class Edit extends Component
             $this->updateBillStatus();
         });
 
+        session()->flash('success', 'Payment updated successfully!');
         return redirect()->route('payment.index');
     }
 

@@ -160,7 +160,7 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" step="0.01" wire:model.live="lines.{{ $i }}.rate" min="0"
+                                            <input type="number" wire:model.live="lines.{{ $i }}.rate" min="0"
                                                    class="form-control form-control-sm text-end" style="width: 90px;">
                                             @error('lines.' . $i . '.rate')
                                                 <small class="text-danger d-block">{{ $message }}</small>

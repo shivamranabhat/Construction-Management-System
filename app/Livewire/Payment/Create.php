@@ -48,7 +48,7 @@ class Create extends Component
 
         $bill = Bill::find($this->bill_id);
         if ($this->amount > $bill->remaining_amount) {
-            $this->addError('amount', "Cannot pay more than £" . number_format($bill->remaining_amount, 2));
+            $this->addError('amount', "Cannot pay more than Rs " . number_format($bill->remaining_amount, 2));
             return;
         }
 
@@ -65,6 +65,7 @@ class Create extends Component
         ]);
 
 
+        session()->flash('success', 'Payment saved successfully!');
 
         return redirect()->route('payment.index');
     }

@@ -3,7 +3,7 @@
         <div class="card-header justify-content-between">
             <div class="card-title">Create</div>
             <a href="{{ route('boq.index') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-arrow-left"></i>
+                 <i class="bi bi-arrow-left"></i>
             </a>
         </div>
 
@@ -18,7 +18,7 @@
                         <i class="bi bi-building"></i>
                     </span>
                     <span class="form-control form-control-sm"> {{$userProjects->first() }}</span>
-                    <input type="hidden" wire:model="project_id" value="{{ $project_id }}">
+                    <input type="hidden" wire:model.live="project_id" value="{{ $project_id }}">
                 </div>
                 <small class="text-muted">Your assigned project</small>
                 @else
@@ -51,7 +51,7 @@
                 <div class="row g-2 mb-2">
                     <div class="col-12 col-md-1">
                         <input type="text" wire:model.live="mainBoqs.{{ $index }}.serial_number" class="form-control"
-                            placeholder="Serial No">
+                            readonly>
                     </div>
                     <div class="col-12 col-md-4">
                         <input type="text" wire:model.live="mainBoqs.{{ $index }}.name" class="form-control"
@@ -80,15 +80,30 @@
                 @if(!$main['subToggled'])
                 @foreach($main['boqs'] as $bIndex => $boq)
                 <div class="row g-2 mb-2 ps-3">
-                    <div class="col-12 col-md-1"><input type="text"
+                    <div class="col-12 col-md-2"><input type="text"
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.serial_number"
-                            class="form-control" placeholder="Serial No"></div>
+                            class="form-control" readonly></div>
                     <div class="col-12 col-md-4"><textarea
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.item_description" rows="1"
                             class="form-control" placeholder="Description"></textarea></div>
-                    <div class="col-12 col-md-1"><input type="text"
-                            wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit" class="form-control"
-                            placeholder="Unit"></div>
+
+                    <!-- UNIT DROPDOWN (REPLACED) -->
+                    <div class="col-12 col-md-1">
+                        <select wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.unit"
+                                class="form-control" style="height: 38px;">
+                            <option value="">Unit</option>
+                            @foreach(config('units.grouped') as $group => $codes)
+                                <optgroup label="{{ ucfirst(str_replace('_', ' ', $group)) }}">
+                                    @foreach($codes as $code)
+                                        <option value="{{ $code }}">
+                                            {{ config("units.item_units.{$code}", $code) }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="col-12 col-md-1"><input type="number"
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.quantity" class="form-control"
                             placeholder="Qty"></div>
@@ -98,9 +113,9 @@
                     <div class="col-12 col-md-1"><input type="number" class="form-control"
                             value="{{ (float)($boq['quantity'] ?? 0) * (float)($boq['unit_rate'] ?? 0) }}" readonly>
                     </div>
-                    <div class="col-12 col-md-3"><textarea
+                    <div class="col-12 col-md-2"><textarea
                             wire:model.live="mainBoqs.{{ $index }}.boqs.{{ $bIndex }}.summary" rows="1"
-                            class="form-control" placeholder="Summary"></textarea></div>
+                            class="form-control" placeholder="Note"></textarea></div>
                 </div>
                 @endforeach
                 @endif
@@ -120,10 +135,10 @@
                     <div class="border rounded p-3 mb-3">
                         <h6>Sub BOQ {{ $subIndex + 1 }}</h6>
                         <div class="row g-2 mb-2">
-                            <div class="col-12 col-md-1"><input type="text"
+                            <div class="col-12 col-md-2"><input type="text"
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.serial_number"
-                                    class="form-control" placeholder="Serial No"></div>
-                            <div class="col-12 col-md-8"><textarea
+                                    class="form-control" readonly></div>
+                            <div class="col-12 col-md-7"><textarea
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.name"
                                     class="form-control" rows="1" placeholder="Sub BOQ Name"></textarea></div>
                             <div class="col-12 col-md-1"><input type="number"
@@ -136,15 +151,30 @@
 
                         @foreach($sub['boqs'] as $bIndex => $boq)
                         <div class="row g-2 mb-2 ps-3">
-                            <div class="col-12 col-md-1"><input type="text"
+                            <div class="col-12 col-md-2"><input type="text"
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.serial_number"
-                                    class="form-control" placeholder="Serial No"></div>
+                                    class="form-control" readonly></div>
                             <div class="col-12 col-md-4"><textarea
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.item_description"
                                     rows="1" class="form-control" placeholder="Description"></textarea></div>
-                            <div class="col-12 col-md-1"><input type="text"
-                                    wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit"
-                                    class="form-control" placeholder="Unit"></div>
+
+                            <!-- UNIT DROPDOWN (REPLACED) -->
+                            <div class="col-12 col-md-1">
+                                <select wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.unit"
+                                        class="form-control" style="height: 38px;">
+                                    <option value="">Unit</option>
+                                    @foreach(config('units.grouped') as $group => $codes)
+                                        <optgroup label="{{ ucfirst(str_replace('_', ' ', $group)) }}">
+                                            @foreach($codes as $code)
+                                                <option value="{{ $code }}">
+                                                    {{ config("units.item_units.{$code}", $code) }}
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="col-12 col-md-1"><input type="number"
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.quantity"
                                     class="form-control" placeholder="Qty"></div>
@@ -154,9 +184,9 @@
                             <div class="col-12 col-md-1"><input type="number" class="form-control"
                                     value="{{ (float)($boq['quantity'] ?? 0) * (float)($boq['unit_rate'] ?? 0) }}"
                                     readonly></div>
-                            <div class="col-12 col-md-3"><textarea
+                            <div class="col-12 col-md-2"><textarea
                                     wire:model.live="mainBoqs.{{ $index }}.subBoqs.{{ $subIndex }}.boqs.{{ $bIndex }}.summary"
-                                    rows="1" class="form-control" placeholder="Summary"></textarea></div>
+                                    rows="1" class="form-control" placeholder="Note"></textarea></div>
                         </div>
                         @endforeach
                     </div>
@@ -165,8 +195,6 @@
                 @endif
             </div>
             @endforeach
-
-
 
             <!-- TAX TOGGLE & LIVE SUMMARY -->
             @if(!empty($mainBoqs))
@@ -249,6 +277,7 @@
             </div>
             @endif
             <!-- END TAX -->
+
             <!-- Action Buttons -->
             <div class="d-flex gap-3 justify-content-end mt-4">
                 <a href="{{ route('boq.index') }}" class="btn btn-outline-secondary">
@@ -256,26 +285,20 @@
                 </a>
                 @if(!empty($mainBoqs))
                 @can('create-boq')
-                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="store">
-                    <span wire:loading.remove wire:target="store">
+                <button type="button" wire:click="save" class="btn btn-primary" 
+                        wire:loading.attr="disabled" wire:target="save">
+                    <span wire:loading.remove wire:target="save">
                         Save
                     </span>
-                    <span wire:loading wire:target="store">
-                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                    <span wire:loading wire:target="save">
                         Saving...
                     </span>
                 </button>
                 @else
-                <button class="btn btn-primary" disabled>
-                    Save
-                </button>
+                <button class="btn btn-primary" disabled>Save</button>
                 @endcan
-
                 @endif
-
-
             </div>
-
         </div>
     </div>
 </div>

@@ -14,6 +14,7 @@ use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Edit extends Component
@@ -45,16 +46,21 @@ class Edit extends Component
     public function mount($slug)
     {
         $this->purchase = Purchase::where('slug', $slug)->firstOrFail();
-         $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+          $projects = Project::query()
+            ->when(Auth::user()->type === 'Company', function ($q) {
+                return $q->where('company_id', Auth::user()->company_id);
+            }, function ($q) {
+                return $q->whereHas('users', fn($sub) => $sub->where('user_id', Auth::id()));
+            })
             ->orderBy('name')
             ->get()
             ->pluck('name', 'id');
 
-        if ($this->userProjects->isEmpty()) {
-            $this->noProjectAccess = true;
-            $this->addError('project_access', 'You are not assigned to any project.');
-        } elseif ($this->userProjects->count() === 1) {
-            $this->project_id = $this->userProjects->keys()->first();
+        $this->userProjects = $projects;
+
+        // auto-select logic stays the same
+        if ($projects->count() === 1) {
+            $this->project_id    = $projects->keys()->first();
             $this->singleProject = true;
         }
         $this->loadPurchaseData();
@@ -516,7 +522,7 @@ class Edit extends Component
             }
         });
 
-        session()->flash('message', 'Purchase updated successfully!');
+        session()->flash('message', 'Purchase data updated successfully!');
         return redirect()->route('purchase.index');
     }
 

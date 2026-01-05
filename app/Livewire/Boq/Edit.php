@@ -7,30 +7,33 @@ use App\Models\Boq;
 use App\Models\Project;
 use App\Models\Tax;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class Edit extends Component
 {
     public $project_id;
+    public $project_name = ''; // For project serial code
     public $mainBoqs = [];
     public $boqSlug;
     public $taxEnabled = false;
     public $taxId = '';
     public $taxes = [];
 
-    // Modal
+    // Modal delete
     public $showDeleteModal = false;
-    public $deleteType = ''; // 'main', 'sub', 'subsub', 'mainitem'
+    public $deleteType = '';
     public $deleteIndices = [];
 
     // Totals
     public $subtotal = 0;
     public $taxAmount = 0;
     public $total = 0;
-    
+
     public $userProjects = [];
     public $singleProject = false;
     public $noProjectAccess = false;
-    
 
     public function mount($slug)
     {
@@ -42,20 +45,38 @@ class Edit extends Component
         $this->taxEnabled = !is_null($mainBoq->tax_id);
         $this->taxId = $mainBoq->tax_id;
 
-        $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+        $projects = Project::query()
+            ->when(Auth::user()->type === 'Company', fn($q) => $q->where('company_id', Auth::user()->company_id),
+                              fn($q) => $q->whereHas('users', fn($sub) => $sub->where('user_id', Auth::id())))
             ->orderBy('name')
             ->get()
             ->pluck('name', 'id');
 
-        if ($this->userProjects->isEmpty()) {
-            $this->noProjectAccess = true;
-            $this->addError('project_access', 'You are not assigned to any project.');
-        } elseif ($this->userProjects->count() === 1) {
-            $this->project_id = $this->userProjects->keys()->first();
+        $this->userProjects = $projects;
+
+        if ($projects->count() === 1) {
+            $this->project_id = $projects->keys()->first();
             $this->singleProject = true;
         }
+
+        $this->loadProjectName();
         $this->loadBoqs();
         $this->calculateTotals();
+    }
+
+    public function updatedProjectId()
+    {
+        $this->loadProjectName();
+        $this->regenerateSerials();
+        $this->calculateTotals();
+    }
+
+    protected function loadProjectName()
+    {
+        if ($this->project_id) {
+            $project = Project::find($this->project_id);
+            $this->project_name = $project ? $project->name : '';
+        }
     }
 
     protected function loadBoqs()
@@ -120,6 +141,61 @@ class Edit extends Component
 
             $this->mainBoqs[] = $mainData;
         }
+
+        $this->regenerateSerials();
+    }
+
+    protected function getProjectCode()
+    {
+        if (empty($this->project_name)) {
+            return strtoupper(Str::random(4));
+        }
+
+        $words = explode(' ', trim($this->project_name));
+        $code = '';
+
+        foreach ($words as $word) {
+            if (strlen($code) < 4) {
+                $letter = strtoupper(substr(preg_replace('/[^A-Z]/', '', $word), 0, 1));
+                if ($letter) {
+                    $code .= $letter;
+                }
+            } else {
+                break;
+            }
+        }
+
+        if (strlen($code) < 4) {
+            $clean = preg_replace('/[^A-Z0-9]/', '', strtoupper($this->project_name));
+            $code .= substr($clean, strlen($code), 4 - strlen($code));
+        }
+
+        return substr($code, 0, 4);
+    }
+
+    public function regenerateSerials()
+    {
+        $projectCode = $this->getProjectCode();
+
+        foreach ($this->mainBoqs as $mIndex => &$main) {
+            $main['serial_number'] = $projectCode . '.' . ($mIndex + 1);
+            $mainSerial = $main['serial_number'];
+
+            if (empty($main['subToggled'])) {
+                foreach ($main['boqs'] as $bIndex => &$boq) {
+                    $boq['serial_number'] = $mainSerial . '.' . ($bIndex + 1);
+                }
+            } else {
+                foreach ($main['subBoqs'] as $sIndex => &$sub) {
+                    $sub['serial_number'] = $mainSerial . '.' . ($sIndex + 1);
+                    $subSerial = $sub['serial_number'];
+
+                    foreach ($sub['boqs'] as $bIndex => &$boq) {
+                        $boq['serial_number'] = $subSerial . '.' . ($bIndex + 1);
+                    }
+                }
+            }
+        }
     }
 
     public function updated($property)
@@ -129,7 +205,9 @@ class Edit extends Component
 
     public function updatedTaxEnabled($value)
     {
-        if (!$value) $this->taxId = '';
+        if (!$value) {
+            $this->taxId = '';
+        }
         $this->calculateTotals();
     }
 
@@ -146,23 +224,19 @@ class Edit extends Component
             if ($main['subToggled']) {
                 foreach ($main['subBoqs'] as $sub) {
                     foreach ($sub['boqs'] as $item) {
-                        $qty = (float) ($item['quantity'] ?? 0);
-                        $rate = (float) ($item['unit_rate'] ?? 0);
-                        $subtotal += $qty * $rate;
+                        $subtotal += (float)($item['quantity'] ?? 0) * (float)($item['unit_rate'] ?? 0);
                     }
                 }
             } else {
                 foreach ($main['boqs'] as $item) {
-                    $qty = (float) ($item['quantity'] ?? 0);
-                    $rate = (float) ($item['unit_rate'] ?? 0);
-                    $subtotal += $qty * $rate;
+                    $subtotal += (float)($item['quantity'] ?? 0) * (float)($item['unit_rate'] ?? 0);
                 }
             }
         }
 
         $this->subtotal = $subtotal;
-
         $taxRate = 0;
+
         if ($this->taxEnabled && $this->taxId) {
             $tax = $this->taxes->firstWhere('id', $this->taxId);
             $taxRate = $tax->rate ?? 0;
@@ -183,6 +257,8 @@ class Edit extends Component
             'subCount' => 0,
             'subBoqs' => [],
         ];
+        $this->regenerateSerials();
+        $this->calculateTotals();
     }
 
     public function generateMainBoqs($index)
@@ -195,13 +271,20 @@ class Edit extends Component
         if ($diff > 0) {
             for ($i = 0; $i < $diff; $i++) {
                 $this->mainBoqs[$index]['boqs'][] = [
-                    'serial_number' => '', 'item_description' => '', 'unit' => '',
-                    'quantity' => '', 'unit_rate' => '', 'amount' => '', 'summary' => '',
+                    'serial_number' => '',
+                    'item_description' => '',
+                    'unit' => '',
+                    'quantity' => '',
+                    'unit_rate' => '',
+                    'amount' => '',
+                    'summary' => '',
                 ];
             }
         } elseif ($diff < 0) {
             $this->mainBoqs[$index]['boqs'] = array_slice($this->mainBoqs[$index]['boqs'], 0, $count);
         }
+        $this->regenerateSerials();
+        $this->calculateTotals();
     }
 
     public function generateSubBoqs($index)
@@ -214,12 +297,17 @@ class Edit extends Component
         if ($diff > 0) {
             for ($i = 0; $i < $diff; $i++) {
                 $this->mainBoqs[$index]['subBoqs'][] = [
-                    'serial_number' => '', 'name' => '', 'boqCount' => 0, 'boqs' => [],
+                    'serial_number' => '',
+                    'name' => '',
+                    'boqCount' => 0,
+                    'boqs' => [],
                 ];
             }
         } elseif ($diff < 0) {
             $this->mainBoqs[$index]['subBoqs'] = array_slice($this->mainBoqs[$index]['subBoqs'], 0, $count);
         }
+        $this->regenerateSerials();
+        $this->calculateTotals();
     }
 
     public function generateSubSubBoqs($mainIndex, $subIndex)
@@ -232,14 +320,24 @@ class Edit extends Component
         if ($diff > 0) {
             for ($i = 0; $i < $diff; $i++) {
                 $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'][] = [
-                    'serial_number' => '', 'item_description' => '', 'unit' => '',
-                    'quantity' => '', 'unit_rate' => '', 'amount' => '', 'summary' => '',
+                    'serial_number' => '',
+                    'item_description' => '',
+                    'unit' => '',
+                    'quantity' => '',
+                    'unit_rate' => '',
+                    'amount' => '',
+                    'summary' => '',
                 ];
             }
         } elseif ($diff < 0) {
-            $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'] =
-                array_slice($this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'], 0, $count);
+            $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'] = array_slice(
+                $this->mainBoqs[$mainIndex]['subBoqs'][$subIndex]['boqs'],
+                0,
+                $count
+            );
         }
+        $this->regenerateSerials();
+        $this->calculateTotals();
     }
 
     public function confirmDelete($type, $indices)
@@ -253,11 +351,14 @@ class Edit extends Component
     {
         if ($this->deleteType === 'main' && isset($this->mainBoqs[$this->deleteIndices['mainIndex']]['id'])) {
             $id = $this->mainBoqs[$this->deleteIndices['mainIndex']]['id'];
-            Boq::where('id', $id)->orWhere('parent_id', $id)->delete();
+            Boq::where('id', $id)
+                ->orWhere('parent_id', $id)
+                ->delete();
         }
         unset($this->mainBoqs[$this->deleteIndices['mainIndex']]);
         $this->mainBoqs = array_values($this->mainBoqs);
         $this->closeModal();
+        $this->regenerateSerials();
         $this->calculateTotals();
     }
 
@@ -266,13 +367,18 @@ class Edit extends Component
         if ($this->deleteType === 'sub') {
             $m = $this->deleteIndices['mainIndex'];
             $s = $this->deleteIndices['subIndex'];
-            $id = $this->mainBoqs[$m]['subBoqs'][$s]['id'] ?? null;
-            if ($id) Boq::where('id', $id)->orWhere('parent_id', $id)->delete();
+            if (isset($this->mainBoqs[$m]['subBoqs'][$s]['id'])) {
+                $id = $this->mainBoqs[$m]['subBoqs'][$s]['id'];
+                Boq::where('id', $id)
+                    ->orWhere('parent_id', $id)
+                    ->delete();
+            }
             unset($this->mainBoqs[$m]['subBoqs'][$s]);
             $this->mainBoqs[$m]['subBoqs'] = array_values($this->mainBoqs[$m]['subBoqs']);
             $this->mainBoqs[$m]['subCount'] = count($this->mainBoqs[$m]['subBoqs']);
         }
         $this->closeModal();
+        $this->regenerateSerials();
         $this->calculateTotals();
     }
 
@@ -282,13 +388,16 @@ class Edit extends Component
             $m = $this->deleteIndices['mainIndex'];
             $s = $this->deleteIndices['subIndex'];
             $b = $this->deleteIndices['boqIndex'];
-            $id = $this->mainBoqs[$m]['subBoqs'][$s]['boqs'][$b]['id'] ?? null;
-            if ($id) Boq::where('id', $id)->delete();
+            if (isset($this->mainBoqs[$m]['subBoqs'][$s]['boqs'][$b]['id'])) {
+                $id = $this->mainBoqs[$m]['subBoqs'][$s]['boqs'][$b]['id'];
+                Boq::where('id', $id)->delete();
+            }
             unset($this->mainBoqs[$m]['subBoqs'][$s]['boqs'][$b]);
             $this->mainBoqs[$m]['subBoqs'][$s]['boqs'] = array_values($this->mainBoqs[$m]['subBoqs'][$s]['boqs']);
             $this->mainBoqs[$m]['subBoqs'][$s]['boqCount'] = count($this->mainBoqs[$m]['subBoqs'][$s]['boqs']);
         }
         $this->closeModal();
+        $this->regenerateSerials();
         $this->calculateTotals();
     }
 
@@ -297,13 +406,16 @@ class Edit extends Component
         if ($this->deleteType === 'mainitem') {
             $m = $this->deleteIndices['mainIndex'];
             $b = $this->deleteIndices['boqIndex'];
-            $id = $this->mainBoqs[$m]['boqs'][$b]['id'] ?? null;
-            if ($id) Boq::where('id', $id)->delete();
+            if (isset($this->mainBoqs[$m]['boqs'][$b]['id'])) {
+                $id = $this->mainBoqs[$m]['boqs'][$b]['id'];
+                Boq::where('id', $id)->delete();
+            }
             unset($this->mainBoqs[$m]['boqs'][$b]);
             $this->mainBoqs[$m]['boqs'] = array_values($this->mainBoqs[$m]['boqs']);
             $this->mainBoqs[$m]['boqCount'] = count($this->mainBoqs[$m]['boqs']);
         }
         $this->closeModal();
+        $this->regenerateSerials();
         $this->calculateTotals();
     }
 
@@ -329,9 +441,8 @@ class Edit extends Component
                     $rules["mainBoqs.$m.subBoqs.$s.name"] = 'required|string';
                     $rules["mainBoqs.$m.subBoqs.$s.boqs"] = 'required|array|min:1';
                     foreach ($sub['boqs'] as $b => $boq) {
-                        $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.serial_number"] = 'required';
-                        $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.item_description"] = 'required';
-                        $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.unit"] = 'required';
+                        $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.item_description"] = 'required|string';
+                        $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.unit"] = 'required|string';
                         $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.quantity"] = 'required|numeric|min:0';
                         $rules["mainBoqs.$m.subBoqs.$s.boqs.$b.unit_rate"] = 'required|numeric|min:0';
                     }
@@ -339,9 +450,8 @@ class Edit extends Component
             } else {
                 $rules["mainBoqs.$m.boqs"] = 'required|array|min:1';
                 foreach ($main['boqs'] as $b => $boq) {
-                    $rules["mainBoqs.$m.boqs.$b.serial_number"] = 'required';
-                    $rules["mainBoqs.$m.boqs.$b.item_description"] = 'required';
-                    $rules["mainBoqs.$m.boqs.$b.unit"] = 'required';
+                    $rules["mainBoqs.$m.boqs.$b.item_description"] = 'required|string';
+                    $rules["mainBoqs.$m.boqs.$b.unit"] = 'required|string';
                     $rules["mainBoqs.$m.boqs.$b.quantity"] = 'required|numeric|min:0';
                     $rules["mainBoqs.$m.boqs.$b.unit_rate"] = 'required|numeric|min:0';
                 }
@@ -439,7 +549,6 @@ class Edit extends Component
 
     public function render()
     {
-        $projects = Project::all();
-        return view('livewire.boq.edit', compact('projects'));
+        return view('livewire.boq.edit');
     }
 }

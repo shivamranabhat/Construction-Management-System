@@ -136,10 +136,10 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <p class="text-muted small mb-1">Total Amount</p>
-                            <h5 class="mb-0 text-success">£{{ number_format($totalAmount, 2) }}</h5>
+                            <h5 class="mb-0 text-success">Rs.{{ number_format($totalAmount, 2) }}</h5>
                         </div>
                         <div class="bg-success bg-opacity-10 rounded p-2">
-                            <i class="bi bi-currency-pound text-success" style="font-size:1.5rem"></i>
+                            <i class="bi bi-cash-stack text-success" style="font-size:1.5rem"></i>
                         </div>
                     </div>
                 </div>
@@ -194,7 +194,7 @@
                                     {{ \Carbon\Carbon::parse($bill->due_date)->format('d M Y') }}
                                 </span>
                             </td>
-                            <td class="text-end fw-bold">£{{ number_format($bill->total, 2) }}</td>
+                            <td class="text-end fw-bold">Rs.{{ number_format($bill->total, 2) }}</td>
                             <td class="text-center">
                                 <span class="badge fw-medium {{
                                         $bill->status === 'paid' ? 'bg-success' :

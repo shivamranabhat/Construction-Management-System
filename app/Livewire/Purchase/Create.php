@@ -14,6 +14,7 @@ use App\Models\Requisition;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Create extends Component
@@ -53,16 +54,21 @@ class Create extends Component
         $this->purchase_date = now()->format('Y-m-d');
         $this->purchase_number = 'PO-' . now()->format('Ymd-His');
 
-        $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))
+         $projects = Project::query()
+            ->when(Auth::user()->type === 'Company', function ($q) {
+                return $q->where('company_id', Auth::user()->company_id);
+            }, function ($q) {
+                return $q->whereHas('users', fn($sub) => $sub->where('user_id', Auth::id()));
+            })
             ->orderBy('name')
             ->get()
             ->pluck('name', 'id');
 
-        if ($this->userProjects->isEmpty()) {
-            $this->noProjectAccess = true;
-            $this->addError('project_access', 'You are not assigned to any project.');
-        } elseif ($this->userProjects->count() === 1) {
-            $this->project_id = $this->userProjects->keys()->first();
+        $this->userProjects = $projects;
+
+        // auto-select logic stays the same
+        if ($projects->count() === 1) {
+            $this->project_id    = $projects->keys()->first();
             $this->singleProject = true;
         }
 
@@ -260,9 +266,10 @@ class Create extends Component
             'lines' => 'required|array|min:1',
             'lines.*.quantity' => 'required|integer|min:1',
             'lines.*.rate' => 'required|numeric|min:0',
+            'lines.*.tax_id' => 'nullable|exists:taxes,id',
         ]);
 
-        $companyId = auth()->user()->company_id ?? 1;
+        $companyId = auth()->user()->company_id;
         $userId = auth()->id();
 
         DB::transaction(function () use ($companyId, $userId) {
@@ -270,28 +277,26 @@ class Create extends Component
                 'purchase_date' => $this->purchase_date,
                 'purchase_number' => $this->purchase_number,
                 'vendor_id' => $this->vendor_id,
-                'project_id' => $this->project_id ?: null,
+                'project_id' => $this->project_id,
                 'entered_by' => $userId,
                 'company_id' => $companyId,
                 'total_price' => $this->grand_total,
                 'status' => $this->status,
                 'notes' => $this->notes,
-                'requisition_id' => $this->pendingRequisitions->first()?->id ?? null,
+                'requisition_id' => $this->selectedRequisitionId,
                 'slug' => Str::slug($this->purchase_number),
             ]);
 
-            // CHANGE REQUISITION STATUS TO po_created
+            // Update requisition status if used
             if ($this->selectedRequisitionId) {
-                $requisition = Requisition::find($this->selectedRequisitionId);
-                if ($requisition) {
-                    $requisition->update(['status' => 'po_created']);
-                }
+                Requisition::where('id', $this->selectedRequisitionId)
+                    ->update(['status' => 'po_created']);
             }
 
-            foreach ($this->lines as $i => $line) {
+            foreach ($this->lines as $index => $line) {
                 $item = $line['item_id'] ? Item::find($line['item_id']) : null;
 
-                if (!$item && $line['item_name']) {
+                if (!$item && !empty($line['item_name'])) {
                     $item = Item::create([
                         'name' => $line['item_name'],
                         'type' => 'Product',
@@ -305,16 +310,14 @@ class Create extends Component
                 if (!$item) continue;
 
                 $subtotal = $line['quantity'] * $line['rate'];
-                $taxAmount = $line['tax_id'] ? $subtotal * (Tax::find($line['tax_id'])?->rate ?? 0) / 100 : 0;
+                $taxAmount = $line['tax_id']
+                    ? $subtotal * (Tax::find($line['tax_id'])?->rate ?? 0) / 100
+                    : 0;
                 $lineTotal = $subtotal + $taxAmount;
 
-                foreach ($this->lines as $i => $line) {
-                    $this->validate([
-                        "lines.$i.quantity" => 'required|numeric|min:1',
-                        "lines.$i.rate" => 'required|numeric|min:0',
-                        "lines.$i.tax_id" => 'nullable|exists:taxes,id', // ← allows null
-                    ]);
-                }
+                // Generate unique slug for PurchaseProduct
+                $productSlug = Str::slug("{$purchase->purchase_number}-{$item->name}-{$index}");
+
                 $purchaseProduct = PurchaseProduct::create([
                     'purchase_id' => $purchase->id,
                     'item_id' => $item->id,
@@ -325,9 +328,10 @@ class Create extends Component
                     'company_id' => $companyId,
                     'entered_by' => $userId,
                     'updated_by' => $userId,
-                    'slug' => Str::slug("{$item->name}-{$purchase->purchase_number}-{$i}"),
+                    'slug' => $productSlug, // ← Added here
                 ]);
 
+                // Stock Movement
                 StockMovement::create([
                     'purchase_product_id' => $purchaseProduct->id,
                     'type' => 'in',
@@ -336,41 +340,32 @@ class Create extends Component
                     'unit_cost' => $line['rate'],
                     'date' => $this->purchase_date,
                     'entered_by' => $userId,
-                    'project_id' => $this->project_id ?: null,
+                    'project_id' => $this->project_id,
                     'company_id' => $companyId,
                     'vendor_id' => $this->vendor_id,
                     'status' => 'completed',
-                    'updated_by' => $userId,
                     'slug' => Str::slug("in-po-{$item->name}-" . now()->format('YmdHis')),
                 ]);
-                // -----------------------------------------------------------------
-                // 3. **UPDATE / CREATE** Stock record
-                // -----------------------------------------------------------------
-                $stock = Stock::where('company_id', $companyId)
-                    ->where('project_id', $this->project_id ?: null)
-                    ->where('item_id', $item->id)
-                    ->first();
 
-                if ($stock) {
-                    // Existing row → just add the new quantity
-                    $stock->increment('stock', $line['quantity']);
-                } else {
-                    // No row yet → create it
-                    Stock::create([
-                        'item_id'    => $item->id,
-                        'stock'      => $line['quantity'],
-                        'project_id' => $this->project_id ?: null,
+                // Update or Create Stock
+                $stock = Stock::firstOrCreate(
+                    [
                         'company_id' => $companyId,
-                        'slug'       => Str::slug("stock-{$item->name}-{$companyId}-{$this->project_id}"),
-                    ]);
-                }
+                        'project_id' => $this->project_id,
+                        'item_id' => $item->id,
+                    ],
+                    ['stock' => 0]
+                );
 
+                $stock->increment('stock', $line['quantity']);
             }
         });
 
-        session()->flash('message', 'Purchase created!');
+       session()->flash('message', 'Purchase data stored successfully!');
+
         return redirect()->route('purchase.index');
     }
+
 
     public function render()
     {

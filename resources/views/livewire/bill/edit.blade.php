@@ -6,8 +6,8 @@
                 <h5 class="mb-0 text-primary">
                     <i class="bi bi-receipt me-2"></i>Bill #{{ $bill_number }}
                 </h5>
-                <a href="{{ route('bill.index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-left"></i> Back
+                <a href="{{ route('bill.index') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
                 </a>
             </div>
         </div>

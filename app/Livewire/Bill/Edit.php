@@ -140,6 +140,7 @@ class Edit extends Component
             }
 
             return redirect()->route('bill.index');
+            session()->flash('success', 'Bill updated successfully!');
         });
     }
 

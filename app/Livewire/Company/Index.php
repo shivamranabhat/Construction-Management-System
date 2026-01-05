@@ -26,7 +26,7 @@ class Index extends Component
         $company->users()->delete(); // Delete associated users
         $company->delete();
 
-        session()->flash('success', 'Company and its admin deleted successfully.');
+        session()->flash('success', 'Company deleted successfully.');
     }
 
     public function render()

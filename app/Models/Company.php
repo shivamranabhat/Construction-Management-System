@@ -100,4 +100,9 @@ class Company extends Model
     {
         return $this->hasMany(RequisitionItem::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
 }

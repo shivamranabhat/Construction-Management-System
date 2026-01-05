@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Project;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class Create extends Component
 {
@@ -19,20 +20,28 @@ class Create extends Component
     public $items = [];
     public $itemSearch = '';
 
-    public $userProjects;     // Collection of user's projects
+    public $userProjects;     
     public $singleProject = false;
 
     public function mount()
     {
         $this->required_date = now()->addDays(7)->format('Y-m-d');
 
-        // Get ONLY projects user is assigned to via project_user pivot
-        $this->userProjects = Project::whereHas('users', fn($q) => $q->where('user_id', auth()->id()))->get()->pluck('name', 'id');
-            
+        $projects = Project::query()
+            ->when(Auth::user()->type === 'Company', function ($q) {
+                return $q->where('company_id', Auth::user()->company_id);
+            }, function ($q) {
+                return $q->whereHas('users', fn($sub) => $sub->where('user_id', Auth::id()));
+            })
+            ->orderBy('name')
+            ->get()
+            ->pluck('name', 'id');
 
-        // Auto-select if only one project
-        if ($this->userProjects->count() === 1) {
-            $this->project_id = $this->userProjects->keys()->first();
+        $this->userProjects = $projects;
+
+        // auto-select logic stays the same
+        if ($projects->count() === 1) {
+            $this->project_id    = $projects->keys()->first();
             $this->singleProject = true;
         }
 
@@ -166,13 +175,14 @@ class Create extends Component
             ]);
 
             return redirect()->route('requisition.index');
+            session()->flash('success', 'Requisition created successfully!');
         });
     }
 
     public function render()
     {
         $availableItems = Item::when($this->itemSearch, fn($q) => $q->where('name', 'like', "%{$this->itemSearch}%")
-                ->orWhere('code', 'like', "%{$this->itemSearch}%"))
+            )
             ->limit(30)
             ->get()
             ->mapWithKeys(fn($i) => ["{$i->code} - {$i->name}" => $i->id])

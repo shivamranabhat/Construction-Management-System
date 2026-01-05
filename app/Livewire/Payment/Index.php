@@ -20,6 +20,7 @@ class Index extends Component
         $bill = Bill::find($payment->bill_id);
         $bill->update(['status'=>'draft']);
         $payment->delete();
+        session()->flash('success', 'Payment deleted successfully!');
     }
 
     public function render()

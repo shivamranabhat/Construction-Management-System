@@ -12,7 +12,7 @@ class Create extends Component
 
     // List of allowed modules (must match exactly what you allow)
     public $allowedModules = [
-        'account', 'bill', 'boq', 'category', 'item', 'module',
+        'account', 'bill', 'boq', 'category', 'item','log', 'module',
         'payment', 'project', 'purchase', 'requisition',
         'role', 'tax', 'vendor'
     ];

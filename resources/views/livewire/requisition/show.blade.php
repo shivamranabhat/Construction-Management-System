@@ -184,7 +184,7 @@
 
                         <!-- 4. Company Final -->
                         <div class="stepper-step 
-                {{ $progress >= 0 ? 'completed final' : '' }} 
+                {{ $progress >= 90 ? 'completed final' : '' }} 
                 {{ $requisition->status === 'rejected_by_owner' ? 'rejected' : '' }}">
                             <div class="step-circle">
                                 @if($progress >= 90)

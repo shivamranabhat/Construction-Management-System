@@ -28,6 +28,11 @@ class Project extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+
     public function boqs()
     {
         return $this->hasMany(Boq::class);
@@ -51,6 +56,11 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class, 'project_user')
                     ->withPivot('company_id');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
     }
 
 

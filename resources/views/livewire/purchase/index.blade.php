@@ -103,7 +103,7 @@
                     <div class="d-flex justify-content-between align-items-end mb-2">
                         <div>
                             <p class="text-muted mb-1 small">Total Amount</p>
-                            <h4 class="mb-0 fw-bold">${{ number_format($purchase->total_price, 2) }}</h4>
+                            <h4 class="mb-0 fw-bold">Rs.{{ number_format($purchase->total_price, 2) }}</h4>
                         </div>
 
                     </div>

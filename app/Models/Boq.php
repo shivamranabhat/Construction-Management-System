@@ -54,5 +54,11 @@ class Boq extends Model
     {
         return $this->belongsTo(Tax::class);
     }
+    
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+
 
 }
