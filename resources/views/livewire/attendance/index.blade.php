@@ -5,13 +5,6 @@
         </div>
 
         <div class="card-body">
-            @if(session()->has('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
             <div class="row mb-2">
                 <div class="col-sm-12 col-md-4">
                     <div class="dataTables_length">
@@ -71,7 +64,7 @@
                             <td x-data="{ openModal: false }">
                                 <div class="hstack gap-2">
                                     @can('update-attendance')
-                                    <a href="{{ route('attendance.edit', $attendance->id) }}"
+                                    <a href="{{ route('attendance.edit', $attendance->slug) }}"
                                         class="btn btn-icon btn-warning-transparent rounded-pill" title="Edit">
                                         <i class="ri-edit-line"></i>
                                     </a>

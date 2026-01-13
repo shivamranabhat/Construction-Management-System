@@ -14,7 +14,7 @@
         <div class="card-body">
             <form wire:submit="submit">
                 <div class="row gy-4">
-                    <div class="col-xl-6 col-md-6">
+                    <div class="col-12">
                         <label class="form-label">
                             Worker Name <span class="text-danger">*</span>
                         </label>
@@ -37,20 +37,7 @@
                             placeholder="e.g., Mason, Carpenter, Electrician" />
                         @error('role') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
-
-                    <div class="col-xl-6 col-md-6">
-                        <label class="form-label">
-                            Project <span class="text-danger">*</span>
-                        </label>
-                        <select wire:model.live="project_id"
-                            class="form-select @error('project_id') is-invalid @enderror" required>
-                            <option value="">Select Project</option>
-                            @foreach($userProjects as $id => $name)
-                            <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        @error('project_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
+                    
                 </div>
 
                 <div class="d-flex gap-3 justify-content-end mt-4">

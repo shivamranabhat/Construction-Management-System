@@ -71,6 +71,10 @@ p.small.text-muted{
         background: #b3b3b3;
     }
 
+    .bg-success {
+        background-color: #249E94 !important;
+        color: #fff !important;
+    }
     .btn-delete {
         background: #dc3545;
         color: #fff;

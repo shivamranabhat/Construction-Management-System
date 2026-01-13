@@ -1,17 +1,13 @@
 <div class="container-fluid py-4">
+
     @if($stocks->isNotEmpty())
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div></div>
-        <div class="d-flex gap-2">
-            <input type="text" wire:model.live.debounce.500ms="search" class="form-control form-control-sm"
-                placeholder="Search item..." style="width: 200px;">
-            <select wire:model.live="project_filter" class="form-select form-select-sm" style="width: auto;">
-                <option value="">All Projects</option>
-                <option value="0">Global (No Project)</option>
-                @foreach($projects as $p)
-                <option value="{{ $p->id }}">{{ $p->name }}</option>
-                @endforeach
-            </select>
+        <div>
+            <input type="text" wire:model.live.debounce.500ms="search" 
+                   class="form-control form-control-sm" 
+                   placeholder="Search item..." 
+                   style="width: 240px;">
         </div>
     </div>
     @endif
@@ -47,7 +43,7 @@
                                 <th class="text-end">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody wire:poll.keep-alive>
                             @foreach($stocks as $stock)
                             <tr>
                                 <td>
@@ -73,7 +69,7 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ route('stock.show', $stock->slug) }}"
-                                        class="btn btn-outline-primary btn-sm" title="View Details">
+                                       class="btn btn-outline-primary btn-sm" title="View Details">
                                         View
                                     </a>
                                 </td>

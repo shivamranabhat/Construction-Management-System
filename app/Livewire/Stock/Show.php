@@ -3,51 +3,43 @@
 namespace App\Livewire\Stock;
 
 use App\Models\Stock;
+use App\Models\Log;
 use Livewire\Component;
-use Illuminate\Support\Facades\DB;
 
 class Show extends Component
 {
-    public $stock;
-    public $itemId;
-    public $projectId;
+    public Stock $stock;
+    public $usageLogs;
 
     public function mount($slug)
     {
-        // Parse slug: stock-{item_id}-{project_id|global}
-        preg_match('/^stock-(\d+)-(global|\d+)$/', $slug, $matches);
-        if (!$matches) abort(404);
+       $details = Stock::whereSlug($slug)->firstOrFail();
+       $itemId = $details->item_id;
+       $projectId = $details->project_id;
 
-        $this->itemId = $matches[1];
-        $this->projectId = $matches[2] === 'global' ? null : $matches[2];
-
-        $this->loadStock();
-    }
-
-    public function loadStock()
-    {
-        $query = Stock::select([
-                'item_id',
-                'project_id',
-                DB::raw('SUM(stock) as total_stock'),
-                DB::raw('MAX(updated_at) as last_updated'),
-            ])
+        // Use global scopes + explicit filters
+        $this->stock = Stock::query()
+            ->where('item_id', $itemId)
+            ->when($projectId !== null, fn($q) => $q->where('project_id', $projectId))
+            ->when($projectId === null, fn($q) => $q->whereNull('project_id'))
+            ->selectRaw('item_id, project_id, SUM(stock) as total_stock, MAX(updated_at) as last_updated')
             ->with(['item', 'project'])
-            ->where('item_id', $this->itemId)
-            ->where(function ($q) {
-                $this->projectId
-                    ? $q->where('project_id', $this->projectId)
-                    : $q->whereNull('project_id');
-            })
-            ->groupBy('item_id', 'project_id');
-
-        $this->stock = $query->firstOrFail();
-        $this->stock->slug = $this->generateSlug();
-    }
-
-    protected function generateSlug()
-    {
-        return 'stock-' . $this->itemId . '-' . ($this->projectId ?? 'global');
+            ->groupBy('item_id', 'project_id')
+            ->firstOrFail();
+        // Fetch usage logs for this item and project
+        $this->usageLogs = Log::query()
+                            ->whereJsonContains('items_used', [
+                                'item_id' => (string) $this->stock->item_id
+                            ])
+                            ->where('status', 'approved')
+                            ->when(
+                                $this->stock->project_id !== null,
+                                fn ($q) => $q->where('project_id', $this->stock->project_id),
+                                fn ($q) => $q->whereNull('project_id')
+                            )
+                            ->orderByDesc('date')
+                            ->orderByDesc('created_at')
+                            ->get();
     }
 
     public function render()

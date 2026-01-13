@@ -60,6 +60,9 @@ use App\Livewire\Worker\Edit as WorkerEdit;
 use App\Livewire\Attendance\Index as AttendanceIndex;
 use App\Livewire\Attendance\Create as AttendanceCreate;
 use App\Livewire\Attendance\Edit as AttendanceEdit;
+use App\Livewire\Vehicle\Index as VehicleIndex;
+use App\Livewire\Vehicle\Create as VehicleCreate;
+use App\Livewire\Vehicle\Edit as VehicleEdit;
 
 
 Route::get('/signin', AuthLogin::class)->name('signin');
@@ -166,7 +169,12 @@ Route::middleware([Authenticate::class])->group(function () {
     Route::name('attendance.')->group(function () {
         Route::get('/attendances', AttendanceIndex::class)->name('index');            
         Route::get('/attendance/new', AttendanceCreate::class)->name('create');    
-        Route::get('/attendance/{id}', AttendanceEdit::class)->name('edit');    
+        Route::get('/attendance/{slug}', AttendanceEdit::class)->name('edit');    
+    });
+    Route::name('vehicle.')->group(function () {
+        Route::get('/vehicles', VehicleIndex::class)->name('index');            
+        Route::get('/vehicle/new', VehicleCreate::class)->name('create');    
+        Route::get('/vehicle/{slug}', VehicleEdit::class)->name('edit');    
     });
     
 });

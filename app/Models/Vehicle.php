@@ -3,31 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Models\Scopes\CompanyScope;
+use App\Models\Scopes\ActiveProjectScope;
+use Illuminate\Support\Str;
 
-class Worker extends Model
+class Vehicle extends Model
 {
+
     protected static function booted()
     {
         static::addGlobalScope(new CompanyScope);
-        static::creating(function ($worker) {
-            $worker->slug = $worker->generateUniqueSlug();
+        static::addGlobalScope(new ActiveProjectScope);
+        static::creating(function ($vehicle) {
+            $vehicle->slug = $vehicle->generateUniqueSlug();
         });
     }
+
     protected $fillable = [
-        'name',
-        'phone',
-        'role',
+        'registration_number',
+        'make',
+        'model',
+        'fuel_type',
         'company_id',
         'slug',
     ];
-
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
 
     public function generateUniqueSlug(): string
     {
@@ -41,8 +40,10 @@ class Worker extends Model
         return 'slug';
     }
 
-    public function attendances()
+    public function company()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->belongsTo(Company::class);
     }
+
+
 }

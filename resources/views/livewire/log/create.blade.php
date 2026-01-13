@@ -25,29 +25,34 @@
             <form wire:submit="submit">
                 <div class="row gy-4">
                     <!-- Project Selection -->
-                    @if(!$singleProject)
                     <div class="col-xl-6 col-lg-6 col-md-12">
-                        <label class="form-label">
-                            Select Project <span class="text-danger">*</span>
-                        </label>
-                        <select wire:model.live="project_id"
-                            class="form-select @error('project_id') is-invalid @enderror" required>
-                            <option value="">Choose a Project</option>
-                            @foreach($userProjects as $id => $name)
-                            <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        @error('project_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Project <span class="text-danger">*</span></label>
+                        @if($singleProject)
+                        <!-- Only one project → show as readonly -->
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-building"></i>
+                            </span>
+                            <span class="form-control form-control-sm"> {{$userProjects->first() }}</span>
+                            <input type="hidden" wire:model.live="project_id" value="{{ $project_id }}">
+                        </div>
+                        @else
+                        <!-- Multiple projects → dropdown -->
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-building"></i>
+                            </span>
+                            <select wire:model.live="project_id"
+                                class="form-select form-select-sm @error('project_id') is-invalid @enderror" required>
+                                <option value="">Select Project</option>
+                                @foreach($userProjects as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+                        @error('project_id') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
-                    @else
-                    <div class="col-xl-6 col-lg-6 col-md-12">
-                        <label class="form-label">Project</label>
-                        <input type="text" class="form-control" value="{{ $projectName }}" readonly />
-                        <input type="hidden" wire:model="project_id" />
-                    </div>
-                    @endif
 
                     <!-- Date -->
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">

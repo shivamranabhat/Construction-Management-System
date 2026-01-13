@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Attendance;
 use App\Models\Worker;
 use App\Models\Project;
+use Carbon\Carbon;
 
 class Edit extends Component
 {
@@ -18,7 +19,7 @@ class Edit extends Component
     public $out_time;
 
     public $userProjects = [];
-    public $workers = [];
+    public $workers;
 
     protected $rules = [
         'project_id' => 'required|exists:projects,id',
@@ -28,15 +29,14 @@ class Edit extends Component
         'out_time' => 'nullable|date_format:H:i|after:in_time',
     ];
 
-    public function mount(Attendance $attendance)
+    public function mount($slug)
     {
-        $this->attendance = $attendance;
-
-        $this->project_id = $attendance->project_id;
-        $this->worker_id = $attendance->worker_id;
-        $this->date = $attendance->date->format('Y-m-d');
-        $this->in_time = $attendance->in_time?->format('H:i');
-        $this->out_time = $attendance->out_time?->format('H:i');
+        $this->attendance = Attendance::where('slug', $slug)->firstOrFail();
+        $this->project_id = $this->attendance->project_id;
+        $this->worker_id = $this->attendance->worker_id;
+        $this->date = Carbon::parse($this->attendance->date)->format('Y-m-d');
+        $this->in_time = Carbon::parse($this->attendance->in_time)->format('H:i');
+        $this->out_time = Carbon::parse($this->attendance->out_time)->format('H:i');
 
         // Load projects
         $query = Project::query();
@@ -48,18 +48,11 @@ class Edit extends Component
         $this->userProjects = $query->pluck('name', 'id');
 
         // Load workers for current project
-        $this->workers = Worker::where('project_id', $this->project_id)
-            ->orderBy('name')
-            ->pluck('name', 'id');
+        $this->workers = Worker::select('id', 'name')
+            ->orderBy('name','asc')
+            ->get();
     }
 
-    public function updatedProjectId()
-    {
-        $this->workers = Worker::where('project_id', $this->project_id)
-            ->orderBy('name')
-            ->pluck('name', 'id');
-        $this->worker_id = '';
-    }
 
     public function update()
     {

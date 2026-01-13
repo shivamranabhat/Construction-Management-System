@@ -42,7 +42,6 @@ class Index extends Component
                     $q->where('name', 'like', "%{$this->search}%");
                 });
             })
-            ->with('project')
             ->latest()
             ->paginate($this->perPage);
 

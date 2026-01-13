@@ -26,8 +26,6 @@ class Index extends Component
     {
         $attendance = Attendance::findOrFail($attendanceId);
 
-        $this->authorize('delete-attendance'); // optional
-
         $attendance->delete();
 
         session()->flash('success', 'Attendance record deleted.');

@@ -29,11 +29,10 @@
                     <div class="col-xl-6">
                         <label class="form-label">Worker <span class="text-danger">*</span></label>
                         <select wire:model.live="worker_id"
-                                class="form-select @error('worker_id') is-invalid @enderror"
-                                :disabled="!$project_id" required>
-                            <option value="">First select project</option>
-                            @foreach($workers as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
+                                class="form-select @error('worker_id') is-invalid @enderror">
+                            <option value="">Select a worker</option>
+                            @foreach($workers as $worker)
+                                <option value="{{ $worker->id }}">{{ $worker->name }}</option>
                             @endforeach
                         </select>
                         @error('worker_id') <div class="invalid-feedback">{{ $message }}</div> @enderror

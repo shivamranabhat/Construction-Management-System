@@ -17,42 +17,41 @@ class Create extends Component
     public $out_time = '';
 
     public $userProjects = [];
-    public $workers = [];
+    public $workers;
 
     protected $rules = [
         'project_id' => 'required|exists:projects,id',
         'worker_id' => 'required|exists:workers,id',
-        'date' => 'required|date',
-        'in_time' => 'nullable|date_format:H:i',
-        'out_time' => 'nullable|date_format:H:i|after:in_time',
+        'date'      => 'required|date',
+        'in_time'   => 'nullable|date_format:H:i',
+        'out_time'  => 'nullable|date_format:H:i|after:in_time',
     ];
 
     public function mount()
     {
         $this->date = today()->format('Y-m-d');
 
+        // Load projects user has access to
         $query = Project::query();
         if (Auth::user()->type === 'Company') {
             $query->where('company_id', Auth::user()->company_id);
         } else {
             $query->whereHas('users', fn($q) => $q->where('user_id', Auth::id()));
         }
-        $this->userProjects = $query->orderBy('name')->pluck('name', 'id');
+
+        $this->userProjects = $query->orderBy('name')->pluck('name', 'id')->toArray();
+
+        $this->workers = Worker::orderBy('name','asc')->select('id','name')->get();
     }
 
-    public function updatedProjectId()
-    {
-        $this->workers = Worker::where('project_id', $this->project_id)
-            ->orderBy('name')
-            ->pluck('name', 'id');
-        $this->worker_id = '';
-    }
+
 
     public function submit()
     {
         $this->validate();
 
-        // Prevent duplicate entry
+        // Prevent duplicate attendance for the same worker + date
+        // (regardless of project — one attendance per day per worker)
         $exists = Attendance::where('worker_id', $this->worker_id)
             ->where('date', $this->date)
             ->exists();
@@ -64,10 +63,10 @@ class Create extends Component
 
         Attendance::create([
             'project_id' => $this->project_id,
-            'worker_id' => $this->worker_id,
-            'date' => $this->date,
-            'in_time' => $this->in_time ?: null,
-            'out_time' => $this->out_time ?: null,
+            'worker_id'  => $this->worker_id,
+            'date'       => $this->date,
+            'in_time'    => $this->in_time ?: null,
+            'out_time'   => $this->out_time ?: null,
             'company_id' => Auth::user()->company_id,
         ]);
 
