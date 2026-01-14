@@ -41,7 +41,7 @@ class Log extends Model
      */
     public function generateUniqueSlug(): string
     {
-        $base = 'log-' . $this->date; // e.g., log-2026-01-04
+        $base = 'log-' . now(); // e.g., log-2026-01-04
         $slug = Str::slug($base);
 
         // Ensure uniqueness within the same project

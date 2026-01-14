@@ -683,8 +683,11 @@
 
                                                 </ul>
                                             </li> <!-- End::slide -->
+                                             <!-- Start::slide__category -->
+                                            <li class="slide__category"><span class="category-name">Vehicle Management</span>
+                                            </li> <!-- End::slide__category -->
                                             <li class="slide has-sub"> <a href="javascript:void(0);"
-                                                    class="side-menu__item {{request()->segment(1) == 'vehicles' || request()->segment(1) == 'vehicle' ? 'active' : ''}}">
+                                                    class="side-menu__item {{request()->segment(1) == 'vehicles' || request()->segment(1) == 'vehicle' || request()->segment(1) == 'fuels' || request()->segment(1) == 'fuel' || request()->segment(1) == 'maintenances' || request()->segment(1) == 'maintenance' ? 'active' : ''}}">
 
                                                     <svg fill="currentColor" class="side-menu__icon" viewBox="0 0 512 512"
                                                         enable-background="new 0 0 512 512" id="Layer_1" version="1.1"
@@ -735,11 +738,11 @@
                                                     <li class="slide"> <a href="{{route('vehicle.index')}}"
                                                             class="side-menu__item {{ request()->segment(1) == 'vehicles' || request()->segment(1) == 'vehicle' ? 'active' : ''}}">List</a>
                                                     </li>
-                                                    <li class="slide"> <a href="{{route('attendance.index')}}"
+                                                    <li class="slide"> <a href="{{route('fuel-log.index')}}"
                                                             class="side-menu__item {{ request()->segment(1) == 'fuels' || request()->segment(1) == 'fuel' ? 'active' : ''}}">Fuel Logs</a>
                                                     </li>
-                                                    <li class="slide"> <a href="{{route('attendance.index')}}"
-                                                            class="side-menu__item {{ request()->segment(1) == 'maintenances' || request()->segment(1) == 'maintenances' ? 'active' : ''}}">Maintenance</a>
+                                                    <li class="slide"> <a href="{{route('maintenance-record.index')}}"
+                                                            class="side-menu__item {{ request()->segment(1) == 'maintenances' || request()->segment(1) == 'maintenance' ? 'active' : ''}}">Maintenance</a>
                                                     </li>
 
                                                 </ul>

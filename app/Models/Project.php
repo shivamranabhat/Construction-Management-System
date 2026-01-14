@@ -68,5 +68,9 @@ class Project extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function maintenanceRecords()
+    {
+        return $this->hasMany(MaintenanceRecord::class);
+    }
     
 }

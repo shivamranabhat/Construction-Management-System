@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Scopes\CompanyScope;
-use App\Models\Scopes\ActiveProjectScope;
 use Illuminate\Support\Str;
 
 class Vehicle extends Model
@@ -13,7 +12,6 @@ class Vehicle extends Model
     protected static function booted()
     {
         static::addGlobalScope(new CompanyScope);
-        static::addGlobalScope(new ActiveProjectScope);
         static::creating(function ($vehicle) {
             $vehicle->slug = $vehicle->generateUniqueSlug();
         });
@@ -30,7 +28,7 @@ class Vehicle extends Model
 
     public function generateUniqueSlug(): string
     {
-        $slug = Str::slug($this->name);
+        $slug = Str::slug($this->make.'-'.$this->model.'-'.$this->registration_number);
         $count = static::where('slug', 'like', $slug . '%')->count();
         return $count ? $slug . '-' . ($count + 1) : $slug;
     }
@@ -46,4 +44,8 @@ class Vehicle extends Model
     }
 
 
+    public function maintenanceRecords()
+    {
+        return $this->hasMany(MaintenanceRecord::class);
+    }
 }

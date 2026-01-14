@@ -35,6 +35,7 @@
                         'requisition' => 'Requisition',
                         'role' => 'Role',
                         'tax' => 'Tax',
+                        'vehicle' => 'Vehicle',
                         'vendor' => 'Vendor',
                         'worker' => 'Worker',
                         ] as $value => $label)

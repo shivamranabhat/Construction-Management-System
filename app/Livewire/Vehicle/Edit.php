@@ -21,14 +21,14 @@ class Edit extends Component
         'fuel_type'           => 'nullable|string|max:50',
     ];
 
-    public function mount(Vehicle $vehicle)
+    public function mount($slug)
     {
-        $this->vehicle = $vehicle;
+        $this->vehicle = Vehicle::whereSlug($slug)->firstOrFail();
 
-        $this->registration_number = $vehicle->registration_number;
-        $this->make                = $vehicle->make;
-        $this->model               = $vehicle->model;
-        $this->fuel_type           = $vehicle->fuel_type;
+        $this->registration_number = $this->vehicle->registration_number;
+        $this->make                = $this->vehicle->make;
+        $this->model               = $this->vehicle->model;
+        $this->fuel_type           = $this->vehicle->fuel_type;
     }
 
     public function update()

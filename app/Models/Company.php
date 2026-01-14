@@ -120,4 +120,9 @@ class Company extends Model
     {
         return $this->hasMany(Vehicle::class);
     }
+
+    public function maintenanceRecords()
+    {
+        return $this->hasMany(MaintenanceRecord::class);
+    }
 }

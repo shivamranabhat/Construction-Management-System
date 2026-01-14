@@ -14,7 +14,7 @@ class Create extends Component
     public $allowedModules = [
         'account','attendance', 'bill', 'boq', 'category', 'item','log', 'module',
         'payment', 'project', 'purchase', 'requisition',
-        'role', 'tax', 'vendor', 'worker',
+        'role', 'tax', 'vehicle','vendor', 'worker',
     ];
 
     public function store()

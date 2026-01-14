@@ -55,6 +55,7 @@
 
                 <div class="d-flex gap-3 justify-content-end mt-4">
                     <a href="{{ route('vehicle.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    @can('edit-vehicle')
                     <button type="submit" class="btn btn-primary"
                             wire:loading.attr="disabled" wire:target="update">
                         <span wire:loading.remove wire:target="update">Save</span>
@@ -62,6 +63,10 @@
                             <span class="spinner-border spinner-border-sm"></span> Saving...
                         </span>
                     </button>
+                     @else
+                    <button class="btn btn-primary" disabled>Save
+                    </button>
+                    @endcan
                 </div>
             </form>
         </div>

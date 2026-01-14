@@ -63,6 +63,12 @@ use App\Livewire\Attendance\Edit as AttendanceEdit;
 use App\Livewire\Vehicle\Index as VehicleIndex;
 use App\Livewire\Vehicle\Create as VehicleCreate;
 use App\Livewire\Vehicle\Edit as VehicleEdit;
+use App\Livewire\Fuel\Index as FuelIndex;
+use App\Livewire\Fuel\Create as FuelCreate;
+use App\Livewire\Fuel\Edit as FuelEdit;
+use App\Livewire\MaintenanceRecord\Index as MaintenanceRecordIndex;
+use App\Livewire\MaintenanceRecord\Create as MaintenanceRecordCreate;
+use App\Livewire\MaintenanceRecord\Edit as MaintenanceRecordEdit;
 
 
 Route::get('/signin', AuthLogin::class)->name('signin');
@@ -175,6 +181,16 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/vehicles', VehicleIndex::class)->name('index');            
         Route::get('/vehicle/new', VehicleCreate::class)->name('create');    
         Route::get('/vehicle/{slug}', VehicleEdit::class)->name('edit');    
+    });
+    Route::name('fuel-log.')->group(function () {
+        Route::get('/fuels', FuelIndex::class)->name('index');            
+        Route::get('/fuel/new', FuelCreate::class)->name('create');    
+        Route::get('/fuel/{slug}', FuelEdit::class)->name('edit');    
+    });
+    Route::name('maintenance-record.')->group(function () {
+        Route::get('/maintenances', MaintenanceRecordIndex::class)->name('index');            
+        Route::get('/maintenance/new', MaintenanceRecordCreate::class)->name('create');    
+        Route::get('/maintenance/{slug}', MaintenanceRecordEdit::class)->name('edit');    
     });
     
 });
